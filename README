@@ -3,7 +3,8 @@ Supybot-plugins-20060723 comes from
 http://sourceforge.net/projects/supybot/.  edsu-plugins come from
 plugins Ed Summers wrote for his supybot.  Simple "plugins" were
 written locally, and consist of minor variations on the built-in
-plugins, which can be found at http://fruct.us/supybot-plugins/.
+plugins, which can be found at
+http://fruct.us/built-in_supybot-plugins/.
 
 Anyone with write privileges to this repository should feel free to
 edit any plugin, and any plugin from the built-in that you wish to
