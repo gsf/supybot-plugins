@@ -1,0 +1,315 @@
+* [1] What does it do?
+
+* [2] Commands
+
+* [3] Configuration
+
+* [4] Individual Protocols
+
+  o [4a] SSH
+
+  o [4b] HTTP
+
+  o [4c] SMTP
+
+o [5] Requirements
+
+o [6] Keys and certificates
+
+  o [6a] SSL
+
+  o [6b] SSH
+
+.. [1]
+
+Introduction
+
+  This plugin runs network daemons (server) that can be used to communicate
+  with Supybot. Network daemons can potentially be defined as anything that
+  will run Python, but so far the following have been implmented:
+
+  SSH -- allowing you to log in using OpenSSH, or any other SSH2 client.
+
+  HTTP -- allowing you to log in using any web browser.
+
+  SMTP -- allowing you to send emails to the bot using any email
+  application.
+
+  Features:
+
+    * SSL encryption for all protocols.
+
+    * Supybot authentication.
+
+    * Connection and user logging.
+
+    * Capability control universally, and per protocol.
+
+    * User communication over all protocols (eg like eggdrop's partyline)
+
+
+.. [2]
+
+Commands
+
+  'available' -- Replies with a list of available protocols.
+
+  'running' -- Replies with a list of running servers, and their ports.
+
+  'users' -- Replies with a list of users connected for each protocol, and
+  their hostmasks.
+
+  'start <protocol> [port]' -- Starts a server of type *protocol*, where *protocol*
+  is one of the list displayed by the *available* command. If no *port* is
+  specified, the default port is used.
+
+  'stop <protocol>' -- Stops a server of type *protocol*, where *protocol*
+  is one of the list displayed by the **running** command.
+
+  'wall <text>' -- Sends the text in *text* to all users of all protocols
+  connected to the gateway.
+
+  'say <user> <text>' -- Sends *text* to *user* if *user* is connected to
+  the gateway.
+
+  'logout' -- Logs a user out of the gateway connection.
+
+.. [3]
+
+Configuration
+
+.. [4]
+
+Individual Protocols
+
+.. [4a]
+
+SSH
+
+  How do users connect?
+
+    Users connect with SSH client such as OpenSSH. Like so::
+
+      ssh -p <port> <user>@<address>
+      
+    so for user *ali* at address *10.0.0.10", on port 9022::
+
+      ssh -p 9022 ali@10.0.0.10
+
+  What do users see?
+
+    Users are presented with the Message of the day, and the prompt, for
+    example::
+
+      ~$ ssh -p 9022 localhost
+      ali@localhost's password: 
+      [f9b276893!ali@ssh.127.0.0.1] Welcome to the Supybot Gateway
+      ali@eb: $ 
+
+    And are free to enter commands that they are capable of issuing, for
+    example::
+
+      ali@eb: $ whoami [whoami] ali
+      ali@eb: $ list [list] Admin, Channel, Config, Gateway, Misc, Owner, and User
+      ali@eb: $ list Gateway [list Gateway] available, logout, running, say, start, stop, users, and wall
+      ali@eb: $ 
+
+    Users of the Sshd plugin may notice that the replies are now tagged with
+    the initial request.
+
+  How do users log out?
+
+    The *logout* command can be issued, like::
+
+      ali@eb: $ logout
+      Connection to localhost closed.
+      $~
+
+  Why can't we use public key authentication?
+
+    I have been working on it for a few days. I am not exactly sure, but it
+    is a fairly high priority.
+
+  
+.. [4b]
+
+HTTP
+
+  How do users connect?
+
+     Using any browser pointed to the correct URL. Note that for SSL
+     connections, the browser will need the URL to begin with 'https://'.
+
+  How do users log out?
+
+    * Click on the *logout* button
+
+    * Issue the *logout* command
+
+    * Visit the url */logout*
+
+  What if users forget to log out?
+
+    The registry value *supybot.plugins.Gateway.http.sessionTimeout*
+    contains the number of seconds of inactivity after which an http
+    connected session will be automatically logged out. It defaults to 300
+    (5 minutes).
+
+  Can users still get *wall* commands?
+  
+    Of course! Because of the nature
+    of the Gateway plugin, any connected user will receive the message,
+    regardless of protocol. Gateway doesn't care what protocol a user is
+    connected to, it knows how to send to all of them.
+
+  Can I configure how my web pages look?
+  
+    Yes, you can, there are two
+    ways:
+
+      1 Changing the configuration values stored in
+      *supybot.plugins.Gateway.http.html*. These contain simple style values
+      for color and text size.
+
+      2 Editing or overriding the template strings in the source. (People
+      skilled enough to do this will not need direction.)
+
+  
+.. [4c]
+
+SMTP 
+
+    How does it work?
+
+      The SMTP plug in is a bit strange. It starts an SMTP server which
+      supports PLAIN and LOGIN login credentials and is encrypted with SSL.
+      Users may use this SMTP server to send emails to the user **supybot**.
+      This email should consist of a list of commands, separated by line
+      breaks.
+
+    How does the bot reply?
+
+      After a set period, configured in
+      **supybot.plugins.Gateway.smtp.replyWait** the plugin uses the SMTP
+      host defined in **supybot.plugins.Gateway.smtp.smtpHost** to reply to
+      the original sender.
+
+      A typycal reply email will look like this::
+
+        Return-Path: supybot@supybot.supybot
+         
+        Delivered-To: aafshar@gmail.com
+        From: supybot@supybot.supybot
+        Reply-to: supybot@supybot.supybot
+        Subject: Supybot Reply
+        To: aafshar@gmail.com
+        Message-Id: <E1D3RJP-0008Em-00@palver.terminus.fnd>
+        Date: Tue, 22 Feb 2005 14:06:15 +0000
+        Status: R
+
+        [smtpdc533a0ed!ali@127.0.0.1] Welcome to the Supybot Gateway
+        [whoami] ali
+        [hostmask] smtpdc533a0ed!ali@127.0.0.1
+        [users] Users connected to the gateway: smtp 1 (ali).
+        [list] Admin, Channel, Config, Gateway, Misc, Owner, and User
+        [list Gateway] available, logout, running, say, start, stop,
+        users, and wall
+        [config list plugins.Gateway] @http, @keys, @smtp, @ssh,
+        capability, motd, and public
+        [config list plugins.Gateway.smtp] autoStart, capability,
+        defaultPort, replyWait, smtpHost, and useSSL
+        [config help plugins.Gateway.smtp.replyWait] The number of
+        seconds a session will last before completing and replying.
+        Note that this is also the length of time smtp users will remain
+        connected to receive walls.  (Current value: 30)
+        [config help plugins.Gateway.smtp.smtpHost] The address of the
+        SMTP server used to send mail.  (Current value: 10.0.0.1)
+        [config help plugins.Gateway.smtp.autoStart] Determines whether
+        the interface will start automatically.  (Current value: True)
+        [config help plugins.Gateway.smtp.capability] Determines what
+        capability users will require to connect to the protocol.
+        If this value is an empty string, no capability will be
+        checked.  (Current value: )
+        [config help plugins.Gateway.smtp.defaultPort] The port that this
+        daemon will start on if started without argument.  (Current value: 9025)
+        [config help plugins.Gateway.smtp.useSSL] Determines wehther the
+        interface will attempt to use SSL.  (Current value: True)
+
+
+
+    Can SMTP users still receive wall commands?
+
+      Yes! During the period that the reply is waiting, SMTP users are
+      connected and any walls are directed to the reply email.
+
+.. [5]
+
+Requirements
+
+  o Twisted
+
+  o OpenSSL (for SSL encryption - recommended)
+
+  o Key and Certificate Files
+
+  o Darcs version of Supybot.
+
+.. [6]
+
+Keys and certificates
+
+  These are something you need if you want to use SSH or SSL or both, and I
+  strongly recommend that you do.
+
+.. [6a]
+  
+SSL 
+
+  The required files are a private key file, and a certificate file. The
+  names of these files are found in the configuration values::
+  
+      supybot.plugins.Gateway.keys.sslCertificateFile
+      supybot.plugins.Gateway.keys.sslKeyFile
+
+  and will be in the directory 'data/Gateway/keys/ssl/' (a symlink to files
+  is adequate for this purpose).
+
+  You may have a key file and certificate that you already use for Apache,
+  for example, and you may use these. However, if you would like to create
+  your own key, and self-signed certificate, you could follow the
+  directions::
+
+      openssl genrsa -des3 -out privkey.pem 1024
+
+  This will create a private key. You will be prompted for a passphrase.
+  You will need to enter this passphrase when you start daemons with SSL.
+  Once the private key is created, you can generate a certificate from it
+  like so::
+
+      openssl req -new -key privkey.pem -x509 -out server.pem -days 999
+
+  Enter the passphrase and other information. You should now have what you
+  need to run the http and smtp interfaces with SSL.     
+
+.. [6b]
+
+SSH
+
+  The SSH server needs it's own pair of public and private RSA keys. The
+file name is the registry value::
+
+    supybot.plugins.Gateway.keys.rsaKeyFile
+
+  For the private key, and the same filename with the strin '.pub' attached
+  to it for the public key.
+
+  You may use your own OpenSSH RSA keys, or you can generate a new pair in
+  the *data/Gateway/keys/ssh* directory like so::
+
+    ssh-keygen -t rsa -f id-rsa
+      
+      
+
+
+
+
