@@ -458,10 +458,14 @@ class Assorted(callbacks.Privmsg):
         irc.reply(("%s : %s <http://en.wikipedia.org%s>" % (title, text, link)).encode('utf-8'))
         
     def hillary(self,irc,msg,args):
-        tree = TidyHTMLTreeBuilder.parse(urlopen('http://www.hillaryismomjeans.com/'))
-        for a in tree.findall('.//{http://www.w3.org/1999/xhtml}a'):
-            if a.attrib.get('class') == 'phrase':
-                irc.reply(a.text)
+        url = 'http://www.hillaryismomjeans.com/'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+        html = opener.open(url)
+        html_str = html.read()
+        soup = BeautifulSoup(html_str)
+        irc.reply(soup.find('a').string)
 
 
     def get_text(self,e):
