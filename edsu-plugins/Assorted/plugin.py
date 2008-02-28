@@ -456,6 +456,12 @@ class Assorted(callbacks.Privmsg):
         #        link = a.attrib['href']
 
         irc.reply(("%s : %s <http://en.wikipedia.org%s>" % (title, text, link)).encode('utf-8'))
+        
+    def hillary(self,irc,msg,args):
+        tree = TidyHTMLTreeBuilder.parse(urlopen('http://www.hillaryismomjeans.com/'))
+        for a in tree.findall('.//{http://www.w3.org/1999/xhtml}a'):
+            if a.attrib.get('class') == 'phrase':
+                return a.text
 
     def get_text(self,e):
         string = ''
