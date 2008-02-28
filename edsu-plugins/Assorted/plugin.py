@@ -463,6 +463,7 @@ class Assorted(callbacks.Privmsg):
             if a.attrib.get('class') == 'phrase':
                 irc.reply(a.text)
 
+
     def get_text(self,e):
         string = ''
         if e.text: string += e.text
