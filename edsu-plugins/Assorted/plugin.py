@@ -461,7 +461,7 @@ class Assorted(callbacks.Privmsg):
         tree = TidyHTMLTreeBuilder.parse(urlopen('http://www.hillaryismomjeans.com/'))
         for a in tree.findall('.//{http://www.w3.org/1999/xhtml}a'):
             if a.attrib.get('class') == 'phrase':
-                return a.text
+                irc.reply(a.text)
 
     def get_text(self,e):
         string = ''
