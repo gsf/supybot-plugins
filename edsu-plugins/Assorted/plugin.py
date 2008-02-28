@@ -475,7 +475,7 @@ class Assorted(callbacks.Privmsg):
         html = opener.open(url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        irc.reply(soup.find('a').string.strip().upper)
+        irc.reply(soup.find('a').string.strip().upper())
 
 
     def get_text(self,e):
