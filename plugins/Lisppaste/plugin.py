@@ -35,7 +35,7 @@ import supybot.callbacks as callbacks
 
 
 class Lisppaste(callbacks.Plugin):
-    def lisppaste(self, irc, msg, args, victim):
+    def lisppaste(self, irc, msg, args):
         """Redirect lisppaste requests to the proper bot
         """
         irc.reply('try "lisppaste: help"', prefixNick=True)

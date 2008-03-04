@@ -33,6 +33,5 @@ class LisppasteTestCase(PluginTestCase):
     plugins = ('Lisppaste',)
     def testLisppaste(self):
         self.assertNotError('lisppaste')
-        self.assertNotError('lisppaste foo')
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
