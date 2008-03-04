@@ -41,7 +41,7 @@ class Lisppaste(callbacks.Plugin):
         # changed string from '%s - %s ' to '%s: %s ' -- gsf 2007-07-25
         irc.reply('try "lisppaste: help"', prefixNick=True)
 
-Class = Insult
+Class = Lisppaste
 
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
