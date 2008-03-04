@@ -38,7 +38,6 @@ class Lisppaste(callbacks.Plugin):
     def lisppaste(self, irc, msg, args, victim):
         """Redirect lisppaste requests to the proper bot
         """
-        # changed string from '%s - %s ' to '%s: %s ' -- gsf 2007-07-25
         irc.reply('try "lisppaste: help"', prefixNick=True)
 
 Class = Lisppaste
