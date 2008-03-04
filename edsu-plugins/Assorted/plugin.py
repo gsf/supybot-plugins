@@ -477,6 +477,11 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(html_str)
         irc.reply(soup.find('a').string.strip().upper())
 
+    def lisppaste2(self, irc, msg, args):
+        """Redirect lisppaste requests to the proper bot
+        """
+        irc.reply('lisppaste: help')
+
 
     def get_text(self,e):
         string = ''

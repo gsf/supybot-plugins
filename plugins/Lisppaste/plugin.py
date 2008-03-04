@@ -37,9 +37,7 @@ class Lisppaste(callbacks.Privmsg):
     def lisppaste(self, irc, msg, args):
         """Redirect lisppaste requests to the proper bot
         """
-        irc.reply('try "lisppaste: help"')
+        irc.reply('lisppaste: help')
 
 Class = Lisppaste
 
-
-# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
