@@ -34,7 +34,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 
-class Lisppaste(callbacks.Plugin):
+class Lisppaste(callbacks.Privmsg):
     def lisppaste(self, irc, msg, args):
         """Redirect lisppaste requests to the proper bot
         """
