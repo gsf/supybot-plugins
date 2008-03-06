@@ -12,9 +12,6 @@ from string import upper
 
 
 class Traffic(callbacks.Privmsg):
-#    def __init__(self):
-#        self.xml = None
-
     def traffic(self, irc, msg, args):
         """[[street,] city, state,] zip
 
@@ -29,11 +26,13 @@ class Traffic(callbacks.Privmsg):
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
+        xml = None
         try:
-            self.xml = opener.open(url)
+            xml = opener.open(url)
         except HTTPError, error:
             irc.reply('error: HTTP %s for url %s' % (error.code, url), prefixNick=True)
-        xml_str = self.xml.read()
+            return
+        xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
