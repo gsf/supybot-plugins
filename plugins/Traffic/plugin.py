@@ -4,7 +4,6 @@ import BeautifulSoup
 import urllib
 import time
 
-import supybot.conf as conf
 import supybot.utils as utils
 from supybot.commands import *
 import supybot.ircutils as ircutils
