@@ -4,9 +4,9 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
-import BeautifulSoup
-import urllib
-import time
+from BeautifulSoup import BeautifulSoup
+from urllib import quote
+from time import ctime
 from urllib2 import build_opener
 
 
@@ -26,7 +26,8 @@ class Traffic(callbacks.Privmsg):
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
         xml = opener.open(url)
-        soup = BeautifulSoup(xml.read())
+        xml_str = xml.read()
+        soup = BeautifulSoup(xml_str)
         if len(soup('Result')) == 0:
             irc.reply('no results', prefixNick=True)
         else:
