@@ -32,16 +32,16 @@ class Traffic(callbacks.Privmsg):
         if len(results) == 0:
             irc.reply('no results', prefixNick=True)
         else:
-            response = ''
+            responses = []
             for result in results:
                 type = result['type']
                 title = result.title.string
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
-                response += '%s: %s (%s) [%s] <%s>' % (type, title, description, 
-                    last_updated, image_url)
-            irc.reply(response, prefixNick=True)
+                responses.append('%s: %s (%s) [%s] <%s>' % (type, title, description, 
+                    last_updated, image_url))
+            irc.reply(" | ".join(responses), prefixNick=True)
 
 Class = Traffic
 
