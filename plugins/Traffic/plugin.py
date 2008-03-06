@@ -1,14 +1,12 @@
-import re
+import supybot.utils as utils
+from supybot.commands import *
+import supybot.plugins as plugins
+import supybot.ircutils as ircutils
+import supybot.callbacks as callbacks
 
 import BeautifulSoup
 import urllib
 import time
-
-import supybot.utils as utils
-from supybot.commands import *
-import supybot.ircutils as ircutils
-import supybot.callbacks as callbacks
-
 
 class Traffic(callbacks.Privmsg):
     def traffic(self, irc, msg, args, location):
