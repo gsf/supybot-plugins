@@ -8,7 +8,7 @@ class Lisppaste(callbacks.Privmsg):
     def lisppaste(self, irc, msg, args):
         """redirects lisppaste requests to the proper bot
         """
-        irc.reply('lisppaste: help [test]', prefixNick=False)
+        irc.reply('lisppaste: help', prefixNick=False)
 
 Class = Lisppaste
 
