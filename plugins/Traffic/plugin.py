@@ -8,6 +8,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib
 import time
 from urllib2 import build_opener
+from string import upper
 
 
 class Traffic(callbacks.Privmsg):
@@ -39,7 +40,7 @@ class Traffic(callbacks.Privmsg):
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
-                responses.append('%s: %s (%s) [%s] <%s>' % (type, title, description, 
+                responses.append('%s: %s (%s) [%s] <%s>' % (upper(type), title, description, 
                     last_updated, image_url))
             irc.reply(" | ".join(responses), prefixNick=True)
 
