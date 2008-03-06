@@ -10,10 +10,10 @@ class Lisppaste(callbacks.Privmsg):
         """
         irc.reply('lisppaste: help', prefixNick=False)
 
-    def lptest(self, irc, msg, args):
+    def lptest(self, irc, msg, args, otherarg):
         """is a big dumb test
         """
-        irc.reply("msg is %s; args are %s" % (msg, args))
+        irc.reply("args are %s; otherarg is %s" % (args, otherarg))
 
 Class = Lisppaste
 
