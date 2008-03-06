@@ -32,6 +32,7 @@ class Traffic(callbacks.Privmsg):
         if len(results) == 0:
             irc.reply('no results: %s\n%s' % (url, xml_str), prefixNick=True)
         else:
+            response = ''
             for result in results:
                 type = result['type']
                 title = result.title.string
