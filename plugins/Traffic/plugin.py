@@ -38,8 +38,9 @@ class Traffic(callbacks.Privmsg):
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
-                irc.reply('%s: %s (%s) [%s] <%s>' % (type, title, description, 
-                    last_updated, image_url), prefixNick=True)
+                response += '%s: %s (%s) [%s] <%s>' % (type, title, description, 
+                    last_updated, image_url)
+            irc.reply(response, prefixNick=True)
 
 Class = Traffic
 
