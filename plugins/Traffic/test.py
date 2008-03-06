@@ -9,3 +9,4 @@ class TrafficTestCase(PluginTestCase):
         self.assertNotError('traffic 100 Hiram Sq., New Brunswick, NJ, 08901')
         self.assertError('traffic foobar, bazquux')
 
+
