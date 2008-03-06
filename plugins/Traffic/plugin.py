@@ -7,6 +7,8 @@ import supybot.callbacks as callbacks
 import BeautifulSoup
 import urllib
 import time
+from urllib2 import build_opener
+
 
 class Traffic(callbacks.Privmsg):
     def traffic(self, irc, msg, args):
