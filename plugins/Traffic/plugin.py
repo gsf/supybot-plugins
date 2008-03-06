@@ -7,7 +7,7 @@ import supybot.callbacks as callbacks
 from BeautifulSoup import BeautifulSoup
 import urllib
 import time
-from urllib2 import build_opener
+from urllib2 import build_opener, HTTPError
 from string import upper
 
 
