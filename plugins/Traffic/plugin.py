@@ -31,7 +31,11 @@ class Traffic(callbacks.Privmsg):
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
-            irc.reply('no results', prefixNick=True)
+            error_message = soup.find('message')
+            if error_message:
+                irc.reply('error: %s' % (error_message.string), prefixNick=true)
+            else:
+                irc.reply('an unexpected error occurred', prefixNick=True)
         else:
             responses = []
             for result in results:
@@ -47,6 +51,13 @@ class Traffic(callbacks.Privmsg):
 Class = Traffic
 
 """
+error looks like this:
+
+<Error>
+  The following errors were detected:
+  <Message>location is out of range</Message>
+</Error>
+
 result from yahoo should look like this:
  
 <ResultSet xsi:schemaLocation="urn:yahoo:maps http://api.local.yahoo.com/MapsService/V1/TrafficDataResponse.xsd">
