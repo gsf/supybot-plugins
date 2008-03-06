@@ -29,7 +29,7 @@ class Traffic(callbacks.Privmsg):
         try:
             xml = opener.open(url)
         except HTTPError, error:
-            irc.reply('HTTP error(%s): %s' % (error.code, error.reason), prefixNick=True)
+            irc.reply('error: HTTP %s for url %s' % (error.code, url), prefixNick=True)
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
