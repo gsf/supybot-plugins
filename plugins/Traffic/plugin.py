@@ -26,14 +26,17 @@ class Traffic(callbacks.Privmsg):
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
-        xml = opener.open(url)
+        try:
+            xml = opener.open(url)
+        except HTTPError, (errno, strerror):
+            irc.reply('HTTP error(%s): %s' % (errno, strerror), prefixNick=True)
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
             error_message = soup.find('message')
             if error_message:
-                irc.reply('error: %s' % (error_message.string), prefixNick=true)
+                irc.reply('error: %s' % (error_message.string), prefixNick=True)
             else:
                 irc.reply('an unexpected error occurred', prefixNick=True)
         else:
