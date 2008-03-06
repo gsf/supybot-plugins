@@ -5,8 +5,8 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 from BeautifulSoup import BeautifulSoup
-from urllib import quote
-from time import ctime
+import urllib
+import time
 from urllib2 import build_opener
 
 
@@ -28,16 +28,16 @@ class Traffic(callbacks.Privmsg):
         xml = opener.open(url)
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
-        results = soup.findAll('Result')
+        results = soup.findAll('result')
         if len(results) == 0:
             irc.reply('no results: %s\n%s' % (url, xml_str), prefixNick=True)
         else:
             for result in results:
                 type = result['type']
-                title = result.Title.string
-                description = result.Description.string
-                last_updated = time.ctime(float(result.UpdateDate.string))
-                image_url = result.ImageUrl.string
+                title = result.title.string
+                description = result.description.string
+                last_updated = time.ctime(float(result.updatedate.string))
+                image_url = result.imageurl.string
                 irc.reply('%s: %s (%s) [%s] <%s>' % (type, title, description, 
                     last_updated, image_url), prefixNick=True)
 
