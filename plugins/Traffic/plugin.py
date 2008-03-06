@@ -28,10 +28,11 @@ class Traffic(callbacks.Privmsg):
         xml = opener.open(url)
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
-        if len(soup('Result')) == 0:
+        results = soup.findAll('Result')
+        if len(results) == 0:
             irc.reply('no results', prefixNick=True)
         else:
-            for result in soup.findAll('Result'):
+            for result in results:
                 type = result['type']
                 title = result.Title.string
                 description = result.Description.string
