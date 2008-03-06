@@ -30,7 +30,7 @@ class Traffic(callbacks.Privmsg):
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
-            irc.reply('no results: %s\n%s' % (url, xml_str), prefixNick=True)
+            irc.reply('no results', prefixNick=True)
         else:
             response = ''
             for result in results:
