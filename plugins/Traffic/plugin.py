@@ -12,8 +12,8 @@ from string import upper
 
 
 class Traffic(callbacks.Privmsg):
-    def __init__(self):
-        self.xml = None
+#    def __init__(self):
+#        self.xml = None
 
     def traffic(self, irc, msg, args):
         """[[street,] city, state,] zip
