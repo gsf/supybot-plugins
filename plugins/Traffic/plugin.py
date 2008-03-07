@@ -42,8 +42,8 @@ class Traffic(callbacks.Privmsg):
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
-            else:
-                irc.reply('an unexpected error occurred', prefixNick=True)
+            irc.reply('no results!', prefixNick=True)
+            return
         else:
             responses = []
             for result in results:
