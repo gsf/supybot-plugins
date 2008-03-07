@@ -61,7 +61,7 @@ class Traffic(callbacks.Privmsg):
                 else:
                     responses.append('%s: %s (%s) [%s]' % (capitalize(type), title, description, 
                                                                 last_updated))
-             irc.reply(" | ".join(responses), prefixNick=True)
+            irc.reply(" | ".join(responses), prefixNick=True)
 
 Class = Traffic
 
