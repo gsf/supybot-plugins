@@ -17,12 +17,15 @@ class Traffic(callbacks.Privmsg):
         Returns the traffic conditions for a given location.
         """
         show_maps = False
+        if len(args) == 0:
+            irc.reply('usage: traffic [--map] <location>')
+            return 
         if args[0] == '--map':
             show_maps = True
             args.pop(0)
-        if len(args) == 0:
-            irc.reply('usage: traffic [--map] <location>')
-            return
+            # this is homely
+            if len(args) == 0:
+                irc.reply('usage: traffic [--map] <location>')
         location = ' '.join(args)
         url = 'http://local.yahooapis.com/MapsService/V1/trafficData?appid=YahooDemo&location=%s&include_map=1' % (urllib.quote(location))
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
