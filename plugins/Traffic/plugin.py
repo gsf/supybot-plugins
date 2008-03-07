@@ -8,8 +8,7 @@ from BeautifulSoup import BeautifulSoup
 import urllib
 import time
 from urllib2 import build_opener, HTTPError
-from string import upper
-
+from string import capitalize
 
 class Traffic(callbacks.Privmsg):
     def traffic(self, irc, msg, args):
@@ -26,19 +25,23 @@ class Traffic(callbacks.Privmsg):
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
+        # yes, this is poor design
         xml = None
         try:
             xml = opener.open(url)
         except HTTPError, error:
-            irc.reply('error: HTTP %s for url %s' % (error.code, url), prefixNick=True)
+            # yes, this duplication is ugly
+            response = 'http error %s for %s' % (error.code, location)
+            xml_str = xml.read()
+            soup = BeautifulSoup(xml_str)
+            error_message = soup.find('message')
+            if error_message:
+                irc.reply('%s: %s' % (response, error_message.string), prefixNick=True)
             return
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
         if len(results) == 0:
-            error_message = soup.find('message')
-            if error_message:
-                irc.reply('error: %s' % (error_message.string), prefixNick=True)
             else:
                 irc.reply('an unexpected error occurred', prefixNick=True)
         else:
@@ -49,7 +52,7 @@ class Traffic(callbacks.Privmsg):
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
-                responses.append('%s: %s (%s) [%s] <%s>' % (upper(type), title, description, 
+                responses.append('%s: %s (%s) [%s] <%s>' % (capitalize(type), title, description, 
                     last_updated, image_url))
             irc.reply(" | ".join(responses), prefixNick=True)
 
