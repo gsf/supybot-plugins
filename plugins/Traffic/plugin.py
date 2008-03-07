@@ -12,14 +12,17 @@ from string import capitalize
 
 class Traffic(callbacks.Privmsg):
     def traffic(self, irc, msg, args):
-        """[[street,] city, state,] zip
+        """[--map] <location>
 
         Returns the traffic conditions for a given location.
         """
-        # example url: http://local.yahooapis.com/MapsService/V1/trafficData?appid=YahooDemo&location=08901&include_map=1
+        show_maps = False
         if len(args) == 0:
-            irc.reply('usage: traffic <location>')
+            irc.reply('usage: traffic [--map] <location>')
             return
+        if args[0] == '--map':
+            show_maps = True
+            args.pop(0)
         location = ' '.join(args)
         url = 'http://local.yahooapis.com/MapsService/V1/trafficData?appid=YahooDemo&location=%s&include_map=1' % (urllib.quote(location))
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
@@ -52,13 +55,19 @@ class Traffic(callbacks.Privmsg):
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
-                responses.append('%s: %s (%s) [%s] <%s>' % (capitalize(type), title, description, 
-                    last_updated, image_url))
-            irc.reply(" | ".join(responses), prefixNick=True)
+                if show_maps:
+                    responses.append('%s: %s (%s) [%s] <%s>' % (capitalize(type), title, description, 
+                                                                last_updated, image_url))
+                else:
+                    responses.append('%s: %s (%s) [%s]' % (capitalize(type), title, description, 
+                                                                last_updated))
+             irc.reply(" | ".join(responses), prefixNick=True)
 
 Class = Traffic
 
 """
+example url: http://local.yahooapis.com/MapsService/V1/trafficData?appid=YahooDemo&location=08901&include_map=1
+
 error looks like this:
 
 <Error>
