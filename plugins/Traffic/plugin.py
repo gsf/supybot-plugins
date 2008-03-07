@@ -50,7 +50,7 @@ class Traffic(callbacks.Privmsg):
             responses = []
             i = 0
             for result in results:
-                i++
+                i += 1
                 type = capitalize(result['type'])
                 title = result.title.string
                 description = result.description.string
