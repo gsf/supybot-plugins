@@ -42,24 +42,27 @@ class Traffic(callbacks.Privmsg):
         xml_str = xml.read()
         soup = BeautifulSoup(xml_str)
         results = soup.findAll('result')
-        if len(results) == 0:
+        hits = len(results)
+        if hits == 0:
             irc.reply('no results!', prefixNick=True)
             return
         else:
             responses = []
+            i = 0
             for result in results:
-                type = result['type']
+                i++
+                type = capitalize(result['type'])
                 title = result.title.string
                 description = result.description.string
                 last_updated = time.ctime(float(result.updatedate.string))
                 image_url = result.imageurl.string
                 if show_maps:
-                    responses.append('%s: %s (%s) [%s] <%s>' % (capitalize(type), title, description, 
-                                                                last_updated, image_url))
+                    responses.append('%s. %s: %s (%s) [%s] <%s>' % (i, type, title, description, 
+                                                                    last_updated, image_url))
                 else:
-                    responses.append('%s: %s (%s) [%s]' % (capitalize(type), title, description, 
-                                                                last_updated))
-            irc.reply(" | ".join(responses), prefixNick=True)
+                    responses.append('%s. %s: %s (%s) [%s]' % (i, type, title, description, 
+                                                               last_updated))
+            irc.reply("%s results: " % (hits) + " | ".join(responses), prefixNick=True)
 
 Class = Traffic
 
