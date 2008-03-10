@@ -67,10 +67,11 @@ class TrueTrue(callbacks.PluginRegexp):
         aisle = randint(1,10)
         irc.reply(("clean up on aisle %i" % aisle), prefixNick=False)
 
-    def billSnarfer(self,irc,msg,match):
-        r"bdrew|bill drew|Bill Drew|Bill Gates|bgates|bill gates"
-        time.sleep(2)
-        irc.reply("thanks, bill!", prefixNick=False)
+#   commented out on request
+#    def billSnarfer(self,irc,msg,match):
+#        r"bdrew|bill drew|Bill Drew|Bill Gates|bgates|bill gates"
+#        time.sleep(2)
+#        irc.reply("thanks, bill!", prefixNick=False)
 
     def panizziSnarfer(self, irc, msg, match):
         r'panizzi|Panizzi'
