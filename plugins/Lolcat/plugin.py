@@ -10,7 +10,7 @@ import re
 
 class Lolcat(callbacks.Privmsg):
     def randlol(self, irc, msg, args):
-        lolrand(self, irc, msg, args)
+        self.lolrand(irc, msg, args)
 
     def lolrand(self, irc, msg, args):
         """prints out a random lolcat phrase
