@@ -23,7 +23,7 @@ class GasPrices(callbacks.Privmsg):
         # there has got to be a cleaner, more pythonic way to do this
         number_of_results = None
         if len(args) == 2:
-            if args[1] not in range(1, 5):
+            if args[1] not in ["1", "2", "3", "4", "5"]:
                 irc.reply("usage: gasprices <zipcode> [<number_of_results(1-5)>] %s" % args[1], prefixNick=True)
                 return
             else:
