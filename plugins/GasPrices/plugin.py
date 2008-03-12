@@ -27,7 +27,7 @@ class GasPrices(callbacks.Privmsg):
                 irc.reply("usage: gasprices <zipcode> [<number_of_results(1-5)>]", prefixNick=True)
                 return
             else:
-                number_of_results = args[1]
+                number_of_results = int(args[1])
         else:
             number_of_results = 1
 
