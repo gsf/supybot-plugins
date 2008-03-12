@@ -24,7 +24,7 @@ class Lolcat(callbacks.Privmsg):
         try:
             html = opener.open(url)
         except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, location), prefixNick=True)
+            irc.reply('http error %s for random lolcat' % (e.code), prefixNick=True)
             return
         soup = BeautifulSoup(html)
         anchor = soup.find("div", "post").h1.a
