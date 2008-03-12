@@ -43,7 +43,7 @@ class GasPrices(callbacks.Privmsg):
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
         soup = BeautifulSoup(html)
-        i = 1
+        i = 0
         responses = []
         for result in soup.find("table", id="tblDetail")('tr')[1:number_of_results + 1]:
             i += 1
@@ -54,7 +54,7 @@ class GasPrices(callbacks.Privmsg):
             price = result('td')[3]('span')[0].string
             # date = result('td')[3]('span')[1].string
             responses.append("%s. %s at %s (%s) <%s>" % (i, price, station, address, map))
-        irc.reply("cheapest gas in %s (%s results): %s" % (zipcode, number_of_results, " | ".join(responses)), prefixNick=True)
+        irc.reply("cheapest gas in %s (%s result(s)): %s" % (zipcode, number_of_results, " | ".join(responses)), prefixNick=True)
 
 Class = GasPrices
 
