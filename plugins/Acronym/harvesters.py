@@ -17,10 +17,9 @@ class AcronymAttic:
 		# encode spaces and ampersands
 		search_string = terms.replace(' ','%20').replace('&','%26')
 		url = "http://www.acronymattic.com/results.aspx?q=" + search_string;
-		print url
 		response = urllib2.urlopen(url)
 		strainer = SoupStrainer('table',{ 'id' : 'dgResults' })
-		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.ALL_ENTITIES)
+		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.XHTML_ENTITIES)
 		rows = soup.findAll('tr')[1:]
 		results = []
 		for tr in rows:
@@ -41,7 +40,7 @@ class AcronymServer:
 		data = "acronym=Acronym+search&andor=or&terms=" + search_string
 		response = urllib2.urlopen(url,data)
 		strainer = SoupStrainer('dd')
-		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.ALL_ENTITIES)
+		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.XHTML_ENTITIES)
 		results = []
 		for dd in soup.contents:
 			text = ''.join(dd.findAll(text=True)).replace(u'\n','')

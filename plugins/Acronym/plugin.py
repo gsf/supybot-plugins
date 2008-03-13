@@ -37,6 +37,10 @@ import supybot.callbacks as callbacks
 import harvesters
 
 class Acronym(callbacks.Plugin):
+	def __init__(self,irc):
+		reload(harvesters)
+		super(callbacks.Plugin,self).__init__(irc)
+		
 	def _harvester(self):
 		return harvesters.__dict__[self.registryValue('harvesterClass')]()
 	
