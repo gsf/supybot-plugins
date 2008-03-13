@@ -14,6 +14,7 @@ import feedparser
 import google
 import simplejson
 from BeautifulSoup import BeautifulSoup
+from datetime import date
 
 class Assorted(callbacks.Privmsg):
 
@@ -487,6 +488,44 @@ class Assorted(callbacks.Privmsg):
         string = string.replace("\n",'')
         string = sub('\+? Details.','', string)
         return string
+
+    def isitfriday(self, irc, msg, args):
+        isfriday = "nope."
+        dow = date.today().weekday()
+        if dow == 4:
+            isfriday = "yes!"
+        irc.reply(isfriday, prefixNick=True)
+        return
+
+    def arewethereyet(self, irc, msg, args):
+        irc.reply("nope", prefixNick=True)
+        return
+
+    def int2bin(self, irc, msg, args, n, digits):
+        """
+        usage: int2bin <int> [<digits>]
+        Returns the binary of integer n, optionally using a specified number of
+        """
+
+        if not digits:
+            digits = 16
+
+        bstr = "".join([str((n >> y) & 1) for y in range(int(digits) - 1, -1, -1
+        irc.reply(bstr, prefixNick=True)
+        return
+
+    int2bin = wrap(int2bin, ['int', optional('int')])
+
+    def bin2int(self, irc, msg, args, binstring):
+        """
+        usage: bin2int <bin>
+        returns the integer form of a given binary string
+        """
+
+        irc.reply(int(binstring, 2), prefixNick=True)
+        return
+
+    bin2int = wrap(bin2int, ['text'])
 
 
 Class = Assorted
