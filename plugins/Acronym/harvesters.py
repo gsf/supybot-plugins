@@ -8,7 +8,7 @@ Copyright (c) 2008 __MyCompanyName__. All rights reserved.
 import urllib2
 from BeautifulSoup import BeautifulSoup, SoupStrainer
 
-class AcronymAttic():
+class AcronymAttic:
 	def usage(self):
 		return "<term> [~<known_component>...]"
 		
@@ -28,7 +28,7 @@ class AcronymAttic():
 			results.append(text)
 		return results
 
-class AcronymServer():
+class AcronymServer:
 	def usage(self):
 		return "<term>"
 
