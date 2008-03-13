@@ -19,7 +19,7 @@ class AcronymAttic:
 		url = "http://www.acronymattic.com/results.aspx?q=" + search_string;
 		response = urllib2.urlopen(url)
 		strainer = SoupStrainer('table',{ 'id' : 'dgResults' })
-		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.XHTML_ENTITIES)
+		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities='html')
 		rows = soup.findAll('tr')[1:]
 		results = []
 		for tr in rows:
@@ -40,7 +40,7 @@ class AcronymServer:
 		data = "acronym=Acronym+search&andor=or&terms=" + search_string
 		response = urllib2.urlopen(url,data)
 		strainer = SoupStrainer('dd')
-		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities=BeautifulSoup.XHTML_ENTITIES)
+		soup = BeautifulSoup(response, parseOnlyThese=strainer, convertEntities='html')
 		results = []
 		for dd in soup.contents:
 			text = ''.join(dd.findAll(text=True)).replace(u'\n','')
