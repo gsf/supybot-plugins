@@ -501,20 +501,20 @@ class Assorted(callbacks.Privmsg):
         irc.reply("nope", prefixNick=True)
         return
 
-    def int2bin(self, irc, msg, args, n, digits):
-        """
-        usage: int2bin <int> [<digits>]
-        Returns the binary of integer n, optionally using a specified number of
-        """
+    #def int2bin(self, irc, msg, args, n, digits):
+    #    """
+    #    usage: int2bin <int> [<digits>]
+    #    Returns the binary of integer n, optionally using a specified number of
+    #    """
 
-        if not digits:
-            digits = 16
+    #    if not digits:
+    #        digits = 16
 
-        bstr = "".join([str((n >> y) & 1) for y in range(int(digits) - 1, -1, -1
-        irc.reply(bstr, prefixNick=True)
-        return
+    #    bstr = "".join([str((n >> y) & 1) for y in range(int(digits) - 1, -1, -1
+    #    irc.reply(bstr, prefixNick=True)
+    #    return
 
-    int2bin = wrap(int2bin, ['int', optional('int')])
+    # int2bin = wrap(int2bin, ['int', optional('int')])
 
     def bin2int(self, irc, msg, args, binstring):
         """

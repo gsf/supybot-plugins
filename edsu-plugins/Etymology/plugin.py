@@ -1,6 +1,7 @@
 from urllib import urlencode
 from urllib2 import urlopen 
-from elementtidy import TidyHTMLTreeBuilder
+from elementtree.TidyTools import tidy
+from elementtree.ElementTree import parse
 
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -13,8 +14,9 @@ def lookup(word):
     setdefaulttimeout(60)
     url = "http://www.etymonline.com/index.php?%s" \
         % urlencode({'search':word})
-    tree = TidyHTMLTreeBuilder.parse(urlopen(url))
-    dd = tree.find('.//{http://www.w3.org/1999/xhtml}dd')
+    html = tidy(urlopen(url))
+    tree = 
+    dd = parse(tree.find('.//{http://www.w3.org/1999/xhtml}dd'))
     if dd: 
         return textify(dd)
     else:
