@@ -11,7 +11,7 @@ class McCain(callbacks.Privmsg):
     def mccain(self, irc, msg, args):
         """grabs a line from http://www.johnmccainisyourjalopy.com/
         """
-        url = 'http://www.hillaryismomjeans.com/'
+        url = 'http://www.johnmccainisyourjalopy.com/'
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
