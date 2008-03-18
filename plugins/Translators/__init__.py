@@ -1,7 +1,5 @@
 """
-Grabs a random McCain saying
-
-http://www.johnmccainisyourjalopy.com/
+Translates text into other languages
 """
 
 import supybot
