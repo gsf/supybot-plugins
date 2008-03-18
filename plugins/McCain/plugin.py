@@ -18,7 +18,7 @@ class McCain(callbacks.Privmsg):
         html = opener.open(url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        irc.reply(soup.find('a').string)
+        irc.reply(soup.find('a').string.strip().upper())
 
 Class = McCain
 
