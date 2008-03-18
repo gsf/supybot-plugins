@@ -11,7 +11,7 @@ class WoGroFuBiCo(callbacks.Privmsg):
       """
       irc.reply(self.count(' '.join(args).lower(), 'WoGroFuBiCo.txt'))
 
-    def wogrofubicore(self, irc, msg, args)
+    def wogrofubicore(self, irc, msg, args):
       """see how many times a word or phrase appears in the response
       from Thomas Mann.
       """
