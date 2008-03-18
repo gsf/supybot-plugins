@@ -13,9 +13,11 @@ class WoGroFuBiCo(callbacks.Privmsg):
       if len(args) == 0:
         irc.reply("must supply a word or phrase")
         return
+      irc.reply(self.count(' '.join(args).lower(), 'WoGroFuBiCo.txt'))
 
-      pattern = compile(''.join(args).lower())
-      text = file(dirname(abspath(__file__))+'/WoGroFuBiCo.txt').read().lower()
+    def count(self, words, corpus):
+      pattern = compile(words)
+      text = file(dirname(abspath(__file__))+'/'+corpus).read().lower()
 
       pos = 0
       count = 0
@@ -24,7 +26,6 @@ class WoGroFuBiCo(callbacks.Privmsg):
         if not match: break
         count += 1
         pos = match.end()
-
-      irc.reply(count)
+      return count
 
 Class = WoGroFuBiCo
