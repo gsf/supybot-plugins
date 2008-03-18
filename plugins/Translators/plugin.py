@@ -10,7 +10,10 @@ class Translators(callbacks.Privmsg):
         """translates text into a Canadian dialect
         """
         text = ' '.join(args)
-        irc.reply(re.sub(r'out(\b)', 'oot', text) + "  eh?", prefixNick=True)
+        text = re.sub(r'out(\b)', 'oot', text)
+        text = re.sub(r'ouch(\b)', 'ooch', text)
+        text = re.sub(r'ache(\b)', 'aw-chee', text)
+        irc.reply(text + "  eh?", prefixNick=True)
 
 Class = Translators
 
