@@ -12,4 +12,4 @@ def configure(advanced):
     from supybot.questions import expect, anything, something, yn
     conf.registerPlugin('GasPrices', True)
 
-Traffic = conf.registerPlugin('GasPrices')
+GasPrices = conf.registerPlugin('GasPrices')

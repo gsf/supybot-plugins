@@ -10,6 +10,6 @@ def configure(advanced):
     # user or not.  You should effect your configuration by manipulating the
     # registry as appropriate.
     from supybot.questions import expect, anything, something, yn
-    conf.registerPlugin('Lolcat', True)
+    conf.registerPlugin('McCain', True)
 
-Lolcat = conf.registerPlugin('Lolcat')
+McCain = conf.registerPlugin('McCain')
