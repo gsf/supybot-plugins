@@ -6,13 +6,15 @@ from os.path import dirname, abspath
 
 class WoGroFuBiCo(callbacks.Privmsg):
 
-    def wogrofubico(self,irc,msg,args):
+    def wogrofubico(self, irc, msg, args):
+      """ see how many times a word or phrase appears in WoGroFuBiCo
       """
-      see how many times a word or phrase appears in WoGroFuBiCo
+      irc.reply(self.count(' '.join(args).lower(), 'WoGroFuBiCo.txt'))
+
+    def wogrofubicore(self, irc, msg, args)
+      """see how many times a word or phrase appears in the response
+      from Thomas Mann.
       """
-      if len(args) == 0:
-        irc.reply("must supply a word or phrase")
-        return
       irc.reply(self.count(' '.join(args).lower(), 'WoGroFuBiCo.txt'))
 
     def count(self, words, corpus):
