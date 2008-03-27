@@ -1,7 +1,5 @@
 from urllib import urlencode
-from urllib2 import urlopen 
-from elementtree.TidyTools import tidy
-from elementtree.ElementTree import parse
+from urllib2 import urlopen, HTTPError
 
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -9,28 +7,30 @@ import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
+from BeautifulSoup import BeautifulSoup
+
 def lookup(word):
     from socket import setdefaulttimeout
     setdefaulttimeout(60)
     url = "http://www.etymonline.com/index.php?%s" \
         % urlencode({'search':word})
-    html = tidy(urlopen(url))
-    tree = 
-    dd = parse(tree.find('.//{http://www.w3.org/1999/xhtml}dd'))
+
+    doc = None
+    try:
+        doc = urlopen(url)
+    except HTTPError, e:
+        return 'http error %s for %s' % (e.code, url)
+
+    soup =  BeautifulSoup(doc)
+    dd = soup.find('dd', 'highlight')
+
     if dd: 
-        return textify(dd)
+        etym = u''
+        for part in dd:
+            etym += part.string
+        return etym
     else:
         return "%s not found" % word
-
-def textify(e):
-    text = ""
-    if e.text:
-        text = e.text 
-    if e.tail: 
-        text += e.tail
-    for c in e:
-        text += textify(c)
-    return text.replace("\n","")
 
 class Etymology(callbacks.Privmsg):
 
@@ -38,7 +38,7 @@ class Etymology(callbacks.Privmsg):
         """etym <word> lookup the etymology for a word/phrase
         """
         etymology = lookup(''.join(args))
-        irc.reply(etymology.encode('utf8', 'ignore'))
+        irc.reply(etymology)
 
 Class = Etymology 
 
