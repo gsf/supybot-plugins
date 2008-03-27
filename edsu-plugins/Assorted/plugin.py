@@ -234,11 +234,20 @@ class Assorted(callbacks.Privmsg):
         """
 
         url = "http://www-personal.umich.edu/~dchud/fng/names.html"
-        tree = TidyHTMLTreeBuilder.parse(urlopen(url))
-        pre = tree.find('.//{http://www.w3.org/1999/xhtml}pre')
-        bands = pre.text.split("\n")
+        ## content from url is not well-formed, so switching to 
+        ## beautifulsoup, mjg
+        #tree = TidyHTMLTreeBuilder.parse(urlopen(url))
+        #pre = tree.find('.//{http://www.w3.org/1999/xhtml}pre')
+        #bands = pre.text.split("\n")
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+        html = opener.open(url)
+        soup = BeautifulSoup(html.read())
+        pre = soup.find('pre')
+        bands = pre.string.split("\n")
         band = bands[randint(0,len(bands)-1)]
-        irc.reply( band )
+        irc.reply(band)
 
     def moe(self,irc,msg,args):
         """moe
