@@ -36,7 +36,6 @@ class RickGuard(callbacks.PluginRegexp):
         try:
             f = self.opener.open(url)
         except HTTPError,e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
 
         parsed = urlparse(f.geturl())
