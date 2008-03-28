@@ -20,7 +20,7 @@ class AudioScrobbler(callbacks.Privmsg):
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
         'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar',
-        'ranginui', 'jbrinley', 'jstroop']
+        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob']
     users.sort()
 
     def get_songs(self,username):
