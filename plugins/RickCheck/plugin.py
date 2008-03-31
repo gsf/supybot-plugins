@@ -5,7 +5,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 from BeautifulSoup import BeautifulSoup
-from urllib2 import build_opener
+from urllib2 import build_opener, HTTPError
 import re
 
 class RickCheck(callbacks.Privmsg):
@@ -22,6 +22,9 @@ class RickCheck(callbacks.Privmsg):
         html = None
         try:
             html = opener.open(url)
+        except ValueError, e:
+            irc.reply(e, prefixNick=True)
+            return
         except HTTPError, e:
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
