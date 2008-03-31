@@ -16,17 +16,15 @@ class RickCheck(callbacks.Privmsg):
             irc.reply('usage: rickcheck <url>', prefixNick=True)
             return
         url = args.pop()
-        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
-        opener.addheaders = [('User-Agent', ua)]
         html = None
         try:
             html = opener.open(url)
-        except ValueError, e:
-            irc.reply(e, prefixNick=True)
-            return
         except HTTPError, e:
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
+            return
+        except:
+            irc.reply('bad url: %s' % url, prefixNick=True)
             return
         soup = BeautifulSoup(html.read())
         title = soup.find("title").string
