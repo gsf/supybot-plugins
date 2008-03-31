@@ -31,11 +31,11 @@ class RickCheck(callbacks.Privmsg):
         title = soup.find("title").string
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
         if rickex.match(title) or rickex.match(doc):
-            irc.reply('RickRoll detected in %s' % url, prefixNick=True)
+            irc.reply('DANGER: RickRoll detected in %s' % url, prefixNick=True)
             return
         meta = soup.find("meta", { "http-equiv" : "refresh" })
         if meta:
-            irc.reply('possible RickRoll attempt in %s' % url, prefixNick=True)
+            irc.reply('WARNING: -possible- RickRoll attempt in %s' % url, prefixNick=True)
             return
         irc.reply('no RickRoll detected in %s' % url, prefixNick=True)
 
