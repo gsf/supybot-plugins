@@ -29,7 +29,7 @@ class RickCheck(callbacks.Privmsg):
         doc = html.read()
         soup = BeautifulSoup(doc)
         title = soup.find("title").string
-        rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE)
+        rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
         if rickex.match(title) or rickex.match(doc):
             irc.reply('RickRoll detected in %s' % url, prefixNick=True)
             return
