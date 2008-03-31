@@ -26,10 +26,11 @@ class RickCheck(callbacks.Privmsg):
         except:
             irc.reply('bad url: %s' % url, prefixNick=True)
             return
-        soup = BeautifulSoup(html.read())
+        doc = html.read()
+        soup = BeautifulSoup(doc)
         title = soup.find("title").string
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE)
-        if rickex.match(title):
+        if rickex.match(title) or rickex.match(doc):
             irc.reply('RickRoll detected in %s' % url, prefixNick=True)
             return
         meta = soup.find("meta", { "http-equiv" : "refresh" })
