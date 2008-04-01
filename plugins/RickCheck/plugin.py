@@ -17,17 +17,22 @@ class RickCheck(callbacks.Privmsg):
             return
         url = args.pop()
         opener = build_opener()
-        html = None
+        doc = None
         try:
-            html = opener.open(url)
+            doc = opener.open(url)
         except HTTPError, e:
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
         except:
             irc.reply('bad url: %s' % url, prefixNick=True)
             return
-        doc = html.read()
-        soup = BeautifulSoup(doc)
+        doc_str = html.read()
+        soup = None
+        try:
+            soup = BeautifulSoup(doc_str)
+        except:
+            irc.reply('could not parse %s' % url, prefixNick=True)
+            return
         title = soup.find("title").string
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
         if rickex.match(title) or rickex.match(doc):
