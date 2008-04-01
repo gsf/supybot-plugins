@@ -26,7 +26,7 @@ class RickCheck(callbacks.Privmsg):
         except:
             irc.reply('bad url: %s' % url, prefixNick=True)
             return
-        doc_str = html.read()
+        doc_str = doc.read()
         soup = None
         try:
             soup = BeautifulSoup(doc_str)
