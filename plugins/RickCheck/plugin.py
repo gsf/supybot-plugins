@@ -41,7 +41,7 @@ class RickCheck(callbacks.Privmsg):
             title = soup.find("title").string
 
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
-        if rickex.match(title) or rickex.match(doc):
+        if rickex.match(title) or rickex.match(doc_str):
             irc.reply('DANGER: RickRoll detected in %s' % url, prefixNick=True)
             return
         meta = soup.find("meta", { "http-equiv" : "refresh" })
