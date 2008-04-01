@@ -17,6 +17,7 @@ class RickCheck(callbacks.Privmsg):
             return
         url = args.pop()
         opener = build_opener()
+
         doc = None
         try:
             doc = opener.open(url)
@@ -26,6 +27,7 @@ class RickCheck(callbacks.Privmsg):
         except:
             irc.reply('bad url: %s' % url, prefixNick=True)
             return
+
         doc_str = doc.read()
         soup = None
         try:
@@ -33,7 +35,11 @@ class RickCheck(callbacks.Privmsg):
         except:
             irc.reply('could not parse %s' % url, prefixNick=True)
             return
-        title = soup.find("title").string
+
+        title = ''
+        if 'html' in doc.headers.type:
+            title = soup.find("title").string
+
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
         if rickex.match(title) or rickex.match(doc):
             irc.reply('DANGER: RickRoll detected in %s' % url, prefixNick=True)
