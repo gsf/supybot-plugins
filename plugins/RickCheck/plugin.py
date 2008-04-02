@@ -38,7 +38,10 @@ class RickCheck(callbacks.Privmsg):
 
         title = ''
         if 'html' in doc.headers.type:
-            title = soup.find("title").string
+            try:
+                title = soup.find("title").string
+            except:
+                pass
 
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
         if rickex.match(title) or rickex.match(doc_str):
