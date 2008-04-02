@@ -40,7 +40,7 @@ def rickroll_detect(url):
     meta = soup.find("meta", { "http-equiv" : "refresh" })
     if meta:
         url_regex = re.compile(r'url\s*=\s*(.+)', re.IGNORECASE)
-        match = url_regex.search(meta['content']):
+        match = url_regex.search(meta['content'])
         if match:
             rickroll_detect(match.groups()[1])
 
