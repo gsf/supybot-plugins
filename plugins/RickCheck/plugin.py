@@ -8,6 +8,45 @@ from BeautifulSoup import BeautifulSoup
 from urllib2 import build_opener, HTTPError
 import re
 
+def rickroll_detect(url):
+    doc = None
+    soup = None
+    title = ''
+    
+    opener = build_opener()
+    
+    try:
+        doc = opener.open(url)
+    except HTTPError, e:
+        return 'http error %s for %s' % (e.code, url)
+    except:
+        return 'bad url: %s' % url
+    
+    doc = doc.read()
+    try:
+        soup = BeautifulSoup(doc)
+    except:
+        return 'could not parse %s' % url
+    
+    try:
+        title = soup.find("title").string
+    except:
+        pass
+
+    rickex = re.compile(r'rick.*roll', re.IGNORECASE | re.DOTALL)
+    if rickex.search(title) or rickex.search(doc):
+        return 'DANGER: RickRoll detected in %s' % url
+    
+    meta = soup.find("meta", { "http-equiv" : "refresh" })
+    if meta:
+        url_regex = re.compile(r'url\s*=\s*(.+)', re.IGNORECASE)
+        match = url_regex.search(meta['content']):
+        if match:
+            rickroll_detect(match.groups()[1])
+
+    return 'no RickRoll detected in %s' % url
+
+
 class RickCheck(callbacks.Privmsg):
     def rickcheck(self, irc, msg, args):
         """<url> (does RickRoll detection on a URL)
@@ -16,43 +55,7 @@ class RickCheck(callbacks.Privmsg):
             irc.reply('usage: rickcheck <url>', prefixNick=True)
             return
         url = args.pop()
-        opener = build_opener()
-
-        doc = None
-        try:
-            doc = opener.open(url)
-        except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
-            return
-        except:
-            irc.reply('bad url: %s' % url, prefixNick=True)
-            return
-
-        doc_str = doc.read()
-        soup = None
-        try:
-            soup = BeautifulSoup(doc_str)
-        except:
-            irc.reply('could not parse %s' % url, prefixNick=True)
-            return
-
-        title = ''
-        if 'html' in doc.headers.type:
-            try:
-                title = soup.find("title").string
-            except:
-                pass
-
-        rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
-        if rickex.match(title) or rickex.match(doc_str):
-            irc.reply('DANGER: RickRoll detected in %s' % url, prefixNick=True)
-            return
-        meta = soup.find("meta", { "http-equiv" : "refresh" })
-        if meta:
-            irc.reply('WARNING: -possible- RickRoll attempt in %s' % url, prefixNick=True)
-            return
-        irc.reply('no RickRoll detected in %s' % url, prefixNick=True)
-
+        irc.reply(rickroll_detect(url), prefixNick=True)
 
 Class = RickCheck
 
