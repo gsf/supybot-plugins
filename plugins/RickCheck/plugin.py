@@ -42,7 +42,7 @@ def rickroll_detect(url):
         url_regex = re.compile(r'url\s*=\s*(.+)', re.IGNORECASE)
         match = url_regex.search(meta['content'])
         if match:
-            rickroll_detect(match.groups()[1])
+            rickroll_detect(match.groups()[0])
 
     return 'no RickRoll detected in %s' % url
 
