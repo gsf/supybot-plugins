@@ -12,8 +12,9 @@ import supybot.callbacks as callbacks
 from BeautifulSoup import BeautifulSoup
 import urllib
 import re
-from urllib2 import build_opener, HTTPError
+from urllib2 import Request, build_opener, HTTPError
 from string import capwords
+from random import randint
 
 class Yum(callbacks.Plugin):
     """
@@ -29,16 +30,30 @@ class Yum(callbacks.Plugin):
         self.opener = build_opener()
         self.opener.addheaders = [('User-Agent', ua)]
 
-    def _get_soup(self, irc, url):
+    def _get_soup(self, irc, url, postdata=None, nocomments=False):
         # stole this from robcaSSon's traffic plugin so blame him
         doc = None
+        req = None
+        if postdata:
+            req = Request(url, postdata)
+        else:
+            req = Request(url)
+
         try:
-            doc = self.opener.open(url)
+            doc = self.opener.open(req)
         except HTTPError, e:
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
-        xhtml_str = doc.read()
-        soup = BeautifulSoup(xhtml_str)
+
+        html = None
+        if nocomments:
+            test = re.compile('<!-')
+            lines = [l for l in doc.readlines() if not test.search(l)]
+            html = ''.join(lines)
+        else:
+            html = doc.read()
+
+        soup = BeautifulSoup(html)
         return soup
 
     def recipe(self, irc, msg, args):
@@ -118,5 +133,45 @@ class Yum(callbacks.Plugin):
         resp = '%s %s (serving size: %s) - %s' % (calories, title.string, serving_size, url)
         irc.reply(resp, prefixNick=True)
         return
+
+    def beerme(self, irc, msg, args, q):
+        """
+        Usage: beerme [keywords]
+        Returns a random beer from search results of http://whatalesyou.com
+        """
+        if not q:
+            q = 'beer'
+        searchuri = 'http://www.whatalesyou.com/beersearch.asp'
+        postdata = urllib.urlencode({ 'submit2': 'Search', 'beer': q })
+        soup = self._get_soup(irc, searchuri, postdata, True)
+        results = soup.findAll('a', href=re.compile('beerdetail1.asp'))
+
+        hits = len(results)
+        if hits == 0:
+            irc.reply('no results!', prefixNick=True)
+            return
+
+        randresult = results[randint(0, hits - 1)]
+        beerid = re.search('(\d+)$', randresult['href']).group(0)
+        if not beerid:
+            irc.reply('no results!', prefixNick=True)
+            return
+
+        beerUri = 'http://www.whatalesyou.com/beerdetail1.asp?ID=%s' % beerid
+        soup = self._get_soup(irc, beerUri, None, True)
+        beernameTd = soup.find('td', colspan=6)
+        beerName = beernameTd.find('font').string.strip()
+        breweryTd = beernameTd.parent.nextSibling.nextSibling.nextSibling.nextSibling.find('td')
+        breweryName = breweryTd.findAll('font')[1].string.strip()
+
+        sug = ['Enjoy','How about','Here\'s','You might like','Try', 'Wet your whistle with']
+        article = 'a'
+        if "aeiou".find(beerName[:1]) != -1:
+            article = 'an'
+
+        resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, beerUri)
+        irc.reply(resp, prefixNick=True)
+
+    beerme = wrap(beerme, [optional('text')])
 
 Class = Yum
