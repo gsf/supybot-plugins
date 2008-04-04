@@ -83,8 +83,9 @@ class RickCheck(callbacks.Privmsg):
 
 
     def reply(self, message):
+        import sys
         self.irc.reply(message, prefixNick=True)
-        exit
+        sys.exit()
 
 
 Class = RickCheck
