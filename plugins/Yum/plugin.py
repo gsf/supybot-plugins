@@ -12,6 +12,7 @@ import supybot.callbacks as callbacks
 from BeautifulSoup import BeautifulSoup
 import urllib
 import re
+import copy
 from urllib2 import Request, build_opener, HTTPError
 from string import capwords
 from random import randint
@@ -30,14 +31,10 @@ class Yum(callbacks.Plugin):
         self.opener = build_opener()
         self.opener.addheaders = [('User-Agent', ua)]
 
-    def _get_soup(self, irc, url, postdata=None, nocomments=False):
+    def _get_soup(self, irc, url, postdata=None):
         # stole this from robcaSSon's traffic plugin so blame him
         doc = None
-        req = None
-        if postdata:
-            req = Request(url, postdata)
-        else:
-            req = Request(url)
+        req = Request(url, postdata)
 
         try:
             doc = self.opener.open(req)
@@ -45,15 +42,10 @@ class Yum(callbacks.Plugin):
             irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
             return
 
-        html = None
-        if nocomments:
-            test = re.compile('<!-')
-            lines = [l for l in doc.readlines() if not test.search(l)]
-            html = ''.join(lines)
-        else:
-            html = doc.read()
-
-        soup = BeautifulSoup(html)
+        html = doc.read()
+        myMassage = copy.copy(BeautifulSoup.MARKUP_MASSAGE)
+        myMassage.extend([(re.compile('<!-([^-])'), lambda match: '<!--' + match.group(1))])
+        soup = BeautifulSoup(html, markupMassage=myMassage)
         return soup
 
     def recipe(self, irc, msg, args):
@@ -143,7 +135,7 @@ class Yum(callbacks.Plugin):
             q = 'beer'
         searchuri = 'http://www.whatalesyou.com/beersearch.asp'
         postdata = urllib.urlencode({ 'submit2': 'Search', 'beer': q })
-        soup = self._get_soup(irc, searchuri, postdata, True)
+        soup = self._get_soup(irc, searchuri, postdata)
         results = soup.findAll('a', href=re.compile('beerdetail1.asp'))
 
         hits = len(results)
@@ -158,7 +150,7 @@ class Yum(callbacks.Plugin):
             return
 
         beerUri = 'http://www.whatalesyou.com/beerdetail1.asp?ID=%s' % beerid
-        soup = self._get_soup(irc, beerUri, None, True)
+        soup = self._get_soup(irc, beerUri)
         beernameTd = soup.find('td', colspan=6)
         beerName = beernameTd.find('font').string.strip()
         breweryTd = beernameTd.parent.nextSibling.nextSibling.nextSibling.nextSibling.find('td')
@@ -166,7 +158,7 @@ class Yum(callbacks.Plugin):
 
         sug = ['Enjoy','How about','Here\'s','You might like','Try', 'Wet your whistle with']
         article = 'a'
-        if "aeiou".find(beerName[:1]) != -1:
+        if "aeiou".find(beerName[:1].lower()) != -1:
             article = 'an'
 
         resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, beerUri)
