@@ -21,19 +21,19 @@ class RickCheck(callbacks.Privmsg):
             self.irc.reply('usage: rickcheck <url>', prefixNick=True)
             return
         url = args.pop()
-        check_url(url)
+        self.check_url(url)
 
 
     def check_url(self, url):
-        soup = validate_url(url)
-        if detect_rickroll(soup):
-            reply('DANGER: RickRoll detected in %s' % url)
+        soup = self.validate_url(url)
+        if self.detect_rickroll(soup):
+            self.reply('DANGER: RickRoll detected in %s' % url)
         
-        meta_url = detect_meta(soup)
+        meta_url = self.detect_meta(soup)
         if not meta_url:
-            reply('no RickRoll detected in %s' % url)
+            self.reply('no RickRoll detected in %s' % url)
         else:
-            rickcheck(meta_url)
+            self.rickcheck(meta_url)
 
 
     def validate_url(self, url):
@@ -46,15 +46,15 @@ class RickCheck(callbacks.Privmsg):
         try:
             doc = opener.open(url)
         except HTTPError, e:
-            reply('http error %s for %s' % (e.code, url))
+            self.reply('http error %s for %s' % (e.code, url))
         except:
-            reply('bad url: %s' % url)
+            self.reply('bad url: %s' % url)
             
         doc = doc.read()
         try:
             soup = BeautifulSoup(doc)
         except:
-            reply('could not parse %s' % url)
+            self.reply('could not parse %s' % url)
 
         return soup
 
