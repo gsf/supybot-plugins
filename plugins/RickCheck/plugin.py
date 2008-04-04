@@ -8,7 +8,7 @@ from BeautifulSoup import BeautifulSoup
 from urllib2 import build_opener, HTTPError
 import re
 
-def __validate_url(url):
+def validate_url(url):
     doc = None
     soup = None
     ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.13'
@@ -18,25 +18,25 @@ def __validate_url(url):
     try:
         doc = opener.open(url)
     except HTTPError, e:
-        __reply('http error %s for %s' % (e.code, url))
+        reply('http error %s for %s' % (e.code, url))
     except:
-        __reply('bad url: %s' % url)
+        reply('bad url: %s' % url)
     
     doc = doc.read()
     try:
         soup = BeautifulSoup(doc)
     except:
-        __reply('could not parse %s' % url)
+        reply('could not parse %s' % url)
 
     return soup
 
     
-def __reply(message):
+def reply(message):
     self.irc.reply(message, prefixNick=True)
     exit()
 
 
-def __detect_rickroll(soup):
+def detect_rickroll(soup):
     title = ''
     try:
         title = soup.find("title").string
@@ -46,7 +46,7 @@ def __detect_rickroll(soup):
     rickex = re.compile(r'rick.*roll', re.IGNORECASE | re.DOTALL)
     return rickex.search(title) or rickex.search(str(soup))
 
-def __detect_meta(soup):
+def detect_meta(soup):
     meta = soup.find("meta", { "http-equiv" : "refresh" })
 
     if meta:
@@ -57,16 +57,16 @@ def __detect_meta(soup):
 
     return False
 
-def __rickcheck(url):
-    soup = __validate_url(url)
-    if __detect_rickroll(soup):
-        __reply('DANGER: RickRoll detected in %s' % url)
+def check_url(url):
+    soup = validate_url(url)
+    if detect_rickroll(soup):
+        reply('DANGER: RickRoll detected in %s' % url)
         
-    meta_url = __detect_meta(soup)
+    meta_url = detect_meta(soup)
     if not meta_url:
-        __reply('no RickRoll detected in %s' % url)
+        reply('no RickRoll detected in %s' % url)
     else:
-        __rickcheck(meta_url)
+        rickcheck(meta_url)
 
 class RickCheck(callbacks.Privmsg):
     def __init__(self, irc):
@@ -78,9 +78,9 @@ class RickCheck(callbacks.Privmsg):
         """<url> (does RickRoll detection on a URL)
         """
         if len(args) != 1:
-            irc.reply('usage: rickcheck <url>', prefixNick=True)
+            self.irc.reply('usage: rickcheck <url>', prefixNick=True)
             return
         url = args.pop()
-        __rickcheck(url)
+        check_url(url)
 
 Class = RickCheck
