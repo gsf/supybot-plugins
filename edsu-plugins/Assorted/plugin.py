@@ -565,6 +565,46 @@ class Assorted(callbacks.Privmsg):
         tweet = status.text.string
         irc.reply("%s: %s" % (twit, tweet))
 
+    def itr(self,irc,msg,args,continent):
+        """
+        Usage: itr [continent]
+        Returns current traffic index from http://internettrafficreport.com/
+        Data available for Asia, Australia, Europe, North America and South America
+        (default is North America)
+        """
+
+        if not continent:
+            continent = 'North America'
+
+        url = 'http://internettrafficreport.com/'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+
+        try:
+            xml = opener.open(url)
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
+            return
+
+        soup = BeautifulSoup(xml)
+        region = None
+        for row in soup.find('table', attrs={'border': 1}).findAll('tr'):
+            if row.find(text=re.compile(continent,re.I)):
+                region = row
+
+        if not region:
+            irc.reply("No index for %s" % continent)
+            return
+
+        ci = region.contents[1].font.b.string
+        art = region.contents[2].font.string
+        pl = region.contents[3].font.string
+        resp = "ITR for %s: Current Index: %s, Avg Response Time: %s, Avg Packet Loss: %s" % (continent,ci,art,pl)
+        irc.reply(resp)
+
+    itr = wrap(itr, [optional('text')])
+
 Class = Assorted
 
 
