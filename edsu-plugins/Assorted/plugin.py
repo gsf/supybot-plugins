@@ -3,16 +3,16 @@ import supybot.callbacks as callbacks
 
 import os
 import re
-from elementtidy import TidyHTMLTreeBuilder
-from urllib2 import urlopen, urlparse, Request, build_opener
+#from elementtidy import TidyHTMLTreeBuilder
+from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urllib import quote, urlencode
 from urlparse import urlparse
 from cgi import parse_qs
 from random import randint
 from re import sub, match
 import feedparser
-import google
-import simplejson
+#import google
+#import simplejson
 from BeautifulSoup import BeautifulSoup
 from datetime import date
 
@@ -326,6 +326,12 @@ class Assorted(callbacks.Privmsg):
         """
         irc.reply(self.count(' '.join(args)))
 
+    def gamma(self,irc,msg,args):
+        """generate a gamma world character"""
+        attrs = ['Charisma', 'Constitution', 'Dexterity','Intelligence','Mental Strength','Physical Strength']
+        pc = ', '.join(["%s:%d" % (attr, self.roll()) for attr in attrs])
+        irc.reply(pc)
+
     def dnd(self,irc,msg,args):
         """get a d&d character
         """
@@ -536,6 +542,28 @@ class Assorted(callbacks.Privmsg):
 
     bin2int = wrap(bin2int, ['text'])
 
+    def twit(self, irc, msg, args):
+        """
+        returns a random tweet from the public timeline
+        """
+
+        url = 'http://twitter.com/statuses/public_timeline.xml'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+
+        try:
+            xml = opener.open(url)
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
+            return
+
+        soup = BeautifulSoup(xml)
+        tweets = soup.findAll('status')
+        status = tweets[randint(0, len(tweets)-1)]
+        twit = status.user.screen_name.string
+        tweet = status.text.string
+        irc.reply("%s: %s" % (twit, tweet))
 
 Class = Assorted
 
