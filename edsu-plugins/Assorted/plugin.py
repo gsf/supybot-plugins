@@ -335,10 +335,18 @@ class Assorted(callbacks.Privmsg):
     def dnd(self,irc,msg,args):
         """get a d&d character
         """
-        irc.reply( "strength:%d dexterity:%d constitution:%d intelligence:%d wisdom:%d charisma:%d" % (self.roll(), self.roll(), self.roll(), self.roll(), self.roll(), self.roll()))
+        irc.reply( "strength:%d dexterity:%d constitution:%d intelligence:%d wisdom:%d charisma:%d" % tuple([self.dnd_attr() for i in range(6)])
     
-    def roll(self):
-        return randint(1,6) + randint(1,6) + randint(1,6)
+    def roll(self, s):
+        times, die = map(int, s.split('d'))
+        return [randint(1, die) for i in range(times)]
+ 
+    def drop_lowest(self,rolls):
+        rolls.remove(min(rolls))
+        return rolls
+ 
+    def dnd_attr(self):
+        return sum(self.drop_lowest(self.roll('4d6')))
 
     def duel(self,irc,msg,args):
         if len(args) != 2:
