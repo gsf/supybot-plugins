@@ -335,13 +335,13 @@ class Assorted(callbacks.Privmsg):
     def dnd(self,irc,msg,args):
         """get a d&d character
         """
-        irc.reply( "strength:%d dexterity:%d constitution:%d intelligence:%d wisdom:%d charisma:%d" % tuple([self.dnd_attr() for i in range(6)])
+        irc.reply("strength:%d dexterity:%d constitution:%d intelligence:%d wisdom:%d charisma:%d" % tuple([self.dnd_attr() for i in range(6)]))
     
     def roll(self, s):
         times, die = map(int, s.split('d'))
         return [randint(1, die) for i in range(times)]
  
-    def drop_lowest(self,rolls):
+    def drop_lowest(self, rolls):
         rolls.remove(min(rolls))
         return rolls
  
