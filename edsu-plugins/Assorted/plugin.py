@@ -3,7 +3,7 @@ import supybot.callbacks as callbacks
 
 import os
 import re
-#from elementtidy import TidyHTMLTreeBuilder
+from elementtidy import TidyHTMLTreeBuilder
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urllib import quote, urlencode
 from urlparse import urlparse
@@ -12,7 +12,7 @@ from random import randint
 from re import sub, match
 import feedparser
 import google
-#import simplejson
+import simplejson
 from BeautifulSoup import BeautifulSoup
 from datetime import date
 
