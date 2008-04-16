@@ -329,7 +329,7 @@ class Assorted(callbacks.Privmsg):
     def gamma(self,irc,msg,args):
         """generate a gamma world character"""
         attrs = ['Charisma', 'Constitution', 'Dexterity','Intelligence','Mental Strength','Physical Strength']
-        pc = ', '.join(["%s:%d" % (attr, self.roll()) for attr in attrs])
+        pc = ', '.join(["%s:%d" % (attr, self.dnd_attr()) for attr in attrs])
         irc.reply(pc)
 
     def dnd(self,irc,msg,args):
