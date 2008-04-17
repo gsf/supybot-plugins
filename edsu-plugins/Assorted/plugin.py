@@ -613,6 +613,28 @@ class Assorted(callbacks.Privmsg):
 
     itr = wrap(itr, [optional('text')])
 
+    def zen(self,irc,msg,args):
+        """
+        returns a random zen proverb from http://oneproverb.net
+        """
+
+        url = 'http://oneproverb.net/cgi-bin/rzp.cgi'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+
+        try:
+            xml = opener.open(url)
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
+            return
+
+        soup = BeautifulSoup(xml)
+        zen = soup.findAll('p')[1].string.strip()
+        who = soup.find('span', "who").string.strip()
+        irc.reply("%s %s" % (zen, who), prefixNick=False)
+
+
 Class = Assorted
 
 
