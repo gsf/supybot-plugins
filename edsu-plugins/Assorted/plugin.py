@@ -126,7 +126,7 @@ class Assorted(callbacks.Privmsg):
       url = 'http://lcsh.info/search?q=%s' % heading
       json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
       headings = simplejson.loads(json)
-      results = map(lambda r: "%s <%s>", headings)
+      results = map(lambda r: "%s <%s>" % (r['pref_label', r['uri']), headings)
       irc.reply('; '.join(results))
 
     def hosts2009(self,irc,msg,args):
