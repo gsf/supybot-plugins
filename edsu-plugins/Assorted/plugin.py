@@ -128,7 +128,7 @@ class Assorted(callbacks.Privmsg):
       json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
       headings = simplejson.loads(json)
       results = map(lambda r: "%s <%s>" % (r['pref_label'], r['uri']), headings)
-      irc.reply('; '.join(results))
+      irc.reply('; '.join(results).encode('utf-8')
 
     def hosts2009(self,irc,msg,args):
       """hosts vote for 2009
