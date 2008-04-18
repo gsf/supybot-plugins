@@ -123,7 +123,8 @@ class Assorted(callbacks.Privmsg):
 
     def lcsh(self, irc, msg, args):
       heading = ' '.join(args)
-      url = 'http://lcsh.info/search?q=%s' % heading
+      url = 'http://lcsh.info/search?' + urlencode('q': heading)
+
       json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
       headings = simplejson.loads(json)
       results = map(lambda r: "%s <%s>" % (r['pref_label'], r['uri']), headings)
