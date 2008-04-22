@@ -7,14 +7,14 @@ import simplejson
 
 class LCSH(callbacks.Privmsg):
 
-    def lcsh(self, irc, msg, args):
+    def search(self, irc, msg, args):
         """lcsh search for headings
         """
         headings = self.do_search(' '.join(args))
         results = map(lambda r: "%s <%s>" % (r['pref_label'], r['uri']), headings)
         irc.reply('; '.join(results).encode('utf-8'))
 
-    def info(self, irc, msg, args):
+    def lcsh(self, irc, msg, args):
         """display information for a heading
         """
         heading = ' '.join(args)
@@ -26,8 +26,8 @@ class LCSH(callbacks.Privmsg):
                 found_heading = h
        
         if not found_heading:
-            irc.reply("couldn't find concept for %s, try searching with lcsh" \
-                % heading)
+            irc.reply("couldn't find concept for %s, " + 
+                "try searching with search" % heading)
             return
 
         url = found_heading['uri']
@@ -58,8 +58,4 @@ class LCSH(callbacks.Privmsg):
         json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
         return simplejson.loads(json)
 
-
-
 Class = LCSH
-
-
