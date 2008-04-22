@@ -9,6 +9,55 @@ from urllib2 import build_opener, HTTPError
 import re
 
 class Lolcat(callbacks.Privmsg):
+    def lolify(self, irc, msg, args):
+        """<text> translates text from English into a delightful lolcat pidgin!
+        """
+        if len(args) == 0:
+            irc.reply('usage: lolify <text>', prefixNick=True)
+            return
+        text = " ".join(args)
+        pidgin_map = (
+            (r"\bthey are\b", 'they be'),
+            (r"tions\b", 'shun'),
+            (r"tions\b", 'shunz'),
+            (r"tian\b", 'chun'),
+            (r"tians\b", 'chunz'),
+            (r"cket\b", 'kkit'),
+            (r"ckets\b", 'kkitz'),
+            (r"s\b", 'z'),
+            (r"([^n])ew\b", '$1oed'),
+            (r"([^yv])our\b", '$1ur'),
+            (r"vour\b", 'vur'),
+            (r"ing\b", 'in'),
+            (r"([^rmea])y\b", '$1ee'),
+            (r"got\b", "gotted"),
+            (r"\bam\b", 'iz'),
+            (r"\bmy\b", 'mah'),
+            (r"\bno\b", 'noes'),
+            (r"\bkitty\b", 'kitteh'),
+            (r"\bcat\b", 'kitteh'),
+            (r"\bwas\b", 'wuz'),
+            (r"\bwith\b", 'wif'),
+            (r"\bate\b", 'eated'),
+            (r"\bhave\b", 'has'),
+            (r"\bhead\b", 'hed'),
+            (r"\bare\b", 'r'),
+            (r"\bhi\b", 'hai'),
+            (r"\bhello\b", 'hai'),
+            (r"\bi'm\b", 'im'),
+            (r"\byour\b", 'ur'),
+            (r"\blove\b", 'luff'),
+            (r"\byou\b", 'u'),
+            (r"\bwork\b", 'wurk'),
+            (r"\band\b", 'an'),
+            (r"\bthe\b", 'teh'),
+            (r"\bdude\b", 'd00d'),
+        )
+        for pattern in pidgin_map:
+            p = re.compile(pattern[0], re.IGNORECASE)
+            text = p.sub(pattern[1], text)
+        irc.reply(text, prefixNick=True)
+
     def randlol(self, irc, msg, args):
         self.lolrand(irc, msg, args)
 
