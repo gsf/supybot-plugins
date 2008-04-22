@@ -26,8 +26,8 @@ class LCSH(callbacks.Privmsg):
                 found_heading = h
        
         if not found_heading:
-            irc.reply("couldn't find concept for %s, " + 
-                "try searching with search" % heading)
+            irc.reply(("couldn't find concept for %s " + 
+                "try searching with search") % heading)
             return
 
         url = found_heading['uri']
