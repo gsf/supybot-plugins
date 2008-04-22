@@ -24,12 +24,9 @@ class Lolcat(callbacks.Privmsg):
             (r"tians\b", 'chunz'),
             (r"cket\b", 'kkit'),
             (r"ckets\b", 'kkitz'),
-            (r"s\b", 'z'),
-            (r"([^n])ew\b", '\1oed'),
-            (r"([^yv])our\b", '\1ur'),
+            (r"[^s]s\b", 'z'),
             (r"vour\b", 'vur'),
             (r"ing\b", 'in'),
-            (r"([^rmea])y\b", '\1ee'),
             (r"got\b", "gotted"),
             (r"\bam\b", 'iz'),
             (r"\bmy\b", 'mah'),
@@ -52,6 +49,10 @@ class Lolcat(callbacks.Privmsg):
             (r"\band\b", 'an'),
             (r"\bthe\b", 'teh'),
             (r"\bdude\b", 'd00d'),
+            (r"\bwhat\b", 'wut').
+            (r"\bthe\b", 'teh'),
+            (r"\bthink\b", 'fink'),
+            (r"\bwork\b", 'werk'),
         )
         for pattern in pidgin_map:
             p = re.compile(pattern[0], re.IGNORECASE)
