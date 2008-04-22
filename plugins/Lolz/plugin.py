@@ -50,7 +50,7 @@ class Lolz(callbacks.Plugin):
         url = "http://speaklolcat.com/?" + query
         response = urlopen(url)
         soup = BeautifulSoup(response, convertEntities='html')
-        lol = soup.findAll('input',{'name' : 'to'})[0]['value']
+        lol = soup.findAll('textarea',{'id' : 'to'})[0].find(text=True)
         irc.reply(lol, prefixNick=True)
 		
 Class = Lolz
