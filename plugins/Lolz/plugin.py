@@ -46,12 +46,13 @@ class Lolz(callbacks.Plugin):
         Translates English into Lolcat using http://speaklolcat.com/
         """
         phrase = (" ".join(args))
-        query = urlencode({ 'from' : phrase })
+        query = urlencode({ 'from' : phrase.replace('<','{`{') })
+        
         url = "http://speaklolcat.com/?" + query
         response = urlopen(url)
         soup = BeautifulSoup(response, convertEntities='html')
-        lol = soup.findAll('textarea',{'id' : 'to'})[0].find(text=True)
-        irc.reply(lol, prefixNick=True)
+        lol = soup.findAll('textarea',{'id' : 'to'})[0].find(text=True).replace('{`{','<')
+        irc.reply(lol.encode('utf8'), prefixNick=True)
 		
 Class = Lolz
 
