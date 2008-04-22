@@ -641,6 +641,7 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(xml)
         zen = soup.findAll('p')[1].string.strip()
         who = soup.find('span', "who").string.strip()
+        who = who.replace(' - ', '')
         irc.reply("%s: %s" % (who, zen), to=msg.nick, prefixNick=False)
 
 
