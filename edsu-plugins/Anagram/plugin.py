@@ -42,7 +42,7 @@ class Anagram(callbacks.Privmsg):
 
         phrase = ' '.join(args)
         if len(phrase) > 30:
-            irc.reply( "truncating at 30 chars" )
+            #irc.reply( "truncating at 30 chars" )
             phrase = phrase[0:30]
 
         query = urlencode( { \
