@@ -13,7 +13,7 @@ class LCSH(callbacks.Privmsg):
         heading = ' '.join(args)
         headings = self.do_search(heading)
         results = map(lambda r: "%s <%s>" % (r['pref_label'], r['uri']), headings)
-        if len(results == 0):
+        if not results:
             irc.reply('sorry no hits for %s' % heading)
         else:
             irc.reply('; '.join(results).encode('utf-8'))
