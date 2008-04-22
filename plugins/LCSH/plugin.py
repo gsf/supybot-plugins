@@ -10,9 +10,13 @@ class LCSH(callbacks.Privmsg):
     def search(self, irc, msg, args):
         """lcsh search for headings
         """
-        headings = self.do_search(' '.join(args))
+        heading = ' '.join(args)
+        headings = self.do_search(heading)
         results = map(lambda r: "%s <%s>" % (r['pref_label'], r['uri']), headings)
-        irc.reply('; '.join(results).encode('utf-8'))
+        if len(results == 0):
+            irc.reply('sorry no hits for %s' % heading)
+        else:
+            irc.reply('; '.join(results).encode('utf-8'))
 
     def lcsh(self, irc, msg, args):
         """display information for a heading
