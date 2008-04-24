@@ -552,18 +552,19 @@ class Assorted(callbacks.Privmsg):
         postdata['nb_words'] = nb_words or 1
         postdata = urlencode(postdata)
 
-        try:
-            soup = self._url2soup('http://ygingras.net/yould?lang=en', {}, postdata)
-        except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
-        except StopParsing, e:
-            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+#        try:
+#            soup = self._url2soup('http://ygingras.net/yould?lang=en', {}, postdata)
+#        except HTTPError, e:
+#            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+#        except StopParsing, e:
+#            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+#
+#        words = soup.find('textarea',{'name':'new_domains'}).string.split()
+#        words = [w.encode('utf-8') for w in words if isinstance(w, unicode)]
+#        irc.reply(' '.join(words))
+        irc.reply(postdata)
 
-        words = soup.find('textarea',{'name':'new_domains'}).string.split()
-        words = [w.encode('utf-8') for w in words if isinstance(w, unicode)]
-        irc.reply(' '.join(words))
-
-    nonsense = wrap(nonsense, [optional('text'),optional('int'),optional('int'),optional('int')])
+    nonsense = wrap(nonsense, [optional('anything'),optional('int'),optional('int'),optional('int')])
 
     def twit(self, irc, msg, args):
         """
