@@ -46,7 +46,7 @@ class LCSH(callbacks.Privmsg):
         self.add_concept_list(concept, 'narrower', msg)
         self.add_concept_list(concept, 'related', msg)
 
-        irc.reply(' ; '.join(msg))
+        irc.reply(' ; '.join(msg).encode('utf-8'))
 
 
     def add_concept_list(self, concept, type, msg):
