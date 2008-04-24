@@ -535,11 +535,11 @@ class Assorted(callbacks.Privmsg):
 
     bin2int = wrap(bin2int, ['text'])
 
-    def nonsense(self, irc, msg, args, lang, nb_words, minl, maxl):
+    def nonsense(self, irc, msg, args, nb_words, lang, minl, maxl):
         """
         a generator for pronounceable random words --
         Source: http://ygingras.net/yould --
-        Usage: nonsense [lang] [num words] [min len] [max len] --
+        Usage: nonsense [num_words] [lang] [min len] [max len] --
         Language codes: en,fr,kjb,fi,nl,de,la
         """
         if nb_words > 10:
@@ -563,7 +563,7 @@ class Assorted(callbacks.Privmsg):
         words = [w.encode('utf-8') for w in words if isinstance(w, unicode)]
         irc.reply(' '.join(words))
 
-    nonsense = wrap(nonsense, [optional('anything'),optional('int'),optional('int'),optional('int')])
+    nonsense = wrap(nonsense, [optional('int'),optional('anything'),optional('int'),optional('int')])
 
     def twit(self, irc, msg, args):
         """
