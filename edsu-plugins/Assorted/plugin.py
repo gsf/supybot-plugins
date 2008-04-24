@@ -13,7 +13,7 @@ from re import sub, match
 import feedparser
 import google
 import simplejson
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup, StopParsing
 from datetime import date
 
 class Assorted(callbacks.Privmsg):
@@ -524,21 +524,6 @@ class Assorted(callbacks.Privmsg):
         irc.reply("nope", prefixNick=True)
         return
 
-    #def int2bin(self, irc, msg, args, n, digits):
-    #    """
-    #    usage: int2bin <int> [<digits>]
-    #    Returns the binary of integer n, optionally using a specified number of
-    #    """
-
-    #    if not digits:
-    #        digits = 16
-
-    #    bstr = "".join([str((n >> y) & 1) for y in range(int(digits) - 1, -1, -1
-    #    irc.reply(bstr, prefixNick=True)
-    #    return
-
-    # int2bin = wrap(int2bin, ['int', optional('int')])
-
     def bin2int(self, irc, msg, args, binstring):
         """
         usage: bin2int <bin>
@@ -550,23 +535,48 @@ class Assorted(callbacks.Privmsg):
 
     bin2int = wrap(bin2int, ['text'])
 
+    def nonsense(self, irc, msg, args, lang, nb_words, minl, maxl):
+        """
+        a generator for pronounceable random words --
+        Source: http://ygingras.net/yould --
+        Usage: nonsense [lang] [num words] [min len] [max len] --
+        Language codes: en,fr,kjb,fi,nl,de,la
+        """
+        if nb_words > 10:
+            nb_words = 10
+
+        postdata = {}
+        postdata['lang'] = lang or 'en'
+        postdata['minl'] = minl or 5
+        postdata['maxl'] = maxl or 12
+        postdata['nb_words'] = nb_words or 1
+        postdata = urlencode(postdata)
+
+        try:
+            soup = self._url2soup('http://ygingras.net/yould?lang=en', {}, postdata)
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+
+        words = soup.find('textarea',{'name':'new_domains'}).string.split()
+        words = [w.encode('utf-8') for w in words if isinstance(w, unicode)]
+        irc.reply(' '.join(words))
+
+    nonsense = wrap(nonsense, [optional('text'),optional('int'),optional('int'),optional('int')])
+
     def twit(self, irc, msg, args):
         """
         returns a random tweet from the public timeline
         """
 
-        url = 'http://twitter.com/statuses/public_timeline.xml'
-        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
-        opener = build_opener()
-        opener.addheaders = [('User-Agent', ua)]
-
         try:
-            xml = opener.open(url)
+            soup = self._url2soup('http://twitter.com/statuses/public_timeline.xml')
         except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
-            return
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
-        soup = BeautifulSoup(xml)
         tweets = soup.findAll('status')
         status = tweets[randint(0, len(tweets)-1)]
         twit = status.user.screen_name.string
@@ -584,18 +594,13 @@ class Assorted(callbacks.Privmsg):
         if not continent:
             continent = 'North America'
 
-        url = 'http://internettrafficreport.com/'
-        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
-        opener = build_opener()
-        opener.addheaders = [('User-Agent', ua)]
-
         try:
-            xml = opener.open(url)
+            soup = self._url2soup('http://internettrafficreport.com/')
         except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
-            return
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
-        soup = BeautifulSoup(xml)
         region = None
         for row in soup.find('table', attrs={'border': 1}).findAll('tr'):
             if row.find(text=re.compile(continent,re.I)):
@@ -618,23 +623,35 @@ class Assorted(callbacks.Privmsg):
         returns a random zen proverb from http://oneproverb.net
         """
 
-        url = 'http://oneproverb.net/cgi-bin/rzp.cgi'
-        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
-        opener = build_opener()
-        opener.addheaders = [('User-Agent', ua)]
-
         try:
-            xml = opener.open(url)
+            soup = self._url2soup('http://oneproverb.net/cgi-bin/rzp.cgi')
         except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
-            return
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
-        soup = BeautifulSoup(xml)
         zen = soup.findAll('p')[1].string.strip()
         who = soup.find('span', "who").string.strip()
         who = who.replace('- ', '')
         irc.reply(zen, to=who, prefixNick=True)
 
+    def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
+        """
+        Fetch a url and BeautifulSoup-ify the returned doc
+        """
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        headers.update({'User-Agent': ua})
+        params = urlencode(qsdata)
+        if params:
+            if '?' in url:
+                url = "%s&%s" % (url,params)
+            else:
+                url = "%s?%s" % (url,params)
+        req = Request(url,postdata,headers)
+        doc = urlopen(req)
+        data = doc.read()
+        soup = BeautifulSoup(data)
+        return soup
 
 Class = Assorted
 
