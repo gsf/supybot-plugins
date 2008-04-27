@@ -100,6 +100,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         url = match.group(0)
 
         sleep(1)
+        self.rickguard(irc,msg)
 
         if not self._guard_up:
             return
