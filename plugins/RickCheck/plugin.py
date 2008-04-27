@@ -48,10 +48,11 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         guardstatus = self._guard_up
         self._guard_up = False
         try:
-            score = self._rickscore(url)
-        except Exception, e:
-            irc.reply(e.message)
-            return
+            try:
+                score = self._rickscore(url)
+            except Exception, e:
+                irc.reply(e.message)
+                return
         finally:
             self._guard_up = guardstatus
 
