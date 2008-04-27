@@ -45,12 +45,15 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def rickcheck(self, irc, msg, args, url):
         """<url> : does RickRoll detection on a URL
         """
-
+        guardstatus = self._guard_up
+        self._guard_up = False
         try:
             score = self._rickscore(url)
         except Exception, e:
             irc.reply(e.message)
             return
+        finally:
+            self._guard_up = guardstatus
 
         if (score >= 60):
             irc.reply('DANGER: RickRoll attempt in %s' % url)
