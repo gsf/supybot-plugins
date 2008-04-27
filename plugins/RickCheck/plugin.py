@@ -46,19 +46,16 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def rickcheck(self, irc, msg, args, url):
         """<url> : does RickRoll detection on a URL
         """
-#        parsed_url = urlparse(url)
-#        if not parsed_url.hostname:
-#            irc.reply("That doesn't even look like a URL"); return
 
         try:
-            score = self._rickscore(parsed_url)
+            score = self._rickscore(url)
         except Exception, e:
             irc.reply(e.message)
             return
 
-        if (score >= 80):
+        if (score >= 60):
             irc.reply('DANGER: RickRoll attempt in %s' % url)
-        elif (score >= 20):
+        elif (score >= 30):
             irc.reply('WARNING: -possible- RickRoll attempt in %s' % url)
         else:
             irc.reply('no RickRoll detected in %s' % url)
@@ -66,13 +63,8 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
 
     rickcheck = wrap(rickcheck, ['text'])
 
-    def _rickscore(self, parsed_url, score=0):
+    def _rickscore(self, url, score=0):
 
-        if parsed_url.hostname.find('youtube') != -1:
-            score += 20
-        return score
-
-        url = parsed_url.geturl()
         try:
             soup = self._url2soup(url)
         except HTTPError, e:
@@ -87,7 +79,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
 
         if rickex.match(title):
-            score += 40
+            score += 60
         if rickex.match(soup.__str__()):
             score += 30
         meta = soup.find("meta", { "http-equiv" : "refresh" })
@@ -102,10 +94,6 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         if not self._guard_up:
             return
             
-        parsed_url = urlparse(url)
-        if not parsed_url.hostname:
-            return
-
         try:
             score = self._rickscore(url)
         except:
