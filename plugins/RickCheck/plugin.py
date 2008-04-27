@@ -103,8 +103,6 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
             return
         if score > 20:
             irc.reply('WARNING: %s may be attempting a RickRoll' % msg.nick)
-        else:
-            irc.reply('no RickRoll detected in %s' % url)
         return
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
