@@ -15,6 +15,7 @@ import re
 logger = logging.getLogger('supybot')
 
 class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
+    threaded = True
     regexps = ['ricksnarf']
 
     def __init__(self,irc):
@@ -97,6 +98,8 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def ricksnarf(self, irc, msg, match):
         r"(https?)://[-\w.]+\.[^\s]*"
         url = match.group(0)
+
+        sleep(1)
 
         if not self._guard_up:
             return
