@@ -46,21 +46,23 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def rickcheck(self, irc, msg, args, url):
         """<url> : does RickRoll detection on a URL
         """
-        if self._guard_up:
-            return
+        self._rickchecking = True
 
         try:
-            score = self._rickscore(url)
-        except Exception, e:
-            irc.reply(e.message)
-            return
+            try:
+                score = self._rickscore(url)
+            except Exception, e:
+                irc.reply(e.message)
+                return
 
-        if (score >= 60):
-            irc.reply('DANGER: RickRoll attempt in %s' % url)
-        elif (score >= 30):
-            irc.reply('WARNING: -possible- RickRoll attempt in %s' % url)
-        else:
-            irc.reply('no RickRoll detected in %s' % url)
+            if (score >= 60):
+                irc.reply('DANGER: RickRoll attempt in %s' % url)
+            elif (score >= 30):
+                irc.reply('WARNING: -possible- RickRoll attempt in %s' % url)
+            else:
+                irc.reply('no RickRoll detected in %s' % url)
+        finally:
+            self._rickchecking = False
         return
 
     rickcheck = wrap(rickcheck, ['text'])
@@ -98,6 +100,8 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         url = match.group(0)
 
         if not self._guard_up:
+            return
+        if self._rickchecking:
             return
             
         try:
