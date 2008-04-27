@@ -22,7 +22,6 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         self.__parent.__init__(irc)
         self._guard_up = False
 
-
     def rickguard(self, irc, msg, args, cmd):
         """
         <on|off> : enable or disable automatic rickroll detection
@@ -64,6 +63,10 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     rickcheck = wrap(rickcheck, ['text'])
 
     def _rickscore(self, url, score=0):
+
+        parsed = urlparse(url)
+        if not parsed[1]:
+            return 0
 
         try:
             soup = self._url2soup(url)
