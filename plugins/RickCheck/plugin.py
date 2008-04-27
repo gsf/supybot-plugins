@@ -46,11 +46,12 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def rickcheck(self, irc, msg, args, url):
         """<url> : does RickRoll detection on a URL
         """
-        parsed_url = urlparse(url)
-        if not parsed_url.hostname:
-            irc.reply("That doesn't even look like a URL"); return
+#        parsed_url = urlparse(url)
+#        if not parsed_url.hostname:
+#            irc.reply("That doesn't even look like a URL"); return
 
         score = 20
+        irc.reply(score)
 #        try:
 #            score = self._rickscore(parsed_url)
 #        except Exception, e:
