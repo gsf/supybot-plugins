@@ -50,11 +50,12 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         if not parsed_url.hostname:
             irc.reply("That doesn't even look like a URL"); return
 
-        try:
-            score = self._rickscore(parsed_url)
-        except Exception, e:
-            irc.reply(e.message)
-            return
+        score = 20
+#        try:
+#            score = self._rickscore(parsed_url)
+#        except Exception, e:
+#            irc.reply(e.message)
+#            return
 
         if (score >= 80):
             irc.reply('DANGER: RickRoll attempt in %s' % url)
@@ -70,6 +71,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
 
         if parsed_url.hostname.find('youtube') != -1:
             score += 20
+        return score
 
         url = parsed_url.geturl()
         try:
