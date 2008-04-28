@@ -91,8 +91,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         return score
 
     def ricksnarf(self, irc, msg, match):
-        r"(?<!^@rickcheck ).*(https?://[-\w.]+\.[^\s]*)"
-        self.log.info(match.group(0))
+        r"(?<!^@rickcheck )(https?://[-\w.]+\.[^\s]*)"
         url = match.group(1)
         self.log.info(url)
 
