@@ -25,8 +25,8 @@ class RickGuard(callbacks.PluginRegexp):
 
     def rollcheck(self,irc,msg,match):
 #        r"(https?)://[-\w]+(\.\w[-\w]*)+(:[\d]{1,5})?[^\s]*"
-        r"(https?)://[-\w]+(\.\w[-\w]*)+(:[\d]{1,5})?((/?\w+/?)+|/?)(\w+\.[\w]{3,4})?((\?\w+(=\w+)?)(&\w+(=\w+)?)*)?"
-        url = match.group(0)
+        r"(?rickcheck.+)(https?)://[-\w]+(\.\w[-\w]*)+(:[\d]{1,5})?((/?\w+/?)+|/?)(\w+\.[\w]{3,4})?((\?\w+(=\w+)?)(&\w+(=\w+)?)*)?"
+        url = match.group(1)
 
         parsed = urlparse(url)
         if parsed.hostname.find('youtube') != -1:
