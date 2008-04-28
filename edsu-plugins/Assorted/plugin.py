@@ -513,12 +513,14 @@ class Assorted(callbacks.Privmsg):
         return string
 
     def isitfriday(self, irc, msg, args):
-        isfriday = "nope."
-        dow = date.today().weekday()
-        if dow == 4:
-            isfriday = "yes!"
-        irc.reply(isfriday, prefixNick=True)
+        irc.reply("If it feels like Friday, it's Friday!")
         return
+#        isfriday = "nope."
+#        dow = date.today().weekday()
+#        if dow == 4:
+#            isfriday = "yes!"
+#        irc.reply(isfriday, prefixNick=True)
+#        return
 
     def arewethereyet(self, irc, msg, args):
         irc.reply("nope", prefixNick=True)
