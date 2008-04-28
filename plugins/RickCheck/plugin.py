@@ -93,6 +93,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def ricksnarf(self, irc, msg, match):
         r"(?<!^rickcheck ).*(https?)://[-\w.]+\.[^\s]*"
         url = match.group(1)
+        self.log.info(url)
 
         if not self._guard_up:
             return
