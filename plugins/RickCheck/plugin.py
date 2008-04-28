@@ -95,8 +95,8 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         url = match.group(1)
         self.log.info(url)
 
-        if not self._guard_up:
-            return
+        #if not self._guard_up:
+        #    return
             
         try:
             score = self._rickscore(url)
