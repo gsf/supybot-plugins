@@ -21,27 +21,6 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
     def __init__(self,irc):
         self.__parent = super(RickCheck, self)
         self.__parent.__init__(irc)
-        self._guard_up = False
-
-    def rickguard(self, irc, msg, args, cmd):
-        """
-        <on|off> : enable or disable automatic rickroll detection
-        """
-        if cmd == 'on':
-            self._guard_up = True
-            irc.reply("RickGuard enabled!")
-        elif cmd == 'off':
-            self._guard_up = False
-            irc.reply("RickGuard disabled!")
-        else:
-            if self._guard_up:
-                status = 'enabled'
-            else:
-                status = 'disabled'
-            irc.reply("Rickguard status: %s" % status)
-        return
-
-    rickguard = wrap(rickguard, [optional('text')])
 
     def rickcheck(self, irc, msg, args, url):
         """<url> : does RickRoll detection on a URL
@@ -95,9 +74,6 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         url = match.group(1)
         self.log.info(url)
 
-        #if not self._guard_up:
-        #    return
-            
         try:
             score = self._rickscore(url)
         except:
