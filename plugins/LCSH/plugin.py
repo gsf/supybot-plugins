@@ -35,7 +35,7 @@ class LCSH(callbacks.Privmsg):
                 "try searching with search") % heading)
             return
 
-        timeout(60)
+        setdefaulttimeout(60)
         url = found_heading['uri']
         json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
         concept = simplejson.loads(json)
@@ -60,7 +60,7 @@ class LCSH(callbacks.Privmsg):
                 ])))
 
     def do_search(self, heading):
-        timeout(60)
+        setdefaulttimeout(60)
         url = 'http://lcsh.info/search?' + urlencode({'q': heading})
         json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
         return simplejson.loads(json)
