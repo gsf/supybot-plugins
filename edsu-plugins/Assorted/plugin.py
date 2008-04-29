@@ -637,6 +637,28 @@ class Assorted(callbacks.Privmsg):
         who = who.replace('- ', '')
         irc.reply(zen, to=who, prefixNick=True)
 
+    def halfbaked(self, irc, msg, args):
+        """
+        returns a radom half-baked idea from http://halfbakery.com
+        """
+
+        try:
+            soup = self._url2soup('http://www.halfbakery.com/random-idea.html')
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+
+        idea = soup.find('a', {'name': 'idea'})
+        title = idea.font.string
+#        try:
+#            subtitle = idea.parent.findAll('font')[1].string
+#            title = '%s -- %s' % (title, subtitle)
+#        except:
+#            pass
+
+        irc.reply(title, prefixNick=True)
+
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
         Fetch a url and BeautifulSoup-ify the returned doc
