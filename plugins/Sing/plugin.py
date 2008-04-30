@@ -66,6 +66,8 @@ class Sing(callbacks.Plugin):
             irc.reply('parsing error %s for %s' % (e.code, lyricsurl), prefixNick=True); return
 
         songs = soup('sg')
+        if not songs:
+            irc.reply('No results'); return
         song = songs[randint(0, len(songs) - 1)]
         if not song('id'):
             irc.reply('No results'); return
@@ -97,14 +99,15 @@ class Sing(callbacks.Plugin):
                 irc.reply("I got an empty song")
                 return
 
-        if idx > 1:
-            resp = lines[idx-2:idx]
+        if idx > 3:
+            resp = lines[idx-4:idx]
         else:
             try:
-                resp = lines[idx:idx+2]
+                resp = lines[idx:idx+4]
             except:
                 resp = lines[idx]
-        irc.reply('%s - %s' %(' / '.join(resp), title), prefixNick=False)
+#        irc.reply('%s - %s' %(' / '.join(resp), title), prefixNick=False)
+        irc.reply('%s' % ' / '.join(resp), prefixNick=False)
 
     sing = wrap(sing, ['text'])
 
