@@ -69,29 +69,33 @@ class Sing(callbacks.Plugin):
         song = songs[randint(0, len(songs) - 1)]
         if not song('id'):
             irc.reply('No results'); return
-        lyrics = song.tx.string.replace('[br]','')
+        lyrics = song.tx.string.replace('[br]','\n')
 
         if 'INSTRUMENTAL' in lyrics:
             irc.reply("(humming %s by %s)" % (song.tt.string, song.ar.string), prefixNick=False)
             return
 
-        lyrics = lyrics.replace('\r','')
-        stanzas = lyrics.split('\n\n')
+#        lyrics = lyrics.replace('\r',' ')
+#        stanzas = lyrics.split('\n\n')
 
         # if song title is in the lyrics, narrow down to just those stanzas
         titlematch = re.compile(title, re.I | re.MULTILINE)
-        title_in_lyrics = titlematch.search(lyrics)
-        if title_in_lyrics:
-            stanzas = [s for s in stanzas if titlematch.search(s)]
+#        title_in_lyrics = titlematch.search(lyrics)
+#        if title_in_lyrics:
+#            stanzas = [s for s in stanzas if titlematch.search(s)]
 
-        stanza = stanzas[randint(0, len(stanzas) - 1)]
-        lines = stanza.split("\n")
+#        stanza = stanzas[randint(0, len(stanzas) - 1)]
+        lines = re.split('[\n\r]+', lyrics) #stanza.split("\n")
         lines = [l for l in lines if 'lyricsfly' not in l]
        
         try:
             idx = [titlematch.search(x) and True for x in lines].index(True)
         except:
-            idx = randint(0,len(lines))
+            try:
+                idx = randint(0,len(lines))
+            except:
+                irc.reply("I got an empty song")
+                return
 
         if idx > 1:
             resp = lines[idx-2:idx]
