@@ -44,16 +44,19 @@ class Sing(callbacks.Plugin):
         Usage: sing artist [: title]
         """
 
-        try:
-            artist, title = map(lambda x: x.strip(), artist.split(':'))
-            logger.info("artist: %s, title: %s" % (artist,title))
+        try: 
+            artist, title, line_idx = map(lambda x: x.strip(), re.split('[:\-]', artist))
+            line_idx = int(line_idx)
         except:
             try:
-                title = self._random_title(artist)
-            except Exception, e:
-                irc.reply('Got exception %s: %s when searching for songs by %s' \
+                artist, title = map(lambda x: x.strip(), re.split('[:\-]', artist))
+            except:
+                try:
+                    title = self._random_title(artist)
+                except Exception, e:
+                    irc.reply('Got exception %s: %s when searching for songs by %s' \
                     % (e.__class__, e, artist), prefixNick=True); 
-                return
+                    return
 
         lyricsurl = 'http://lyricsfly.com/api/api.php?i=00cbc3ccaac633d24'
         qsdata = {'a': artist, 't': title}
@@ -90,22 +93,23 @@ class Sing(callbacks.Plugin):
         lines = re.split('[\n\r]+', lyrics) #stanza.split("\n")
         lines = [l for l in lines if 'lyricsfly' not in l]
        
-        try:
-            idx = [titlematch.search(x) and True for x in lines].index(True)
-        except:
+        if not line_idx:
             try:
-                idx = randint(0,len(lines))
+                line_idx = [titlematch.search(x) and True for x in lines].index(True)
             except:
-                irc.reply("I got an empty song")
-                return
+                try:
+                    line_idx = randint(0,len(lines))
+                except:
+                    irc.reply("I got an empty song")
+                    return
 
-        if idx > 3:
-            resp = lines[idx-4:idx]
+        if line_idx > 3:
+            resp = lines[line_idx-4:line_idx]
         else:
             try:
-                resp = lines[idx:idx+4]
+                resp = lines[line_idx:line_idx+4]
             except:
-                resp = lines[idx]
+                resp = lines[line_idx]
 #        irc.reply('%s - %s' %(' / '.join(resp), title), prefixNick=False)
         irc.reply('%s' % ' / '.join(resp), prefixNick=False)
 
