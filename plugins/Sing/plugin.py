@@ -1,0 +1,122 @@
+
+import supybot.utils as utils
+from supybot.commands import *
+import supybot.plugins as plugins
+import supybot.ircutils as ircutils
+import supybot.callbacks as callbacks
+import logging
+
+from BeautifulSoup import BeautifulSoup
+import re
+from urllib import urlencode
+from urllib2 import Request, build_opener, HTTPError
+from random import randint
+
+logger = logging.getLogger('supybot')
+
+class Sing(callbacks.Plugin):
+    """Add the help for "@plugin help Sing" here
+    This should describe *how* to use this plugin."""
+    threaded = True
+
+    def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
+        """
+        Fetch a url and BeautifulSoup-ify the returned doc
+        """
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        headers.update({'User-Agent': ua})
+        params = urlencode(qsdata)
+        if params:
+            if '?' in url:
+                url = "%s&%s" % (url,params)
+            else:
+                url = "%s?%s" % (url,params)
+        logger.info('fetching %s, %s' % (url,postdata))
+        req = Request(url,postdata,headers)
+        opener = build_opener()
+        doc = opener.open(req)
+        soup = BeautifulSoup(doc.read())
+        return soup
+
+    def sing(self, irc, msg, args, artist):
+        """
+        Fetches lyrics from the lyricsfly.com api --
+        Usage: sing artist [: title]
+        """
+
+        try:
+            artist, title = map(lambda x: x.strip(), artist.split(':'))
+            logger.info("artist: %s, title: %s" % (artist,title))
+        except:
+            try:
+                title = self._random_title(artist)
+            except Exception, e:
+                irc.reply('Got exception %s: %s when searching for songs by %s' \
+                    % (e.__class__, e, artist), prefixNick=True); 
+                return
+
+        lyricsurl = 'http://lyricsfly.com/api/api.php?i=00cbc3ccaac633d24'
+        qsdata = {'a': artist, 't': title}
+
+        try:
+            soup = self._url2soup(lyricsurl, qsdata)
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, lyricsurl), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, lyricsurl), prefixNick=True); return
+
+        songs = soup('sg')
+        song = songs[randint(0, len(songs) - 1)]
+        if not song('id'):
+            irc.reply('No results'); return
+        lyrics = song.tx.string.replace('[br]','')
+
+        if 'INSTRUMENTAL' in lyrics:
+            irc.reply("(humming %s by %s)" % (song.tt.string, song.ar.string), prefixNick=False)
+            return
+
+        lyrics = lyrics.replace('\r','')
+        stanzas = lyrics.split('\n\n')
+
+        # if song title is in the lyrics, narrow down to just those stanzas
+        titlematch = re.compile(title, re.I | re.MULTILINE)
+        title_in_lyrics = titlematch.search(lyrics)
+        if title_in_lyrics:
+            stanzas = [s for s in stanzas if titlematch.search(s)]
+
+        stanza = stanzas[randint(0, len(stanzas) - 1)]
+        lines = stanza.split("\n")
+        lines = [l for l in lines if 'lyricsfly' not in l]
+       
+        try:
+            idx = [titlematch.search(x) and True for x in lines].index(True)
+        except:
+            idx = randint(0,len(lines))
+
+        if idx > 1:
+            resp = lines[idx-2:idx]
+        else:
+            try:
+                resp = lines[idx:idx+2]
+            except:
+                resp = lines[idx]
+        irc.reply('%s - %s' %(' / '.join(resp), title), prefixNick=False)
+
+    sing = wrap(sing, ['text'])
+
+    def _random_title(self, artist):
+        searchurl = 'http://lyricsfly.com/search/search.php'
+        postdata = urlencode({'sort': 1, 'options': 2, 'keywords': artist})
+        soup = self._url2soup(searchurl,{},postdata)
+        results = [a.string for a in soup.findAll('a', href=re.compile('^view.php'))]
+        logger.info('num results: %d' % len(results))
+        try:
+            ret = results[randint(0, len(results) - 1)]
+            return ret
+        except:
+            return 
+
+
+Class = Sing
+
+
