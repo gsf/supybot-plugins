@@ -44,6 +44,7 @@ class Sing(callbacks.Plugin):
         Usage: sing artist [: title]
         """
 
+        line_idx = None
         try: 
             artist, title, line_idx = map(lambda x: x.strip(), re.split('[:\-]', artist))
             line_idx = int(line_idx)
