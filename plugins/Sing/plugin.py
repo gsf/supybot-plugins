@@ -38,20 +38,22 @@ class Sing(callbacks.Plugin):
         soup = BeautifulSoup(doc.read())
         return soup
 
-    def sing(self, irc, msg, args, artist):
+    def sing(self, irc, msg, args, input):
         """
         Fetches lyrics from the lyricsfly.com api --
-        Usage: sing artist [: title]
+        Usage: sing artist [:title] [:line num]
+        Example: @sing bon jovi : wanted dead or alive
         """
 
         line_idx = None
         try: 
-            artist, title, line_idx = map(lambda x: x.strip(), re.split('[:\-]', artist))
+            artist, title, line_idx = map(lambda x: x.strip(), re.split('[:\-]', input))
             line_idx = int(line_idx)
         except:
             try:
-                artist, title = map(lambda x: x.strip(), re.split('[:\-]', artist))
+                artist, title = map(lambda x: x.strip(), re.split('[:\-]', input))
             except:
+                artist = input
                 try:
                     title = self._random_title(artist)
                 except Exception, e:
@@ -71,10 +73,10 @@ class Sing(callbacks.Plugin):
 
         songs = soup('sg')
         if not songs:
-            irc.reply('No results'); return
+            irc.reply('No results for "%s"' % input); return
         song = songs[randint(0, len(songs) - 1)]
         if not song('id'):
-            irc.reply('No results'); return
+            irc.reply('No results for "%s"' % input); return
         lyrics = song.tx.string.replace('[br]','\n')
 
         if 'INSTRUMENTAL' in lyrics:
