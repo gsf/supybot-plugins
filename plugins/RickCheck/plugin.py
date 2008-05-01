@@ -49,6 +49,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
 
         try:
             soup = self._url2soup(url)
+            title = soup.find("title").string or ''
         except HTTPError, e:
             raise Exception, 'http error %s for %s' % (e.code, url)
         except (StopParsing, UnicodeDecodeError), e:
@@ -57,17 +58,24 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
             logger.info('Got unexpected exception: %s, %s' % (e.__class__, e.message))
             raise Exception, 'something went wrong (bad url?): %s' % e
 
-        title = soup.find("title").string or ''
-        rickex = re.compile(r'.*rick.*roll.*', re.IGNORECASE | re.DOTALL)
+        patterns = {
+            r'.*rickroll.*': 50,
+            r'.*rick\s*astley.*': 40,
+            r'.*never\s*gonna\s*give\s*you\s*up': 50,
+            r'.*rick.+roll.*': 10
+            }
+        rickex = dict((re.compile(k, re.I | re.S), v) for k,v in patterns.items())
+        score += sum([s for r,s in rickex.items() if soup(text=r)])
 
-        if rickex.match(title):
-            score += 60
-        if rickex.match(soup.__str__()):
-            score += 30
         meta = soup.find("meta", { "http-equiv" : "refresh" })
         if meta:
+            logger.info('matched meta')
             score += 30
-        return score
+
+        maxscore = sum(patterns.values()) + 30 # 30 for the meta (meh?)
+        prob = float(score) / float(maxscore) * 100
+        logger.info('score %d, prob %f' % (score, prob))
+        return score, int(prob)
 
     def ricksnarf(self, irc, msg, match):
         r"(?<!^@rickcheck )(https?://[-\w.]+\.[^\s]*)"
@@ -75,11 +83,11 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         self.log.info(url)
 
         try:
-            score = self._rickscore(url)
+            score,prob = self._rickscore(url)
         except:
             return
-        if score > 20:
-            irc.reply('WARNING: %s may be attempting a RickRoll' % msg.nick)
+        if prob > 20:
+            irc.reply('WARNING: %s may be attempting a RickRoll (probability: %%%d)' % (msg.nick,prob), prefixNick=False)
         return
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
