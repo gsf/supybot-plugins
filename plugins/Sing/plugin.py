@@ -61,7 +61,7 @@ class Sing(callbacks.Plugin):
                     % (e.__class__, e, artist), prefixNick=True); 
                     return
 
-        lyricsurl = 'http://lyricsfly.com/api/api.php?i=00cbc3ccaac633d24'
+        lyricsurl = 'http://lyricsfly.com/api/api.php?i=6b03519c191925472'
         qsdata = {'a': artist, 't': title}
 
         try:
@@ -79,7 +79,7 @@ class Sing(callbacks.Plugin):
             irc.reply('No results for "%s"' % input); return
         lyrics = song.tx.string.replace('[br]','\n')
 
-        if 'INSTRUMENTAL' in lyrics:
+        if re.search('instrumental', lyrics, re.I):
             irc.reply("(humming %s by %s)" % (song.tt.string, song.ar.string), prefixNick=False)
             return
 
@@ -95,6 +95,7 @@ class Sing(callbacks.Plugin):
 #        stanza = stanzas[randint(0, len(stanzas) - 1)]
         lines = re.split('[\n\r]+', lyrics) #stanza.split("\n")
         lines = [l for l in lines if 'lyricsfly' not in l]
+        lines = [l for l in lines if not re.search('written by', l, re.I)]
        
         if not line_idx:
             try:
