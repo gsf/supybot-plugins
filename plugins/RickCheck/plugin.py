@@ -26,7 +26,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         """<url> : does RickRoll detection on a URL
         """
         try:
-            score = self._rickscore(url)
+            score, prob = self._rickscore(url)
         except Exception, e:
             irc.reply(e.message)
             return
