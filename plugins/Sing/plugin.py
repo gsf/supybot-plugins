@@ -56,14 +56,14 @@ def htmlentitydecode(s):
 
 class Sing(callbacks.Plugin):
     """
-    Usage: sing artist [:title] [:line num]
+    Usage: sing artist [:title|*] [:line|*] 
     """
     threaded = True
 
     def sing(self, irc, msg, args, input):
         """
         Fetches lyrics from the http://lyricsfly.com api --
-        Usage: sing artist [:title] [:line num] --
+        Usage: sing artist [:title|*] [:line|*] --
         Example: @sing bon jovi : wanted dead or alive
         """
 
