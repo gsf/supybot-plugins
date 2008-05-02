@@ -2,7 +2,7 @@ from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
 from random import randint
-from xml.etree.ElementTree import parse
+from elementtree.ElementTree import parse
 
 from supybot.commands import *
 import supybot.plugins as plugins
