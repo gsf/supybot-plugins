@@ -80,7 +80,8 @@ class Sing(callbacks.Plugin):
         lyrics = song.tx.string.replace('[br]','\n')
 
         if re.search('instrumental', lyrics, re.I):
-            irc.reply("(humming %s by %s)" % (song.tt.string, song.ar.string), prefixNick=False)
+            irc.reply("hums %s by %s" % (song.tt.string, song.ar.string),
+                prefixNick=False, action=True)
             return
 
 #        lyrics = lyrics.replace('\r',' ')
