@@ -2,7 +2,7 @@ from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
 from random import randint
-from elementtree.ElementTree import parse
+from xml.etree.ElementTree import parse
 
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -20,7 +20,7 @@ class AudioScrobbler(callbacks.Privmsg):
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
         'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar',
-        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys']
+        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys', 'bosteen']
     users.sort()
 
     def get_songs(self,username):
