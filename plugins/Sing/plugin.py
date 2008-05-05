@@ -17,6 +17,8 @@ from random import randint
 
 logger = logging.getLogger('supybot')
 
+API_ID = 'cb49e4291347aa894'
+
 def random_title(artist):
     searchurl = 'http://lyricsfly.com/search/search.php'
     postdata = urlencode({'sort': 1, 'options': 2, 'keywords': artist})
@@ -92,7 +94,7 @@ class Sing(callbacks.Plugin):
         if title == '*':
             title = random_title(artist)
 
-        lyricsurl = 'http://lyricsfly.com/api/api.php?i=6b03519c191925472'
+        lyricsurl = 'http://lyricsfly.com/api/api.php?i=s%' % API_ID
         qsdata = {'a': artist, 't': title}
 
         try:
@@ -144,9 +146,9 @@ class Sing(callbacks.Plugin):
             resp = lines[start_line:end_line]
 
         logger.info('start:end = %d:%d' % (start_line, end_line))
-        resp = [l for l in resp if re.search('\S', l)]
+        resp = ' / '.join([l for l in resp if re.search('\S', l)])
 
-        irc.reply('%s' % ' / '.join(resp), prefixNick=False)
+        irc.reply(resp, prefixNick=False)
 
     sing = wrap(sing, ['text'])
 
