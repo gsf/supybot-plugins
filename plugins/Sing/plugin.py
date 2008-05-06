@@ -35,6 +35,7 @@ def url2soup(url, qsdata={}, postdata=None, headers={}):
     """
     ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
     headers.update({'User-Agent': ua})
+
     params = urlencode(qsdata)
     if params:
         if '?' in url:
@@ -93,7 +94,10 @@ class Sing(callbacks.Plugin):
         if title == '*':
             title = random_title(artist)
 
-        lyricsurl = 'http://lyricsfly.com/api/api.php?i=%s' % API_ID
+        # stoopid lyricsfly
+        artist = artist.replace("'", '%')
+        title = title.replace("'", '%')
+        lyricsurl = 'http://lyricsfly.com/api/api.php?i=%s' % Sing.API_ID
         qsdata = {'a': artist, 't': title}
 
         try:
