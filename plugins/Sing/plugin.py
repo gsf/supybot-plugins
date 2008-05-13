@@ -60,7 +60,7 @@ class Sing(callbacks.Plugin):
     Usage: sing artist [:title|*] [:line|*] 
     """
     threaded = True
-    API_ID = 'cb49e4291347aa894'
+    API_ID = 'bc2e4c781e33eef63'
 
     def sing(self, irc, msg, args, input):
         """
