@@ -674,7 +674,7 @@ class Assorted(callbacks.Privmsg):
         req = Request(url,postdata,headers)
         doc = urlopen(req)
         data = doc.read()
-        soup = BeautifulSoup(data)
+        soup = BeautifulSoup(data, convertEntities=['html','xml'])
         return soup
 
 Class = Assorted
