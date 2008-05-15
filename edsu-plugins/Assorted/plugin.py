@@ -651,11 +651,11 @@ class Assorted(callbacks.Privmsg):
 
         idea = soup.find('a', {'name': 'idea'})
         title = idea.font.string
-#        try:
-#            subtitle = idea.parent.findAll('font')[1].string
-#            title = '%s -- %s' % (title, subtitle)
-#        except:
-#            pass
+        try:
+            subtitle = idea.parent.findAll('font')[1].string
+            title = '%s -- %s' % (title, subtitle)
+        except:
+            pass
 
         irc.reply(title, prefixNick=True)
 
