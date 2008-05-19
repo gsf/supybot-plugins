@@ -27,7 +27,7 @@ class LCSH(callbacks.Privmsg):
 
         found_heading = None
         for h in headings:
-            if h['pref_label'] == heading:
+            if h['pref_label'].lower() == heading.lower():
                 found_heading = h
        
         if not found_heading:
