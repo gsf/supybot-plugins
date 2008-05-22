@@ -11,7 +11,7 @@ from cgi import parse_qs
 from random import randint
 from re import sub, match
 import feedparser
-import google
+#import google
 import simplejson
 from BeautifulSoup import BeautifulSoup, StopParsing
 from datetime import date
