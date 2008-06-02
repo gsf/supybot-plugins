@@ -4,11 +4,11 @@ import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
-from elementtree.ElementTree import parse
+from xml.etree import ElementTree as ET
 from os.path import dirname, abspath
 from random import randint
 
-marcdoc = parse("%s/%s" % (dirname(abspath(__file__)), 'marcdoc.xml'))
+marcdoc = ET.parse("%s/%s" % (dirname(abspath(__file__)), 'marcdoc.xml'))
 
 def field_desc(tag):
   for f in marcdoc.findall('field'):
