@@ -1,6 +1,6 @@
 from urllib import urlencode
 from urllib2 import urlopen 
-from elementtree.ElementTree import parse
+from xml.etree import ElementTree as ET
 from elementtidy import TidyHTMLTreeBuilder
 from re import match
 
@@ -73,7 +73,7 @@ class OCLC(callbacks.Privmsg):
                 "isPersonalName"  : "true" } )
 
             url = urlopen( alcme + "?" + query)
-            tree = parse(url)
+            tree = ET.parse(url)
             elem = tree.getroot()
 
             matches = elem.findall("match")
