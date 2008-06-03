@@ -451,7 +451,7 @@ class Assorted(callbacks.Privmsg):
 
         # i tried this beautifulsoup stuff when elementtree was being buggy
         # (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=461629)  gsf
-        html_str = html.read()
+        html_str = html.read().encode('utf-8')
         soup = BeautifulSoup(html_str)
         title = soup.title.string
 
@@ -466,18 +466,6 @@ class Assorted(callbacks.Privmsg):
 
         link_elem = soup.find('a', title=re.compile('^Permanent link.*'))
         link = link_elem['href'].replace('&amp;', '&')
-
-        #tree = TidyHTMLTreeBuilder.parse(html)
-        #ns = {'ns': 'http://www.w3.org/1999/xhtml'}
-        #
-        #title = self.get_text(tree.findall('.//{%(ns)s}title' % ns)[0]).split(' - ')[0]
-        #xpath = './/{%(ns)s}body/{%(ns)s}div/{%(ns)s}div/{%(ns)s}div/{%(ns)s}div/{%(ns)s}p' % ns
-        #text = self.get_text(tree.findall(xpath)[0])
-
-        #link = ''
-        #for a in tree.findall('.//{%(ns)s}a' % ns):
-        #    if a.attrib.get('title','').startswith('Permanent link'):
-        #        link = a.attrib['href']
 
         irc.reply(("%s : %s <http://en.wikipedia.org%s>" % (title, text, link)).encode('utf-8'))
         
