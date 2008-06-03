@@ -451,7 +451,7 @@ class Assorted(callbacks.Privmsg):
 
         # i tried this beautifulsoup stuff when elementtree was being buggy
         # (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=461629)  gsf
-        html_str = html.read().encode('utf-8')
+        html_str = html.read().decode('utf-8')
         soup = BeautifulSoup(html_str)
         title = soup.title.string
 
