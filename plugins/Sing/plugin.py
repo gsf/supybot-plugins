@@ -52,7 +52,7 @@ def url2soup(url, qsdata={}, postdata=None, headers={}):
     return soup
 
 def htmlentitydecode(s):
-    return re.sub('&(%s);' % '|'.join(name2codepoint), 
+    return re.sub(u'&(%s);' % u'|'.join(name2codepoint), 
         lambda m: unichr(name2codepoint[m.group(1)]), s)
 
 class Sing(callbacks.Plugin):
@@ -151,7 +151,7 @@ class Sing(callbacks.Plugin):
             resp = lines[start_line:end_line]
 
         logger.info('start:end = %d:%d' % (start_line, end_line))
-        resp = ' / '.join([l for l in resp if re.search('\S', l)])
+        resp = u' / '.join([l for l in resp if re.search('\S', l)])
 
         irc.reply(resp, prefixNick=False)
 
