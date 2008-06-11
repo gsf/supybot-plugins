@@ -5,6 +5,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
+import re
 from BeautifulSoup import BeautifulSoup, StopParsing
 from urllib import urlencode
 from urllib2 import Request, build_opener, HTTPError
