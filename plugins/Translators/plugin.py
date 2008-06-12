@@ -15,5 +15,10 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'ache', 'awchee', text)
         irc.reply(text + "  eh?", prefixNick=True)
 
+    def mccainize(self, irc, msg, args):
+        """translates text into McCain speechifyin'
+        """
+        irc.reply(re.sub(r'^', 'my friends, ', ' '.join(args)), prefixNick=True)
+
 Class = Translators
 
