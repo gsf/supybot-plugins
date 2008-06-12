@@ -2,7 +2,7 @@ from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
 from random import randint
-from elementtree.ElementTree import parse
+from xml.etree import ElementTree as ET
 
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -116,7 +116,7 @@ class AudioScrobbler(callbacks.Privmsg):
             irc.reply("no such artist or last.fm is on the fritz")
             return
             
-        tree = parse(response)
+        tree = ET.parse(response)
         root = tree.getroot()
         names = []
         for name in root.findall('.//name'):
@@ -138,7 +138,7 @@ class AudioScrobbler(callbacks.Privmsg):
           irc.reply("no such user or last.fm is on the fritz")
           return
           
-      tree = parse(response)
+      tree = ET.parse(response)
       root = tree.getroot()
       tracks = []
       for track in root.findall('.//track'):
@@ -158,7 +158,7 @@ class AudioScrobbler(callbacks.Privmsg):
             irc.reply("no such artist or last.fm is on the fritz")
             return
             
-        tree = parse(response)
+        tree = ET.parse(response)
         root = tree.getroot()
         tags = []
         for tag in root.findall('.//tag'):
@@ -174,7 +174,7 @@ class AudioScrobbler(callbacks.Privmsg):
         except:
             irc.reply("d'oh can't get the weekly track chart :(")
             return
-        tree = parse(response)
+        tree = ET.parse(response)
         root = tree.getroot()
         tracks = []
         for track in root.findall('.//track'):
@@ -190,7 +190,7 @@ class AudioScrobbler(callbacks.Privmsg):
         except:
             irc.reply("d'oh can't get the weekly artist chart :(")
             return
-        tree = parse(response)
+        tree = ET.parse(response)
         root = tree.getroot()
         artists = []
         for track in root.findall('.//artist'):
@@ -208,7 +208,7 @@ class AudioScrobbler(callbacks.Privmsg):
             irc.reply("no such tag or last.fm is on the fritz")
             return
             
-        tree = parse(response)
+        tree = ET.parse(response)
         root = tree.getroot()
         tags = []
         for artist in root.findall('.//artist'):
