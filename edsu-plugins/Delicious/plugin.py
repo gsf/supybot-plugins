@@ -2,6 +2,8 @@ from urllib import quote
 from urllib2 import urlopen, Request
 
 import supybot.callbacks as callbacks
+from supybot.commands import *
+from BeautifulSoup import BeautifulSoup as BS
 
 class Delicious(callbacks.Privmsg):
 
@@ -21,5 +23,38 @@ class Delicious(callbacks.Privmsg):
         tags.sort(lambda a,b: cmp(tag_stats[b], tag_stats[a]))
         msg = ' ; '.join(map(lambda tag: "%s:%i" % (tag, tag_stats[tag]), tags))
         irc.reply("[%i posts] %s" % (total_posts, msg))
+
+    def tagspark(self, irc, msg, args):
+        """
+        Usage: tagspark tag querytag --
+        Returns a sparkline-ish string indicating how often items recently
+        tagged with 'tag' were also tagged with 'querytag' (on del.icio.us)
+        """
+        tag = args.pop(0)
+
+        if not args:
+            irc.reply("Usage: tagspark tag querytag")
+            return
+        querytag = args.pop(0)
+
+        url = 'http://del.icio.us/rss/tag/%s' % tag.lower()
+        conn = urlopen(url)
+        soup = BS(conn)
+        items = soup('item')
+
+        if not items:
+            irc.reply('No results')
+            return
+
+        def hit(item, tag):
+            subject = item.find('dc:subject')
+            if subject:
+                othertags = subject.string.lower().split()
+                if querytag.lower() in othertags:
+                    return '|'
+            return '.'
+
+        spark = ''.join([hit(i, querytag) for i in items])
+        irc.reply(spark, prefixNick=True)
 
 Class = Delicious
