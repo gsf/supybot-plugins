@@ -451,8 +451,11 @@ class Assorted(callbacks.Privmsg):
 
         # i tried this beautifulsoup stuff when elementtree was being buggy
         # (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=461629)  gsf
-        html_str = html.read().decode('utf-8')
-        soup = BeautifulSoup(html_str)
+        html_str = html.read()
+        try:
+            soup = BeautifulSoup(html_str)
+        except UnicodeDecodeError, e:
+            raise UnicodeDecodeError, "%s.  HTML was %s." % (e, html_str)
         title = soup.title.string
 
         def strip_tags(elem):
