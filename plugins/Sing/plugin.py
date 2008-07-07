@@ -62,7 +62,7 @@ class Sing(callbacks.Plugin):
     threaded = True
 
     # get this here: http://lyricsfly.com/api/
-    API_ID = '960570815bf5f07c5'
+    API_ID = '50fe854cbb7a27c1e'
 
     def sing(self, irc, msg, args, input):
         """
