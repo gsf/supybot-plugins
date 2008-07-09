@@ -44,7 +44,7 @@ class Band(callbacks.Plugin):
     Generates a random band name."""
     pass
 
-    def band(self, irc, msg, args):
+    def bandname(self, irc, msg, args):
         pages = "a b c d e f g h i j k l m n o p q r s t u v w x y z misc".split(' ')
         url = "http://www.amiright.com/names/cool/" + pages[randint(0,len(pages)-1)] + ".shtml"
         response = urlopen(url)
