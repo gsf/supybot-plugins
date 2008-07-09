@@ -1,5 +1,6 @@
 """
-Creates an anagram from a string of text.
+Random band name from the house of chudnov.
+http://www-personal.umich.edu/~dchud/fng/names.html
 """
 
 import supybot
