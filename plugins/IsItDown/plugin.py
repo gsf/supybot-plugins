@@ -20,7 +20,7 @@ class IsItDown(callbacks.Privmsg):
         html_str = html.read()
         soup = BeautifulSoup(html_str)
         # Content of /html/head/title is what we want
-        irc.reply(soup.html.head.title.string.strip())
+        irc.reply(soup.html.head.title.string.strip(), prefixNick=True)
 
 Class = IsItDown
 
