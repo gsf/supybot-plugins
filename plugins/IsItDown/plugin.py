@@ -21,6 +21,8 @@ class IsItDown(callbacks.Privmsg):
         soup = BeautifulSoup(html_str)
         # Content of /html/head/title is what we want
         irc.reply(soup.html.head.title.string.strip(), prefixNick=True)
+    isitdown = wrap(isitdown, ['text'])
 
 Class = IsItDown
 
+# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:

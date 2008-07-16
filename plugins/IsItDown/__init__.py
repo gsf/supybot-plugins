@@ -11,7 +11,7 @@ import supybot.world as world
 # in here if you're keeping the plugin in CVS or some similar system.
 __version__ = "0.1"
 
-__author__ = supybot.authors.unknown
+__author__ = supybot.Author("Dan Scott", "dbs", "dan@coffeecode.net")
 
 # This is a dictionary mapping supybot.Author instances to lists of
 # contributions.
@@ -28,3 +28,5 @@ if world.testing:
 
 Class = plugin.Class
 configure = config.configure
+
+# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
