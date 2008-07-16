@@ -16,7 +16,6 @@ class IsItDown(callbacks.Privmsg):
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
-        checkme = site + url
         html = opener.open(site + url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)

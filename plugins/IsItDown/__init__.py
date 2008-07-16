@@ -11,7 +11,7 @@ import supybot.world as world
 # in here if you're keeping the plugin in CVS or some similar system.
 __version__ = "0.1"
 
-__author__ = "dbs"
+__author__ = supybot.authors.unknown
 
 # This is a dictionary mapping supybot.Author instances to lists of
 # contributions.
