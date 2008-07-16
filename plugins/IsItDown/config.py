@@ -12,4 +12,4 @@ def configure(advanced):
     from supybot.questions import expect, anything, something, yn
     conf.registerPlugin('IsItDown', True)
 
-Presidents = conf.registerPlugin('IsItDown')
+IsItDown = conf.registerPlugin('IsItDown')
