@@ -22,8 +22,10 @@ class IsItDown(callbacks.Privmsg):
             soup = BeautifulSoup(html_str)
             response = soup.div.contents[0].strip()
             irc.reply(response, prefixNick=True)
-        except:
-            irc.reply("Hmm. Either downforeveryoneorjustme.com changed its response format and I need to be updated, or that URL triggered a mysterious error on the site.", prefixNick=True)
+        except urllib2.HTTPError, oops:
+            irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (oops), prefixNick=True)
+        except AttributeError:
+            irc.reply("Hmm. downforeveryoneorjustme.com probably changed its response format; please update me.", prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
 
 Class = IsItDown
