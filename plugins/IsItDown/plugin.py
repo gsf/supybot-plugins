@@ -16,10 +16,14 @@ class IsItDown(callbacks.Privmsg):
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
-        html = opener.open(site + url)
-        html_str = html.read()
-        soup = BeautifulSoup(html_str)
-        irc.reply(soup.div.contents[0].strip(), prefixNick=True)
+        try:
+            html = opener.open(site + url)
+            html_str = html.read()
+            soup = BeautifulSoup(html_str)
+            response = soup.div.contents[0].strip()
+            irc.reply(response, prefixNick=True)
+        except:
+            irc.reply("Hmm. Either downforeveryoneorjustme.com changed its response format and I need to be updated, or that URL triggered a mysterious error on the site.", prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
 
 Class = IsItDown
