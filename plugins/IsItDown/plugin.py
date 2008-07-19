@@ -23,7 +23,7 @@ class IsItDown(callbacks.Privmsg):
             response = soup.div.contents[0].strip()
             irc.reply(response, prefixNick=True)
         except HTTPError, oops:
-            irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (oops), prefixNick=True)
+            irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (str(oops)), prefixNick=True)
         except AttributeError:
             irc.reply("Hmm. downforeveryoneorjustme.com probably changed its response format; please update me.", prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
