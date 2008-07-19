@@ -19,8 +19,7 @@ class IsItDown(callbacks.Privmsg):
         html = opener.open(site + url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        # Content of /html/head/title is what we want
-        irc.reply(soup.html.head.title.string.strip(), prefixNick=True)
+        irc.reply(soup.div.contents[0].strip(), prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
 
 Class = IsItDown
