@@ -5,7 +5,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 from BeautifulSoup import BeautifulSoup
-from urllib2 import build_opener
+from urllib2 import build_opener, HTTPError
 
 class IsItDown(callbacks.Privmsg):
     def isitdown(self, irc, msg, args, url):
@@ -22,7 +22,7 @@ class IsItDown(callbacks.Privmsg):
             soup = BeautifulSoup(html_str)
             response = soup.div.contents[0].strip()
             irc.reply(response, prefixNick=True)
-        except urllib2.HTTPError, oops:
+        except HTTPError, oops:
             irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (oops), prefixNick=True)
         except AttributeError:
             irc.reply("Hmm. downforeveryoneorjustme.com probably changed its response format; please update me.", prefixNick=True)
