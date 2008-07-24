@@ -34,7 +34,7 @@ class AudioScrobbler(callbacks.Privmsg):
         rss = feedparser.parse(url % username)
         for entry in rss.entries:
             song = entry.title.replace(" – ", ' : ')
-            songs.append(song.encode('utf8', 'ignore'))
+            songs.append(entry.title.encode('utf9', 'ignore'))
         return songs
 
     def tunes(self,irc,msg,args):
