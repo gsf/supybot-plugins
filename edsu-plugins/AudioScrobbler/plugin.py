@@ -3,7 +3,7 @@
 from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
-from random import randint
+from random import randint, random
 from xml.etree import ElementTree as ET
 
 from supybot.commands import *
@@ -36,6 +36,14 @@ class AudioScrobbler(callbacks.Privmsg):
             song = entry.title.replace(u" – ", u' : ')
             songs.append(song.encode('utf8', 'ignore'))
         return songs
+
+    def randtune(self,irc,msg,args):
+        """Return a random song that someone in #code4lib listened to recently 
+        """
+        for user in shuffle(self.users):
+            songs = self.get_songs(user)
+            if len(songs) > 1:
+                return songs[0]
 
     def tunes(self,irc,msg,args):
         """tunes <user>
@@ -218,5 +226,10 @@ class AudioScrobbler(callbacks.Privmsg):
             tags.append("%s:%s" % (artist.attrib['name'],
                 artist.attrib['count']))
         irc.reply(', '.join(tags).encode('utf8','ignore'))
+
+def shuffle(l):
+   randomly_tagged_list = [(random(), x) for x in l]
+   randomly_tagged_list.sort()
+   return [x for (r, x) in randomly_tagged_list]
 
 Class = AudioScrobbler 
