@@ -9,7 +9,7 @@ from htmlentitydefs import name2codepoint
 
 import re
 
-from BeautifulSoup import BeautifulSoup, StopParsing
+from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS, StopParsing
 import re
 from urllib import urlencode
 from urllib2 import Request, build_opener, HTTPError
@@ -20,16 +20,16 @@ logger = logging.getLogger('supybot')
 def random_title(artist):
     searchurl = 'http://lyricsfly.com/search/search.php'
     postdata = urlencode({'sort': 1, 'options': 2, 'keywords': artist})
-    soup = url2soup(searchurl,{},postdata)
+    soup = url2soup(searchurl, {}, postdata, xml=False)
     results = [a.string for a in soup.findAll('a', href=re.compile('^view.php'))]
     logger.info('num results: %d' % len(results))
     try:
         ret = results[randint(0, len(results) - 1)]
-        return ret
+        return ret.encode('ascii', 'ignore')
     except:
         return 
 
-def url2soup(url, qsdata={}, postdata=None, headers={}):
+def url2soup(url, qsdata={}, postdata=None, headers={}, xml=True):
     """
     Fetch a url and BeautifulSoup-ify the returned doc
     """
@@ -47,13 +47,16 @@ def url2soup(url, qsdata={}, postdata=None, headers={}):
     opener = build_opener()
     doc = opener.open(req)
     data = doc.read()
-    data = data.replace("\xa0", "")
-    soup = BeautifulSoup(data, convertEntities=['html','xml'])
+    if xml:
+        data = re.sub('&#[A-Za-z0-9]+;', '', data)
+        soup = BSS(data, convertEntities=BSS.XML_ENTITIES)
+    else:
+        soup = BS(data, convertEntities=BS.HTML_ENTITIES)
     return soup
 
-def htmlentitydecode(s):
-    return re.sub(u'&(%s);' % u'|'.join(name2codepoint), 
-        lambda m: unichr(name2codepoint[m.group(1)]), s)
+#def htmlentitydecode(s):
+#    return re.sub(u'&(%s);' % u'|'.join(name2codepoint), 
+#        lambda m: unichr(name2codepoint[m.group(1)]), s)
 
 class Sing(callbacks.Plugin):
     """
@@ -116,7 +119,7 @@ class Sing(callbacks.Plugin):
         if not song('id'):
             irc.reply('No results for "%s"' % input); return
         lyrics = song.tx.string.replace('[br]','\n')
-        lyrics = htmlentitydecode(lyrics)
+#        lyrics = htmlentitydecode(lyrics)
 
         if re.search('instrumental', lyrics, re.I):
             irc.reply("hums %s by %s" % (song.tt.string, song.ar.string),
@@ -151,7 +154,8 @@ class Sing(callbacks.Plugin):
             resp = lines[start_line:end_line]
 
         logger.info('start:end = %d:%d' % (start_line, end_line))
-        resp = u' / '.join([l for l in resp if re.search('\S', l)])
+        resp = ' / '.join([l for l in resp if re.search('\S', l)])
+        resp = resp.encode('ascii', 'ignore')
 
         irc.reply(resp, prefixNick=False)
 
