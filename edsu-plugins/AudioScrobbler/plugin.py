@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
@@ -31,8 +33,8 @@ class AudioScrobbler(callbacks.Privmsg):
         songs = []
         rss = feedparser.parse(url % username)
         for entry in rss.entries:
-            song = entry.title.replace(" \xe2 ", ' : ')
-            songs.append(song.encode('utf8','ignore'))
+            song = u'foo' #entry.title.replace(" – ", ' : ')
+            songs.append(entry.title.encode('utf8', 'ignore'))
         return songs
 
     def tunes(self,irc,msg,args):
