@@ -41,9 +41,11 @@ class AudioScrobbler(callbacks.Privmsg):
         """Return a random song that someone in #code4lib listened to recently 
         """
         for user in shuffle(self.users):
+            self.log.info(user)
             songs = self.get_songs(user)
-            if len(songs) > 1:
-                return songs[0]
+            if len(songs) > 0:
+                irc.reply(songs[0])
+                return
 
     def tunes(self,irc,msg,args):
         """tunes <user>
