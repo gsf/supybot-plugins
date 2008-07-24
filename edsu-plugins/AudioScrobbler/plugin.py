@@ -31,7 +31,7 @@ class AudioScrobbler(callbacks.Privmsg):
         songs = []
         rss = feedparser.parse(url % username)
         for entry in rss.entries:
-            song = entry.title.replace(' – ', ' : ')
+            song = entry.title.replace(" \xe2 ", ' : ')
             songs.append(song.encode('utf8','ignore'))
         return songs
 
