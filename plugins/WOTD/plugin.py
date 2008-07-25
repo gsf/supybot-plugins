@@ -43,7 +43,7 @@ class WOTD(callbacks.Plugin):
         summary = re.sub('\s+', ' ', summary)
         match = re.search('\d{2}, \d+ is: (.+?) Example sentence:', summary, re.I | re.M | re.S)
         worddef = match.group(1).encode('ascii', 'ignore')
-#        worddef = re.sub('^\s*(?P<wotd>\w+)\s*', '_\g<wotd>_ ', worddef)
+        worddef = re.sub('^\s*(?P<wotd>[^\\]+)\s*', '\g<wotd> : ', worddef)
         resp = '%s (audio:%s, link:%s)' % (worddef, mp3url, itemurl)
         irc.reply(resp, prefixNick=False)
 
