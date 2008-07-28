@@ -5,7 +5,7 @@ import time
 class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
         #'billSnarfer',
-        'coughSnarfer', 'metadataSnarfer', 'crueSnarfer',
+        'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'rickGuard',
         'panizziSnarfer', 'opacSnarfer'] #, 'hehSnarfer']
 
     def cassonSnarfer(self,irc,msg,match):
@@ -68,6 +68,11 @@ class TrueTrue(callbacks.PluginRegexp):
         aisle = randint(1,10)
         irc.reply(("clean up on aisle %i" % aisle), prefixNick=False)
 
+    def yawnSnarfer(self,irc,msg,match):
+        r"yawns"
+        time.sleep(2)
+        irc.reply("WAKE UP!")
+
 #   commented out on request
 #    def billSnarfer(self,irc,msg,match):
 #        r"bdrew|bill drew|Bill Drew|Bill Gates|bgates|bill gates"
@@ -88,5 +93,4 @@ class TrueTrue(callbacks.PluginRegexp):
 	else:
 	     irc.reply("typical...", prefixNick=False)
         
-
 Class = TrueTrue
