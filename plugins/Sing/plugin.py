@@ -33,7 +33,8 @@ def url2soup(url, qsdata={}, postdata=None, headers={}, xml=True):
     """
     Fetch a url and BeautifulSoup-ify the returned doc
     """
-    ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+    #ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+    ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)'
     headers.update({'User-Agent': ua})
 
     params = urlencode(qsdata)
@@ -65,7 +66,7 @@ class Sing(callbacks.Plugin):
     threaded = True
 
     # get this here: http://lyricsfly.com/api/
-    API_ID = '3b5be3fa5135521da-temporary.API.access'
+    API_ID = 'e6e1348b4418226e5-temporary.API.access'
 
     def sing(self, irc, msg, args, input):
         """
