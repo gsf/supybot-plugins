@@ -5,7 +5,7 @@ import time
 class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
         #'billSnarfer',
-        'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'rickGuard',
+        'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 
         'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer'] #, 'hehSnarfer']
 
     def cassonSnarfer(self,irc,msg,match):
