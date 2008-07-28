@@ -6,7 +6,7 @@ class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
         #'billSnarfer',
         'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'rickGuard',
-        'panizziSnarfer', 'opacSnarfer'] #, 'hehSnarfer']
+        'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer'] #, 'hehSnarfer']
 
     def cassonSnarfer(self,irc,msg,match):
         r"true, true"
