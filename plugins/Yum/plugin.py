@@ -85,7 +85,7 @@ class Yum(callbacks.Plugin):
                 recTitle = re.sub('\(', '', recTitle)
 
             recHref = r['href']
-            recipeUrl = tinyurl(baseurl + recHref)
+            recipeUrl = self.tinyurl(baseurl + recHref)
             results.append("%s (%s)" % (recTitle.capitalize(), recipeUrl))
 
         if len(results) == 0:
@@ -168,7 +168,7 @@ class Yum(callbacks.Plugin):
         if "aeiou".find(beerName[:1].lower()) != -1:
             article = 'an'
 
-        resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, tinyurl(beerUrl))
+        resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, self.tinyurl(beerUrl))
         irc.reply(resp, prefixNick=True)
 
     beerme = wrap(beerme, [optional('text')])
