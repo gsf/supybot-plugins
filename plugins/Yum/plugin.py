@@ -9,13 +9,19 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
-from BeautifulSoup import BeautifulSoup
+from BeautifulSoup import BeautifulSoup as BS
 import urllib
 import re
 import copy
 from urllib2 import Request, build_opener, HTTPError
 from string import capwords
 from random import randint
+
+def tinyurl(url):
+    r = Request('http://tinyurl.com/api-create.php?url=%s' % url)
+    doc = urlopen(r)
+    soup = BSS(doc)
+    return str(soup)
 
 class Yum(callbacks.Plugin):
     """
@@ -43,9 +49,9 @@ class Yum(callbacks.Plugin):
             return
 
         html = doc.read()
-        myMassage = copy.copy(BeautifulSoup.MARKUP_MASSAGE)
+        myMassage = copy.copy(BS.MARKUP_MASSAGE)
         myMassage.extend([(re.compile('<!-([^-])'), lambda match: '<!--' + match.group(1))])
-        soup = BeautifulSoup(html, markupMassage=myMassage)
+        soup = BS(html, markupMassage=myMassage)
         return soup
 
     def recipe(self, irc, msg, args):
@@ -79,7 +85,8 @@ class Yum(callbacks.Plugin):
                 recTitle = re.sub('\(', '', recTitle)
 
             recHref = r['href']
-            results.append("%s (%s%s)" % (recTitle.capitalize(), baseurl, recHref))
+            recipeUrl = tinyurl(baseurl + recHref)
+            results.append("%s (%s)" % (recTitle.capitalize(), recipeUrl))
 
         if len(results) == 0:
             irc.reply('no results!', prefixNick=True)
@@ -149,8 +156,8 @@ class Yum(callbacks.Plugin):
             irc.reply('no results!', prefixNick=True)
             return
 
-        beerUri = 'http://www.whatalesyou.com/beerdetail1.asp?ID=%s' % beerid
-        soup = self._get_soup(irc, beerUri)
+        beerUrl = 'http://www.whatalesyou.com/beerdetail1.asp?ID=%s' % beerid
+        soup = self._get_soup(irc, beerUrl)
         beernameTd = soup.find('td', colspan=6)
         beerName = beernameTd.find('font').string.strip()
         breweryTd = beernameTd.parent.nextSibling.nextSibling.nextSibling.nextSibling.find('td')
@@ -161,7 +168,7 @@ class Yum(callbacks.Plugin):
         if "aeiou".find(beerName[:1].lower()) != -1:
             article = 'an'
 
-        resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, beerUri)
+        resp = "%s %s %s by %s - %s" % (sug[randint(0, len(sug)-1)], article, beerName, breweryName, tinyurl(beerUrl))
         irc.reply(resp, prefixNick=True)
 
     beerme = wrap(beerme, [optional('text')])
