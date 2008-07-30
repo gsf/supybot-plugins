@@ -9,19 +9,13 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
-from BeautifulSoup import BeautifulSoup as BS
+from BeautifulSoup import BeautifulSoup
 import urllib
 import re
 import copy
 from urllib2 import Request, build_opener, HTTPError
 from string import capwords
 from random import randint
-
-def tinyurl(url):
-    r = Request('http://tinyurl.com/api-create.php?url=%s' % url)
-    doc = urlopen(r)
-    soup = BSS(doc)
-    return str(soup)
 
 class Yum(callbacks.Plugin):
     """
@@ -37,7 +31,13 @@ class Yum(callbacks.Plugin):
         self.opener = build_opener()
         self.opener.addheaders = [('User-Agent', ua)]
 
-    def _get_soup(self, irc, url, postdata=None):
+    def tinyurl(self, url):
+        r = Request('http://tinyurl.com/api-create.php?url=%s' % url)
+        doc = self.opener.open(r)
+        soup = BeautifulSoup(doc)
+        return str(soup)
+
+    def _get_soup(self, irc, url, postdata=None, headers={}):
         # stole this from robcaSSon's traffic plugin so blame him
         doc = None
         req = Request(url, postdata)
@@ -49,9 +49,9 @@ class Yum(callbacks.Plugin):
             return
 
         html = doc.read()
-        myMassage = copy.copy(BS.MARKUP_MASSAGE)
+        myMassage = copy.copy(BeautifulSoup.MARKUP_MASSAGE)
         myMassage.extend([(re.compile('<!-([^-])'), lambda match: '<!--' + match.group(1))])
-        soup = BS(html, markupMassage=myMassage)
+        soup = BeautifulSoup(html, markupMassage=myMassage)
         return soup
 
     def recipe(self, irc, msg, args):
