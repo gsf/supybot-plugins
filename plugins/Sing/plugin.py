@@ -67,6 +67,7 @@ class Sing(callbacks.Plugin):
 
     # get this here: http://lyricsfly.com/api/
     API_ID = 'e6e1348b4418226e5-temporary.API.access'
+    #f4c24c1183135cda8-temporary.API.access
 
     def sing(self, irc, msg, args, input):
         """
@@ -116,12 +117,17 @@ class Sing(callbacks.Plugin):
         songs = soup('sg')
         if not songs:
             irc.reply('No results for "%s"' % input); return
+            return
         song = songs[randint(0, len(songs) - 1)]
         if not song('id'):
             irc.reply('No results for "%s"' % input); return
-        self.log.debug(str(song.tx.string))
+            return
+
+        if re.match(r'expired', str(song.tx)):
+            irc.reply('the dumb lyricsfly temporary API ID has expired')
+            return
+
         lyrics = song.tx.string.replace('[br]','\n')
-#        lyrics = htmlentitydecode(lyrics)
 
         if re.search('instrumental', lyrics, re.I):
             irc.reply("hums %s by %s" % (song.tt.string, song.ar.string),
