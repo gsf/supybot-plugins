@@ -33,7 +33,6 @@ def url2soup(url, qsdata={}, postdata=None, headers={}, xml=True):
     """
     Fetch a url and BeautifulSoup-ify the returned doc
     """
-    #ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
     ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)'
     headers.update({'User-Agent': ua})
 
