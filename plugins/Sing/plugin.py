@@ -123,7 +123,7 @@ class Sing(callbacks.Plugin):
             irc.reply('No results for "%s"' % input); return
             return
 
-        if re.match(r'expired', str(song.tx)):
+        if re.search(r'expired', str(song.tx)):
             irc.reply('the dumb lyricsfly temporary API ID has expired')
             return
 
