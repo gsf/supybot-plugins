@@ -119,7 +119,7 @@ class Sing(callbacks.Plugin):
         song = songs[randint(0, len(songs) - 1)]
         if not song('id'):
             irc.reply('No results for "%s"' % input); return
-        self.log.debug(song.tx.string)
+        self.log.debug(str(song.tx.string))
         lyrics = song.tx.string.replace('[br]','\n')
 #        lyrics = htmlentitydecode(lyrics)
 
