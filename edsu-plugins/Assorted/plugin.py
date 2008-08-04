@@ -303,6 +303,12 @@ class Assorted(callbacks.Privmsg):
         """
         irc.reply(self.count(' '.join(args)))
 
+    def developer(self,irc,msg,args):
+        """generate a fantasy developer"""
+        attrs = ['Communication', 'BigPicture', 'DetailOriented', 'KungFu', 'GetsStuffDone', 'FlakeFactor']
+        dev = ', '.join(["%s:%d" % (attr, self.dnd_attr()) for attr in attrs])
+        irc.reply(dev)
+
     def gamma(self,irc,msg,args):
         """generate a gamma world character"""
         attrs = ['Charisma', 'Constitution', 'Dexterity','Intelligence','Mental Strength','Physical Strength']
@@ -626,6 +632,7 @@ class Assorted(callbacks.Privmsg):
             pass
 
         irc.reply(title, prefixNick=True)
+
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
