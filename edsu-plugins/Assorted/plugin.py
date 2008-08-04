@@ -1,20 +1,19 @@
-from supybot.commands import *
-import supybot.callbacks as callbacks
-
-import os
-import re
-from elementtidy import TidyHTMLTreeBuilder
-from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
-from urllib import quote, urlencode
-from urlparse import urlparse
+from BeautifulSoup import BeautifulSoup, StopParsing
 from cgi import parse_qs
-from random import randint
-from re import sub, match
+from datetime import date
+from elementtidy import TidyHTMLTreeBuilder
 import feedparser
 #import google
+import os
+from random import randint
+import re
 import simplejson
-from BeautifulSoup import BeautifulSoup, StopParsing
-from datetime import date
+from urllib import quote, urlencode
+from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
+from urlparse import urlparse
+
+from supybot.commands import *
+import supybot.callbacks as callbacks
 
 class Assorted(callbacks.Privmsg):
 
@@ -93,7 +92,7 @@ class Assorted(callbacks.Privmsg):
       setdefaulttimeout(60)
       url = 'http://dilettantes.code4lib.org:6789/election/results/2'
       json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = sub(r'\\[0-9A-fa-f]{3}', '', json)
+      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
       json = json.decode('utf-8', 'ignore')
       votes = simplejson.loads(json)
 
@@ -126,7 +125,7 @@ class Assorted(callbacks.Privmsg):
       """
       url = 'http://dilettantes.code4lib.org:6789/election/results/3'
       json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = sub(r'\\[0-9A-fa-f]{3}', '', json)
+      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
       votes = simplejson.loads(json)
       tallies = []
       for count in votes:
@@ -198,8 +197,8 @@ class Assorted(callbacks.Privmsg):
         results = []
         for tally in simplejson.loads(json):
           talk_name = tally['talk_name']
-          if brief and not match('http', talk_name):
-            talk_name = sub('( -|[:/.]).*', '', talk_name)
+          if brief and not re.match('http', talk_name):
+            talk_name = re.sub('( -|[:/.]).*', '', talk_name)
           results.append("%s %s" % (talk_name, tally['votes']))
           if brief and len(results) > 15:
             break
@@ -478,7 +477,7 @@ class Assorted(callbacks.Privmsg):
             string += self.get_text(child)
         if e.tail: string += e.tail
         string = string.replace("\n",'')
-        string = sub('\+? Details.','', string)
+        string = re.sub('\+? Details.','', string)
         return string
 
     def isitfriday(self, irc, msg, args):
