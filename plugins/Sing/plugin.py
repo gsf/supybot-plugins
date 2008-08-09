@@ -4,16 +4,17 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
-import logging
+
+import re, logging, time
 from htmlentitydefs import name2codepoint
-
-import re
-
-from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS, StopParsing
-import re
 from urllib import urlencode
 from urllib2 import Request, build_opener, HTTPError
 from random import randint
+from SOAPpy import SOAPProxy
+
+from BeautifulSoup import \
+    BeautifulStoneSoup as BSS, \
+    BeautifulSoup as BS, StopParsing
 
 logger = logging.getLogger('supybot')
 
@@ -54,15 +55,28 @@ def url2soup(url, qsdata={}, postdata=None, headers={}, xml=True):
         soup = BS(data, convertEntities=BS.HTML_ENTITIES)
     return soup
 
-#def htmlentitydecode(s):
-#    return re.sub(u'&(%s);' % u'|'.join(name2codepoint), 
-#        lambda m: unichr(name2codepoint[m.group(1)]), s)
-
 class Sing(callbacks.Plugin):
     """
     Usage: sing artist [:title|*] [:line|*] 
     """
     threaded = True
+
+    def sotd(self, irc, msg, args):
+        try:
+            server = SOAPProxy('http://lyricwiki.org/server.php')
+            song = server.getSOTD()
+            title = song['song']
+            artist = song['artist']
+            lyrics = song['lyrics']
+            lyrics = re.sub(r'\n\n', ' ** ', lyrics)
+            lyrics = re.sub(r'\n', ' / ', lyrics)
+            irc.reply('%s by %s...' % (title, artist), prefixNick=False)
+            time.sleep(2)
+            irc.reply(lyrics, prefixNick=False)
+            return
+        except Exception, e:
+            irc.reply('Error communicating with server: ' + e)
+            return
 
     # get this here: http://lyricsfly.com/api/
     API_ID = 'f4c24c1183135cda8-temporary.API.access'
