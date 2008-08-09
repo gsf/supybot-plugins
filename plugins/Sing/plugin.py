@@ -62,6 +62,9 @@ class Sing(callbacks.Plugin):
     threaded = True
 
     def sotd(self, irc, msg, args):
+        """
+        Fetches song of the day from lyricswiki
+        """
         try:
             server = SOAPProxy('http://lyricwiki.org/server.php')
             song = server.getSOTD()
