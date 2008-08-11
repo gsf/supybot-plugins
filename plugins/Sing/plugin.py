@@ -74,7 +74,7 @@ class Sing(callbacks.Plugin):
             irc.reply('error commuincating with lyricwiki: ' + e.message)
 
         if song['lyrics'] == 'Not found':
-            irc.reply('No lyrics found', prefixNick=True)
+            irc.reply('No lyrics found for %s : %s' % (artist, title), prefixNick=True)
         else:
             lyrics = self.formatlyrics(song, line)
             irc.reply(lyrics, prefixNick=False)
