@@ -17,9 +17,10 @@ ARTIST_REST_URL = 'http://lyricwiki.org/api.php?func=getArtist&fmt=xml&artist=%s
 SONG_REST_URL = 'http://lyricwiki.org/api.php?func=getSong&fmt=xml&artist=%s&song=%s'
 
 def tinyurl(url):
-    url = 'http://tinyurl.com/api-create.php?url=%s' % url
+    url = 'http://tinyurl.com/api-create.php?url=%s' % web.urlquote(url)
     logger.info('fetching: ' + url)
-    return web.getUrl(url, headers)
+    soup = getsoup(url)
+    return str(soup)
 
 def getsoup(url):
     xml = web.getUrl(url, headers=HEADERS)
@@ -134,7 +135,7 @@ class Sing(callbacks.Plugin):
 
         if not song or song['lyrics'] == 'Not found':
             create = 'http://lyricwiki.org/index.php?title=%s:%s&action=edit' % (artist, title)
-            irc.reply('No lyrics for %s : %s. Create them: %s' % (artist, title, tinyurl(create)), prefixNick=True)
+            irc.reply('No lyrics for %s by %s. Create them? %s' % (title, artist, tinyurl(create)), prefixNick=True)
         else:
             lyrics = formatlyrics(song, line)
             irc.reply(lyrics, prefixNick=False)
