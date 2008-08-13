@@ -8,28 +8,44 @@ import supybot.callbacks as callbacks
 
 import re, logging, time
 from random import randint
+from urllib import urlencode
 from BeautifulSoup import BeautifulStoneSoup as BSS
 
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 
-ARTIST_REST_URL = 'http://lyricwiki.org/api.php?func=getArtist&fmt=xml&artist=%s'
-SONG_REST_URL = 'http://lyricwiki.org/api.php?func=getSong&fmt=xml&artist=%s&song=%s'
+def editurl(artist, title):
+    baseurl = 'http://lyricwiki.org/index.php?action=edit&'
+    params = dict(title=':'.join((artist, title)))
+    return baseurl + urlencode(params)
+
+def artisturl(artist):
+    baseurl = 'http://lyricwiki.org/api.php?func=getArtist&fmt=xml&'
+    params = dict(artist=artist)
+    return baseurl + urlencode(params)
+
+def songurl(artist, title):
+    baseurl = 'http://lyricwiki.org/api.php?func=getSong&fmt=xml&'
+    params = dict(artist=artist, song=title)
+    return baseurl + urlencode(params)
 
 def tinyurl(url):
-    url = 'http://tinyurl.com/api-create.php?url=%s' % web.urlquote(url)
-    logger.info('fetching: ' + url)
-    soup = getsoup(url)
-    return str(soup)
+    try:
+        url = 'http://tinyurl.com/api-create.php?url=%s' % url
+        logger.info('fetching: ' + url)
+        tiny = web.getUrl(url, headers=HEADERS)
+        return tiny
+    except:
+        return 'http://lyricwiki.org'
 
 def getsoup(url):
+    logger.info('fetching: ' + url)
     xml = web.getUrl(url, headers=HEADERS)
     return BSS(xml, convertEntities=BSS.XML_ENTITIES)
 
 def getsong(artist, title):
     try:
-        url = SONG_REST_URL % (web.urlquote(artist), web.urlquote(title))
-        logger.info('fetching ' + url)
+        url = songurl(artist, title)
         soup = getsoup(url)
         song = {}
         for k in 'artist','song','lyrics','url':
@@ -41,8 +57,7 @@ def getsong(artist, title):
 
 def randtitle(artist):
     try:
-        url = ARTIST_REST_URL % web.urlquote(artist)
-        logger.info('fetching ' + url)
+        url = artisturl(artist)
         soup = getsoup(url)
         songs = soup.findAll('item')
         if len(songs):
@@ -121,21 +136,21 @@ class Sing(callbacks.Plugin):
             try:
                 artist, title = args
                 logger.info('got %s, %s' % (artist, title))
-                if title == '*':
-                    title = randtitle(artist)
             except:
                 artist = args[0]
                 logger.info('got %s' % (artist))
                 title = randtitle(artist)
-            if not title:
-                irc.reply('No songs found by ' + artist)
-                return
+        if title == '*':
+            title = randtitle(artist)
+        elif not title:
+            irc.reply('No songs found by ' + artist)
+            return
 
         song = getsong(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
-            create = 'http://lyricwiki.org/index.php?title=%s:%s&action=edit' % (artist, title)
-            irc.reply('No lyrics for %s by %s. Create them? %s' % (title, artist, tinyurl(create)), prefixNick=True)
+            create = tinyurl(editurl(artist, title))
+            irc.reply('No lyrics for %s by %s. Create them? %s' % (title, artist, create), prefixNick=True)
         else:
             lyrics = formatlyrics(song, line)
             irc.reply(lyrics, prefixNick=False)
