@@ -138,13 +138,13 @@ class Python(callbacks.PluginRegexp):
 
     _these = [str(s) for s in this.s.decode('rot13').splitlines() if s]
     _these.pop(0) # Initial line (The Zen of Python...)
-    def zen(self, irc, msg, args):
+    def pyzen(self, irc, msg, args):
         """takes no arguments
 
         Returns one of the zen of Python statements.
         """
         irc.reply(utils.iter.choice(self._these))
-    zen = wrap(zen)
+    pyzen = wrap(pyzen)
 
     _title = re.compile(r'<b>(Title):</b>&nbsp;(.*)', re.I)
     _submit = re.compile(r'<b>(Submitter):</b>&nbsp;(.*)', re.I)
