@@ -112,6 +112,7 @@ class Sing(callbacks.Plugin):
             title = song['song']
             artist = song['artist']
             lyrics = formatlyrics(song, '*')
+            lyrics = lyrics.encode('ascii', 'ignore')
             irc.reply('%s by %s...' % (title, artist), prefixNick=False)
             time.sleep(2)
             irc.reply(lyrics, prefixNick=False)
@@ -153,6 +154,7 @@ class Sing(callbacks.Plugin):
             irc.reply('No lyrics for %s by %s. Create them? %s' % (title, artist, create), prefixNick=True)
         else:
             lyrics = formatlyrics(song, line)
+            lyrics = lyrics.encode('ascii', 'ignore')
             irc.reply(lyrics, prefixNick=False)
 
     sing = wrap(sing, ['text'])
