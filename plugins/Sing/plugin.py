@@ -111,7 +111,7 @@ class Sing(callbacks.Plugin):
             song = server.getSOTD()
             title = song['song']
             artist = song['artist']
-            lyrics = self.formatlyrics(song, '*')
+            lyrics = formatlyrics(song, '*')
             irc.reply('%s by %s...' % (title, artist), prefixNick=False)
             time.sleep(2)
             irc.reply(lyrics, prefixNick=False)
