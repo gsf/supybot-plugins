@@ -20,5 +20,10 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply(re.sub(r'^', 'my friends, ', ' '.join(args)), prefixNick=True)
 
+    def dick (self, irc, msg, args):
+        """disclaims your desire to be a dick
+        """
+        irc.reply("I don't mean to be a dick, but " + ' '.join(args), prefixNick=True)
+        
 Class = Translators
 
