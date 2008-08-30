@@ -35,7 +35,7 @@ class Presidents(callbacks.Privmsg):
 
     def sarahpalin(self, irc, msg, args):
         """Taken from http://www.dailykos.com/storyonly/2008/8/29/14238/1838"""
-        choices = """Sarah Palin is your new Segway.
+        choices = u"""Sarah Palin is your new Segway.
         Sarah Palin is your New New Coke.
         Sarah Palin is your new FoxTrax.
         Sarah Palin is your new Edsel.
