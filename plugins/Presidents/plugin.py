@@ -44,7 +44,8 @@ class Presidents(callbacks.Privmsg):
         html = opener.open(url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        irc.reply(soup.find('a').string.strip().upper())
+        resp = 'Sarah Palin is your new ' + soup.find('span', 'flash_text').strip()
+        irc.reply(resp.upper())
 
 Class = Presidents
 
