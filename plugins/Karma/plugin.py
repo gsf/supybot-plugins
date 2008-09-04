@@ -267,7 +267,7 @@ class Karma(callbacks.Plugin):
             else:
                 if thing_end == '++':
                     self.db.increment(channel, self._normalizeThing(thing))
-                elif thing_end == '--'
+                elif thing_end == '--':
                     self.db.decrement(channel, self._normalizeThing(thing))
                 else:
                     self.db.increment(channel, self._normalizeThing(thing))
