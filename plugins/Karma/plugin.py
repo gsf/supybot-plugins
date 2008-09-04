@@ -41,7 +41,7 @@ import supybot.callbacks as callbacks
 ### adapted from django.utils.text ###
 import re
 # modified to include ++ or -- at end of phrases
-smart_split_re = re.compile(r'("(?:[^"\\]*(?:\\.[^"\\]*)*)"|\'(?:[^\'\\]*(?:\\.[^\'\\]*)*)\'|[^\s]+)(?:\+\+|\-\-)')
+smart_split_re = re.compile(r'("(?:[^"\\]*(?:\\.[^"\\]*)*)"|\'(?:[^\'\\]*(?:\\.[^\'\\]*)*)\'|[^\s]+)(?:\+\+|\-\-|\+\-|\-\+)')
 def smart_split(text):
     """
     Generator that splits a string by spaces, leaving quoted phrases together.
@@ -256,7 +256,7 @@ class Karma(callbacks.Plugin):
             irc.noReply()
 
     def _doKarma(self, irc, channel, thing):
-        assert thing[-2:] in ('++', '--')
+        assert thing[-2:] in ('++', '--', '+-', '-+')
         assert thing[:-2] not in ('<', )
         thing_end = thing[-2:]
         thing = thing[:-2].strip('\'"')
@@ -267,8 +267,11 @@ class Karma(callbacks.Plugin):
             else:
                 if thing_end == '++':
                     self.db.increment(channel, self._normalizeThing(thing))
-                else:
+                elif thing_end == '--'
                     self.db.decrement(channel, self._normalizeThing(thing))
+                else:
+                    self.db.increment(channel, self._normalizeThing(thing))
+                    self.db.decrement(channel, self._normalizeThing(thing))                    
                 self._respond(irc, channel)
         
 #        if thing.endswith('++'):
