@@ -612,9 +612,9 @@ class Assorted(callbacks.Privmsg):
         irc.reply(zen, to=who, prefixNick=True)
 
     def dance(self, irc, msg, args):
-        irc.reply(" o/")
-        irc.reply("/|")
-        irc.reply(" >>")
+        irc.reply(" o/", prefixNick=False)
+        irc.reply("/|"), prefixNick=False
+        irc.reply(" >>"), prefixNick=False
 
     def halfbaked(self, irc, msg, args):
         """
