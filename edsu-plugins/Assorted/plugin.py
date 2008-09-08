@@ -611,6 +611,11 @@ class Assorted(callbacks.Privmsg):
         who = who.replace('- ', '')
         irc.reply(zen, to=who, prefixNick=True)
 
+    def dance(self, irc, msg, args):
+        irc.reply("a")
+        irc.reply("b")
+        irc.reply("c")
+
     def halfbaked(self, irc, msg, args):
         """
         returns a radom half-baked idea from http://halfbakery.com
