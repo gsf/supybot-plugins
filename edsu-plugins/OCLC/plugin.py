@@ -92,8 +92,8 @@ class OCLC(callbacks.Privmsg):
                   match_flag = ''
                   if match_type == 'FuzzyFirstName':
                     match_flag = '~'
-                  response_chunks.append("[%s%i] %s <%s>" % (match_flag, count, 
-                      established_form, uri))
+                  response_chunks.append("[%s%i] %s <%s.html>" % 
+                      (match_flag, count, established_form, uri))
                 irc.reply( ("[%i matches] " % count) + 
                     '; '.join(response_chunks).encode('utf8'))
         except Exception, e:
