@@ -645,7 +645,7 @@ class Assorted(callbacks.Privmsg):
         targetdate = datetime(2008, 10, 21, 13, 0, 0)
         now = datetime.now()
         delta = targetdate - now
-        irc.reply('%d until the end of world' % delta.days)
+        irc.reply('%d days left' % delta.days)
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
