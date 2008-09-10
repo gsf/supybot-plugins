@@ -26,6 +26,8 @@ class IsItDown(callbacks.Privmsg):
             irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (str(oops)), prefixNick=True)
         except AttributeError:
             irc.reply("Hmm. downforeveryoneorjustme.com probably changed its response format; please update me.", prefixNick=True)
+        except:
+            irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
 
 Class = IsItDown
