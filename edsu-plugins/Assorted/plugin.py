@@ -1,6 +1,6 @@
 from BeautifulSoup import BeautifulSoup, StopParsing
 from cgi import parse_qs
-from datetime import date
+from datetime import date, datetime
 from elementtidy import TidyHTMLTreeBuilder
 import feedparser
 #import google
@@ -638,6 +638,14 @@ class Assorted(callbacks.Privmsg):
 
         irc.reply(title, prefixNick=True)
 
+    def lhc(self, irc, msg, args):
+        """
+        reports how much time is left until the HLC starts smashing reality^Watoms
+        """
+        targetdate = datetime(2008, 10, 21, 13, 0, 0)
+        now = datetime.now()
+        delta = targetdate - now
+        irc.reply('%d until the end of world' % delta.days)
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
