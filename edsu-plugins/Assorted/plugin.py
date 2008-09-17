@@ -642,25 +642,12 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
-        irc.reply(self.get_dow())
-
-    def dowticker(self, irc, msg, args):
-        if len(args) == 0:
-            times = 5
-        else:
-            times = int(args[0])
-
-        for i in range(0,times):
-            irc.reply(self.get_dow())
-            time.sleep(2)
-
-    def get_dow(self):
         html =urlopen("http://finance.google.com/finance?cid=983582").read()
         m = re.search(r'<span class="pr".*>(.+)</span>', html)
         i = m.group(1)
         m = re.search(r'<span class="chr".*?>\((.+)\)</span>', html)
         p = m.group(1)
-        return "%s (%s)" % (i, p)
+        irc.reply("%s (%s)" % (i, p))
 
     def lhc(self, irc, msg, args):
         """
