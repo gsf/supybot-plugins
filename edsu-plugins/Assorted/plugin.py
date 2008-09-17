@@ -3,7 +3,6 @@ from cgi import parse_qs
 from datetime import date, datetime
 from elementtidy import TidyHTMLTreeBuilder
 import feedparser
-#import google
 import os
 from random import randint
 import re
@@ -637,6 +636,14 @@ class Assorted(callbacks.Privmsg):
             pass
 
         irc.reply(title, prefixNick=True)
+
+    def dow(self, irc, msg, args):
+        """
+        Get the Dow Jones Industrial Average from teh GOOG
+        """
+        html =urlopen("http://finance.google.com/finance?cid=983582").read()
+        m = re.search(r'<span class="pr".*>(.+)</span>', html)
+        irc.reply(m.group(1))
 
     def lhc(self, irc, msg, args):
         """
