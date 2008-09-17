@@ -74,7 +74,7 @@ class TrueTrue(callbacks.PluginRegexp):
         irc.reply("WAKE UP!")
 
     def knockSnarfer(self,irc,msg,match):
-        r"knock"
+        r"knock knock"
         time.sleep(2)
         irc.reply("Who's there?")
 
