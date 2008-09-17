@@ -7,6 +7,7 @@ import os
 from random import randint
 import re
 import simplejson
+import time
 from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urlparse import urlparse
@@ -641,12 +642,26 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
+        irc.reply(self.get_dow())
+
+    def dowticker(self, irc, msg, args):
+        irc.reply(self.get_dow())
+        time.sleep(2)
+        irc.reply(self.get_dow())
+        time.sleep(2)
+        irc.reply(self.get_dow())
+        time.sleep(2)
+        irc.reply(self.get_dow())
+        time.sleep(2)
+        irc.reply(self.get_dow())
+
+    def get_dow(self):
         html =urlopen("http://finance.google.com/finance?cid=983582").read()
         m = re.search(r'<span class="pr".*>(.+)</span>', html)
         i = m.group(1)
         m = re.search(r'<span class="chr".*?>\((.+)\)</span>', html)
         p = m.group(1)
-        irc.reply("%s (%s)" % (i, p))
+        return "%s (%s)" % (i, p)
 
     def lhc(self, irc, msg, args):
         """
