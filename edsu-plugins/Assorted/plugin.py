@@ -645,15 +645,14 @@ class Assorted(callbacks.Privmsg):
         irc.reply(self.get_dow())
 
     def dowticker(self, irc, msg, args):
-        irc.reply(self.get_dow())
-        time.sleep(2)
-        irc.reply(self.get_dow())
-        time.sleep(2)
-        irc.reply(self.get_dow())
-        time.sleep(2)
-        irc.reply(self.get_dow())
-        time.sleep(2)
-        irc.reply(self.get_dow())
+        if len(args) == 0:
+            times = 5
+        else:
+            times = int(args[0])
+
+        for i in range(0,times):
+            irc.reply(self.get_dow())
+            time.sleep(2)
 
     def get_dow(self):
         html =urlopen("http://finance.google.com/finance?cid=983582").read()
