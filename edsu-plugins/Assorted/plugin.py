@@ -643,7 +643,10 @@ class Assorted(callbacks.Privmsg):
         """
         html =urlopen("http://finance.google.com/finance?cid=983582").read()
         m = re.search(r'<span class="pr".*>(.+)</span>', html)
-        irc.reply(m.group(1))
+        i = m.group(1)
+        m = re.search(r'<span class="chr".*?>\((.+)\)</span>', html)
+        p = m.group(1)
+        irc.reply("%s (%s)" % (i, p))
 
     def lhc(self, irc, msg, args):
         """
