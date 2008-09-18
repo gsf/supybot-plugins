@@ -17,7 +17,7 @@ class NACO(callbacks.Privmsg):
             irc.reply(response, prefixNick=True)
         except Exception, ex:
             irc.reply("Man, I have no idea; things blew up real good. [%s]" %
-(ex.__str__), prefixNick=True)
+(ex), prefixNick=True)
     naco = wrap(naco, ['text'])
 
 Class = NACO
