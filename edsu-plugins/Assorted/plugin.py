@@ -650,7 +650,7 @@ class Assorted(callbacks.Privmsg):
             irc.reply("parsing FAIL")
         if not p:
             p = "0%"
-        irc.reply("%s (%s)" % (i, p))
+        irc.reply("%s %s" % (i, p))
 
     def lhc(self, irc, msg, args):
         """
