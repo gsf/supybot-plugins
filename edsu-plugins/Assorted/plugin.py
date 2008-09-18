@@ -644,13 +644,14 @@ class Assorted(callbacks.Privmsg):
         """
         soup = self._url2soup("http://finance.google.com/finance?cid=983582")
         try:
-            i = soup.find(id="ref_983582_c").string
+            idx = soup.find(id="ref_983582_l").string 
+            updown = soup.find(id="ref_983582_c").string
             p = soup.find(id="ref_983582_cp").string
         except:
             irc.reply("parsing FAIL")
         if not p:
             p = "0%"
-        irc.reply("%s %s" % (i, p))
+        irc.reply("%s (%s) %s" % (idx, updown, p))
 
     def lhc(self, irc, msg, args):
         """
