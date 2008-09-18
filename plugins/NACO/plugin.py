@@ -6,7 +6,7 @@ import supybot.callbacks as callbacks
 import NACO as oclcnaco
 
 class NACO(callbacks.Privmsg):
-    def naco(self, irc, msg, args, url):
+    def naco(self, irc, msg, args, text):
         """
         Normalize text according to NACO normalization rules (http://www.loc.gov/catdir/pcc/naco/normrule.html)
 
