@@ -646,7 +646,10 @@ class Assorted(callbacks.Privmsg):
         m = re.search(r'<span class="pr".*>(.+)</span>', html)
         i = m.group(1)
         m = re.search(r'<span class="chr".*?>\((.+)\)</span>', html)
-        p = m.group(1)
+        if m:
+            p = m.group(1)
+        else:
+            p = "0%"
         irc.reply("%s (%s)" % (i, p))
 
     def lhc(self, irc, msg, args):
