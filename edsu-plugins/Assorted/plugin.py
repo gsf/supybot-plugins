@@ -642,13 +642,13 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
-        html =urlopen("http://finance.google.com/finance?cid=983582").read()
-        m = re.search(r'<span class="pr".*>(.+)</span>', html)
-        i = m.group(1)
-        m = re.search(r'<span class="chr".*?>\((.+)\)</span>', html)
-        if m:
-            p = m.group(1)
-        else:
+        soup = self._url2soup("http://finance.google.com/finance?cid=983582")
+        try:
+            i = soup.find(id="ref_983582_c").string
+            p = soup.find(id="ref_983582_cp").string
+        except:
+            irc.reply("parsing FAIL")
+        if not p:
             p = "0%"
         irc.reply("%s (%s)" % (i, p))
 
