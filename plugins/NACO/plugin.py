@@ -13,10 +13,11 @@ class NACO(callbacks.Privmsg):
         Thanks to OCLC for naco.py.
         """
         try:
-            response = oclcnaco.normalize(text)
+            response = oclcnaco.normalize(text, False)
             irc.reply(response, prefixNick=True)
-        except:
-            irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
+        except Exception, ex:
+            irc.reply("Man, I have no idea; things blew up real good. [%s]" %
+(ex.__str__), prefixNick=True)
     naco = wrap(naco, ['text'])
 
 Class = NACO
