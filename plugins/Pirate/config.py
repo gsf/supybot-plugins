@@ -40,7 +40,7 @@ def configure(advanced):
     conf.registerPlugin('Pirate', True)
 
 
-Lolz = conf.registerPlugin('Pirate')
+pirate = conf.registerPlugin('Pirate')
 # This is where your configuration variables (if any) should go.  For example:
 # conf.registerGlobalValue(Pirate, 'someConfigVariableName',
 #     registry.Boolean(False, """Help for someConfigVariableName."""))
