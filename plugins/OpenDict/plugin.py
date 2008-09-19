@@ -37,39 +37,52 @@ def htmlentitydecode(s):
     return re.sub(u'&(%s);' % u'|'.join(name2codepoint), 
         lambda m: unichr(name2codepoint[m.group(1)]), s)
 
-randurl = 'http://www3.merriam-webster.com/opendictionary/newword_display_recent.php'
 def randword(irc):
+    url = 'http://www3.merriam-webster.com/opendictionary/newword_display_recent.php'
     last = randint(0, 15000)
     try:
-        soup = url2soup(randurl, {'last':last})
+        soup = url2soup(url, {'last':last})
     except HTTPError, e:
-        irc.reply('http error %s for %s' % (e.code, randurl), prefixNick=True); return
+        irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
     except StopParsing, e:
-        irc.reply('parsing error %s for %s' % (e.code, OpenDict.searchurl), prefixNick=True); return
+        irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
     entries = soup.find('div','page_content_box').findAll('dt')
     if not entries:
         irc.reply('No results')
         return
 
-    dt = entries[0]
-    resp = u''.join([x.string for x in dt.contents])
+    entry = parse_entry(entries[0])
+    resp = htmlentitydecode(entry)
+    irc.reply(resp, prefixNick=False)
 
-    if len(dt.contents) <= 1:
-        dd = dt.nextSibling.nextSibling
-        resp += u' Usage: %s' % u''.join([x.string for x in dd.contents])
+def searchword(irc,word):
+    url = 'http://www3.merriam-webster.com/opendictionary/newword_search.php'
+    try:
+        soup = url2soup(url, {'word':word})
+    except HTTPError, e:
+        irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+    except StopParsing, e:
+        irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
+    entries = soup.find('div','page_content_box').findAll('dt')[:3]
+    if not entries:
+        irc.reply('No results')
+        return
+
+    resp = u''.join([parse_entry(e) for e in entries])
     resp = htmlentitydecode(resp)
     irc.reply(resp, prefixNick=False)
 
-searchurl = 'http://www3.merriam-webster.com/opendictionary/newword_search.php'
-def searchword(irc):
-    try:
-        soup = url2soup(searchurl, {'word':word})
-    except HTTPError, e:
-        irc.reply('http error %s for %s' % (e.code, OpenDict.searchurl), prefixNick=True); return
-    except StopParsing, e:
-        irc.reply('parsing error %s for %s' % (e.code, OpenDict.searchurl), prefixNick=True); return
+def parse_entry(entry):
+    resp = u''.join([x.string for x in entry.contents])
+    dds = entry.findNextSiblings('dd')[:2]
+    for dd in dds:
+        s = u''.join([x.string for x in dd.contents])
+        if s.find('Submitted by') != -1:
+            break
+        resp += u' %s' % s
+    return resp
 
 class OpenDict(callbacks.Plugin):
     """Add the help for "@plugin help OpenDict" here
@@ -79,14 +92,11 @@ class OpenDict(callbacks.Plugin):
     def opendict(self, irc, msg, args, word):
         """
         """
-        randword(irc)
+        if not word:
+            randword(irc)
+        else:
+            searchword(irc, word)
         return
-
-#        if not word:
-#            randword(irc)
-#        else:
-#            searchword(irc, word)
-#        return
 
     opendict = wrap(opendict, [optional('text')])
 

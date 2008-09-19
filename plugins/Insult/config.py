@@ -78,7 +78,7 @@ conf.registerGlobalValue(Insult, 'amounts',
     """Determines the base set of words used as the pool for amounts."""))
 conf.registerGlobalValue(Insult, 'foulAmounts',
     registry.SpaceSeparatedListOfStrings(['enema-bucketful', 'ass-full',
-    'assload'], """Determines the set of foul words added to the pool of
+    'assload', 'turnip truck-load'], """Determines the set of foul words added to the pool of
     amounts."""))
 conf.registerGlobalValue(Insult, 'adjectives',
     registry.SpaceSeparatedListOfStrings( ['acidic', 'antique',
