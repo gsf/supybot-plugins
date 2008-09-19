@@ -38,9 +38,7 @@ from urllib2 import urlopen
 
 
 class Pirate(callbacks.Plugin):
-    pass
-
-    def Pirate(self, irc, msg, args):
+    def pirate(self, irc, msg, args):
         """<phrase>
         Translates English into Pirate using http://postlikeapirate.com/
         """
