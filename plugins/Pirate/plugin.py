@@ -43,12 +43,12 @@ class Pirate(callbacks.Plugin):
         Translates English into Pirate using http://postlikeapirate.com/
         """
         phrase = (" ".join(args))
-        query = urlencode({ 'typing' : phrase.replace('<','{`{') })
+        query = urlencode({ 'typing' : phrase.replace('<','') })
         
         url = "http://postlikeapirate.com/AJAXtranslate.php?" + query
         doc = urlopen(url)
         response = doc.read()
-        irc.reply(response.encode('utf8'), prefixNick=True)
+        irc.reply(response.replace('{`{','<').encode('utf8'), prefixNick=True)
 		
 Class = Pirate
 
