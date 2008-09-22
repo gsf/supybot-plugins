@@ -80,7 +80,7 @@ class Delicious(callbacks.Privmsg):
                         counts[t] = counts.get(t, 0) + 1
 
         sorted_counts = sorted(counts.iteritems(), key=lambda (k,v): (v,k), reverse=True)
-        resp = ', '.join(["%s, %d" % (k, v) for (k, v) in sorted_counts][:20])
+        resp = ', '.join(["%s: %d" % (k, v) for (k, v) in sorted_counts][:20])
         irc.reply(resp, prefixNick=True)
 
     tagcount = wrap(tagcount, ['text'])
