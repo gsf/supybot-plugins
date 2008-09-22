@@ -60,7 +60,7 @@ class Delicious(callbacks.Privmsg):
     def tagcount(self, irc, msg, args, tag):
         """
         Usage: @tagcount tag
-        Returns counts for blah tags (from delicious)
+        Returns counts for adjacent tags (from delicious)
         """
         url = 'http://del.icio.us/rss/tag/%s' % tag.lower()
         conn = urlopen(url)
