@@ -62,7 +62,7 @@ class Delicious(callbacks.Privmsg):
         Usage: @tagcount tag /
         Returns counts for adjacent tags based on from delicious.com/popular bookmarks
         """
-        url = 'http://del.icio.us/rss/popular/%s' % tag.lower()
+        url = 'http://del.icio.us/rss/tag/%s' % tag.lower()
         conn = urlopen(url)
         soup = BS(conn)
         items = soup('item')
