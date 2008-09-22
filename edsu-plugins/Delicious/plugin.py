@@ -76,7 +76,7 @@ class Delicious(callbacks.Privmsg):
             subject = i.find('dc:subject')
             if subject:
                 for t in subject.string.lower().split():
-                    counts[t] += 1
+                    counts[t] = counts.get(t, 0) + 1
 
         sorted_counts = sorted(counts.iteritems(), key=lambda (k,v): (v,k))
         resp = ', '.join(["%s, %d" % (k, v) for (k, v) in sorted_counts])
