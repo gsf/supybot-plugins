@@ -57,4 +57,32 @@ class Delicious(callbacks.Privmsg):
         spark = ''.join([hit(i, querytag) for i in items])
         irc.reply(spark, prefixNick=True)
 
+    def tagcount(self, irc, msg, args, tag):
+        """
+        Usage: @tagcount tag
+        Returns counts for blah tags (from delicious)
+        """
+        url = 'http://del.icio.us/rss/tag/%s' % tag.lower()
+        conn = urlopen(url)
+        soup = BS(conn)
+        items = soup('item')
+
+        if not items:
+            irc.reply('No results')
+            return
+
+        counts = {}
+        for i in items:
+            subject = i.find('dc:subject')
+            if subject:
+                for t in subject.string.lower().split():
+                    counts[t] += 1
+
+        sorted_counts = sorted(counts.iteritems(), key=lambda (k,v): (v,k))
+        resp = ', '.join(["%s, %d" % (k, v) for (k, v) in sorted_counts])
+        irc.reply(resp, prefixNick=True)
+
+    tagcount = wrap(tagcount, ['text'])
+
+
 Class = Delicious
