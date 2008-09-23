@@ -28,8 +28,8 @@ class AudioScrobbler(callbacks.Privmsg):
         'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys', 'bosteen']
     users.sort()
     
-    # map last.fm users to nicks when necessary
     nickmap = dict(
+#       last.fm username = 'nick',
         moil = 'gsf',
         rtennant = 'royt',
         inkdroid = 'edsu',
@@ -43,7 +43,8 @@ class AudioScrobbler(callbacks.Privmsg):
         ranginui = 'rangi',
         mangrue = 'jtgorman',
         dys = 'MrDys',
-        bosteen = 'BenO')
+        bosteen = 'BenO'
+        )
 
     def get_songs(self,username):
         import feedparser
@@ -87,34 +88,27 @@ class AudioScrobbler(callbacks.Privmsg):
         username = ''.join(args)
         irc.reply( ' || '.join(self.get_songs(username)) )
 
-    def blockparty(self,irc,msg,args):
+    def blockparty(self,irc,msg,args,all):
         """blockparty
         
         See what people in the group are listening to
         """
-        tunes = ""
-        for user in self.users:
-            songs = self.get_songs(user)
-            if len(songs) > 0:
-                tunes += "%s: %s; " % (user,songs[0])
-        irc.reply(tunes)
+        if all == 'all':
+            show_all = True
+        else:
+            show_all = False
 
-    def blockparty2(self,irc,msg,args):
-        """blockparty
-        
-        See what people in the group are listening to
-        """
+        channel = msg.args[0]
         tunes = [] 
         for user in self.users:
             nick = self.nickmap.get(user, user)
-            self.log.info(nick)
-            from pprint import pformat
-            self.log.info(pformat(mst, indent=True))
-            if nick in []: # irc.state.channels[channel].users
+            if show_all or nick in irc.state.channels[channel].users:
                 songs = self.get_songs(user)
                 if len(songs) > 0:
                     tunes.append("%s: %s; " % (user,songs[0]))
         irc.reply('; '.join(tunes))
+
+    blockparty = wrap(blockparty, [optional('text')])
 
     def add(self,irc,msg,args):
         """add username, or comma separated list of usrs
