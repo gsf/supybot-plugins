@@ -107,7 +107,10 @@ class AudioScrobbler(callbacks.Privmsg):
         tunes = [] 
         for user in self.users:
             nick = self.nickmap.get(user, user)
-            if irc.isNick(nick):
+            self.log.info(nick)
+            from pprint import pformat
+            self.log.info(pformat(mst, indent=True))
+            if nick in []: # irc.state.channels[channel].users
                 songs = self.get_songs(user)
                 if len(songs) > 0:
                     tunes.append("%s: %s; " % (user,songs[0]))
