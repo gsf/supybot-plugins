@@ -7,6 +7,7 @@ from random import randint, random
 from xml.etree import ElementTree as ET
 
 from supybot.commands import *
+from supybot.commands import nickInChannel
 import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
