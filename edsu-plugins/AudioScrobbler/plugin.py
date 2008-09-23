@@ -7,7 +7,6 @@ from random import randint, random
 from xml.etree import ElementTree as ET
 
 from supybot.commands import *
-from supybot.commands import nickInChannel
 import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
@@ -108,7 +107,7 @@ class AudioScrobbler(callbacks.Privmsg):
         tunes = [] 
         for user in self.users:
             nick = self.nickmap.get(user, user)
-            if nickInChannel(irc, msg, nick):
+            if ircutils.nickInChannel(irc, msg, nick):
                 songs = self.get_songs(user)
                 if len(songs) > 0:
                     tunes.append("%s: %s; " % (user,songs[0]))
