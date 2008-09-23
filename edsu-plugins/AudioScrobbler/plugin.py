@@ -106,7 +106,7 @@ class AudioScrobbler(callbacks.Privmsg):
         """
         tunes = [] 
         for user in self.users:
-            nick = nickmap.get(user, user)
+            nick = self.nickmap.get(user, user)
             if nickInChannel(irc, msg, nick):
                 songs = self.get_songs(user)
                 if len(songs) > 0:
