@@ -106,7 +106,7 @@ class AudioScrobbler(callbacks.Privmsg):
             if show_all or nick in irc.state.channels[channel].users:
                 songs = self.get_songs(user)
                 if len(songs) > 0:
-                    tunes.append("%s: %s; " % (user,songs[0]))
+                    tunes.append("%s: %s" % (user,songs[0]))
         irc.reply('; '.join(tunes))
 
     blockparty = wrap(blockparty, [optional('text')])
