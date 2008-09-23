@@ -93,12 +93,13 @@ class AudioScrobbler(callbacks.Privmsg):
         
         See what people in the group are listening to
         """
-        if all == 'all':
+        channel = msg.args[0]
+
+        if all == 'all' or not irc.isChannel(channel):
             show_all = True
         else:
             show_all = False
 
-        channel = msg.args[0]
         tunes = [] 
         for user in self.users:
             nick = self.nickmap.get(user, user)
