@@ -57,7 +57,7 @@ class Presidents(callbacks.Privmsg):
         html = opener.open(url)
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        resp = soup.find('div').string.strip()
+        resp = soup.find('a').string.strip()
         irc.reply(resp.encode('ascii', 'ignore'))
 
 Class = Presidents
