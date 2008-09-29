@@ -49,24 +49,22 @@ class Parser ( SGMLParser ):
         if self.inside:
             bands = data.split("\n")
             for band in bands: 
-                self.bands.append( band )
+                self.bands.append(band)
 
 class Band(callbacks.Privmsg):
 
     def band(self,irc,msg,args):
-        """band
-
-        Get a band name
+        """ Get a band name from dchud's list: http://www-personal.umich.edu/~dchud/fng/names.html
         """
 
-        url = urlopen( "http://www-personal.umich.edu/~dchud/fng/names.html" )
+        url = urlopen("http://www-personal.umich.edu/~dchud/fng/names.html")
         html = url.read()
 
         parser = Parser()
-        parser.feed( html )
+        parser.feed(html)
 
-        band = parser.bands[ randint(0,len(parser.bands)-1) ]
-        irc.reply( band )
+        band = parser.bands[randint(0,len(parser.bands)-1)]
+        irc.reply(band)
 
 Class = Band 
 
