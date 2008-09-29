@@ -54,7 +54,8 @@ class Parser ( SGMLParser ):
 class Band(callbacks.Privmsg):
 
     def band(self,irc,msg,args):
-        """ Get a band name from dchud's list: http://www-personal.umich.edu/~dchud/fng/names.html
+        """ 
+        Get a band name from dchud's list: http://www-personal.umich.edu/~dchud/fng/names.html
         """
 
         url = urlopen("http://www-personal.umich.edu/~dchud/fng/names.html")
