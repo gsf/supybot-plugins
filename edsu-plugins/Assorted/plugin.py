@@ -158,7 +158,8 @@ class Assorted(callbacks.Privmsg):
       """
       keynotes = [
         "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
-        "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo"
+        "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo", "Ron Paul",
+        "Bacon Salt"
       ]
       def rand_keynotes(num, seen=None):
         if seen == None: 
