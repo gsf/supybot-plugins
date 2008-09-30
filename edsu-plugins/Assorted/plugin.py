@@ -154,7 +154,8 @@ class Assorted(callbacks.Privmsg):
       irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
 
     def hosts2010(self,irc,msg,args):
-      """votes for the 2010 code4libcon ; courtesy of 
+      """
+      Shows votes for the 2010 code4libcon. Courtesy of 
       http://www.floydpinkerton.net/fun/citynames.html
       """
       places = [
