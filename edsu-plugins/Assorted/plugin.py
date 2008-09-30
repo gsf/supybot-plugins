@@ -153,6 +153,33 @@ class Assorted(callbacks.Privmsg):
       def fmt(t): return "%s [%s]" % t
       irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
 
+    def keynotes2010(self,irc,msg,args):
+      """votes for the 2010 code4libcon keynote 
+      """
+      keynotes = [
+        "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
+        "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo"
+      ]
+      def rand_keynotes(num, seen=None):
+        if seen == None: 
+          seen = []
+        if num == 0:
+          return []
+        keynote = keynotes[randint(0, len(places)-1)]
+        if keynote in seen:
+          keynote = rand_keynotes(1, seen)
+        seen.append(keynote)
+        return [keynote] + rand_keynotes(num-1, seen)
+      n = randint(3,8)
+      people = rand_keynotes(n)
+      votes = [randint(1,100) for a in range(0,n)]
+      votes.sort(lambda a,b: cmp(b,a))
+      results = zip(people,votes)
+      msg = []
+      for result in results:
+        msg.append("%s [%i]" % (result[0], result[1]))
+      irc.reply('; '.join(msg))
+
     def hosts2010(self,irc,msg,args):
       """
       Shows votes for the 2010 code4libcon. Courtesy of 
