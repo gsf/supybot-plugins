@@ -159,8 +159,10 @@ class Assorted(callbacks.Privmsg):
       keynotes = [
         "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
         "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo", "Ron Paul",
-        "Bacon Salt"
+        "Bacon Salt", "Zoia"
       ]
+      def get_result(result):
+        return "%s [%i]" % (result[0], result[1])
       def rand_keynotes(num, seen=None):
         if seen == None: 
           seen = []
@@ -176,9 +178,9 @@ class Assorted(callbacks.Privmsg):
       votes = [randint(1,100) for a in range(0,n)]
       votes.sort(lambda a,b: cmp(b,a))
       results = zip(people,votes)
-      msg = []
-      for result in results:
-        msg.append("%s [%i]" % (result[0], result[1]))
+      msg = map(get_results, results)
+      # for result in results:
+      #   msg.append("%s [%i]" % (result[0], result[1]))
       irc.reply('; '.join(msg))
 
     def hosts2010(self,irc,msg,args):
