@@ -70,9 +70,8 @@ class AudioScrobbler(callbacks.Privmsg):
                 return
 
     def tunes(self,irc,msg,args):
-        """tunes <user>
-
-        see what <user> last listened to
+        """<user>
+        See what <user> last listened to
         """
         username = ''.join(args)
         songs = self.get_songs(username)
@@ -82,16 +81,14 @@ class AudioScrobbler(callbacks.Privmsg):
             irc.reply("i dunno what %s last listened to" % username)
 
     def alltunes(self,irc,msg,args):
-        """alltunes <username>
-    
-        see the full list of tunes username listened to.
+        """<user>
+        See the full list of tunes user listened to.
         """
         username = ''.join(args)
         irc.reply( ' || '.join(self.get_songs(username)) )
 
     def blockparty(self,irc,msg,args,all):
-        """blockparty
-        
+        """        
         See what people in the group are listening to
         """
         channel = msg.args[0]
@@ -113,9 +110,8 @@ class AudioScrobbler(callbacks.Privmsg):
     blockparty = wrap(blockparty, [optional('text')])
 
     def add(self,irc,msg,args):
-        """add username, or comma separated list of usrs
-
-        adds a user to the blockparty
+        """<user>[,<user>...]
+        Add one or more users to the blockparty
         """
         for user in args:
             # in case commas were used instead of spaces
@@ -124,7 +120,8 @@ class AudioScrobbler(callbacks.Privmsg):
         irc.reply(','.join(args) + " just moved in across the street")
 
     def favs(self,irc,msg,args):
-        """get users favorite artists
+        """<user>
+        Get user's favorite artists
         """
         if len(args) != 1:
           irc.reply("forgot the username")
@@ -170,7 +167,8 @@ class AudioScrobbler(callbacks.Privmsg):
         irc.reply(', '.join(names).encode('utf8','ignore'))
 
     def weeklies(self,irc,msg,args):
-      """weekly top 10 for a last.fm user
+      """<user>
+      Get a weekly top 10 for a last.fm user
       """
       if len(args) == 0:
         irc.reply("forgot username")
