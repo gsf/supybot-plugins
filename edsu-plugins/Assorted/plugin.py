@@ -148,7 +148,7 @@ class Assorted(callbacks.Privmsg):
       for count in votes:
         keynoters = votes[count]
         for keynoter in keynoters:
-          tallies.append((venue['attributes']['name'], count))
+          tallies.append((keynoter['attributes']['name'], count))
       tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
       def fmt(t): return "%s [%s]" % t
       irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
