@@ -136,6 +136,23 @@ class Assorted(callbacks.Privmsg):
       def fmt(t): return "%s [%s]" % t
       irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
 
+    def keynotes2009(self,irc,msg,args):
+      """
+      Gets tally of keynoter votes for 2009 conference from http://dilettantes.code4lib.org/voting_booth/election/results/4
+      """
+      url = 'http://dilettantes.code4lib.org/voting_booth/election/results/4'
+      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
+      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
+      votes = simplejson.loads(json)
+      tallies = []
+      for count in votes:
+        keynoters = votes[count]
+        for keynoter in keynoters:
+          tallies.append((venue['attributes']['name'], count))
+      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
+      def fmt(t): return "%s [%s]" % t
+      irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
+
     def hosts2010(self,irc,msg,args):
       """votes for the 2010 code4libcon ; courtesy of 
       http://www.floydpinkerton.net/fun/citynames.html
