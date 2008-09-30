@@ -159,7 +159,9 @@ class Assorted(callbacks.Privmsg):
       keynotes = [
         "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
         "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo", "Ron Paul",
-        "Bacon Salt", "Zoia"
+        "Bacon Salt", "Zoia", "Ima Hogg", "Mark Lemongello",
+        "Trout Fishing in America", "Freddie Skunkcap", "Dick Assman",
+        "Rooster McConaughey"
       ]
       def get_result(result):
         return "%s [%i]" % (result[0], result[1])
