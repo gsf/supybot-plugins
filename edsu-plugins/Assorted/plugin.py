@@ -180,7 +180,7 @@ class Assorted(callbacks.Privmsg):
       votes = [randint(1,100) for a in range(0,n)]
       votes.sort(lambda a,b: cmp(b,a))
       results = zip(people,votes)
-      msg = map(get_results, results)
+      msg = map(get_result, results)
       # for result in results:
       #   msg.append("%s [%i]" % (result[0], result[1]))
       irc.reply('; '.join(msg))
