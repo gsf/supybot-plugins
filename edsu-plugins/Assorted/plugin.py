@@ -159,7 +159,7 @@ class Assorted(callbacks.Privmsg):
       keynotes = [
         "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
         "Andy Dick", "U. Rex Dumdum", "Michael J. Giarlo", "Ron Paul",
-        "Bacon Salt", "Zoia", "Ima Hogg", "Mark Lemongello",
+        "Bacon Salt", "Zoia", "Ima Hogg", "Mark Lemongello", "'anon'",
         "Trout Fishing in America", "Freddie Skunkcap", "Dick Assman",
         "Rooster McConaughey"
       ]
