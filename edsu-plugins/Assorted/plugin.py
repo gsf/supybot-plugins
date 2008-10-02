@@ -525,11 +525,11 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(html_str)
         irc.reply(soup.find('a').string.strip().upper())
 
-    def isiticedcoffeeweather(self,irc,msg,args):
+    def isiticedcoffeeweathercoffeeweather(self,irc,msg,args):
         if len(args) != 1:
             irc.reply("usage: isiticedcoffeeweather zipcode")
             return
-        url = 'http://isiticedcoffeeweather.com/%s' % zipcode
+        url = 'http://isiticedcoffeeweather.com/%s' % args[0]
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
