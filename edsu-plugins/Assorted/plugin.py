@@ -525,7 +525,7 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(html_str)
         irc.reply(soup.find('a').string.strip().upper())
 
-    def isiticedcoffeeweathercoffeeweather(self,irc,msg,args):
+    def isiticedcoffeeweather(self,irc,msg,args):
         if len(args) != 1:
             irc.reply("usage: isiticedcoffeeweather zipcode")
             return
