@@ -1,13 +1,14 @@
+import feedparser
+import os
+import re
+import simplejson
+import time
 from BeautifulSoup import BeautifulSoup, StopParsing
 from cgi import parse_qs
 from datetime import date, datetime
 from elementtidy import TidyHTMLTreeBuilder
-import feedparser
-import os
+from int2word import int2word
 from random import randint
-import re
-import simplejson
-import time
 from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urlparse import urlparse
@@ -730,7 +731,11 @@ class Assorted(callbacks.Privmsg):
         delta = now - from_date
         add_debt = delta.seconds * add_debt_per_sec
         gnd = gndstart + add_debt
-        irc.reply("%.2f" % gnd)
+        gnd_str = '%.2f' % gnd
+        gnd_whole, gnd_decimal = gnd_str.split('.')
+        response = '%s dollars and %s cents' % (int2word(gnd_whole),
+                int2word(gnd_decimal))
+        irc.reply(response)
 
     def lhc(self, irc, msg, args):
         """
