@@ -733,7 +733,7 @@ class Assorted(callbacks.Privmsg):
         gnd = gndstart + add_debt
         gnd_str = '%.2f' % gnd
         gnd_whole, gnd_decimal = gnd_str.split('.')
-        response = '%s dollars and %s cents' % (int2word(gnd_whole),
+        response = '%sdollars and %scents' % (int2word(gnd_whole),
                 int2word(gnd_decimal))
         irc.reply(response)
 
