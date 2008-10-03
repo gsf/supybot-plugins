@@ -174,7 +174,7 @@ class Assorted(callbacks.Privmsg):
         if keynote in seen:
           keynote = rand_keynotes(1, seen)
         seen.append(keynote)
-        return keynote + rand_keynotes(num-1, seen)
+        return [keynote] + rand_keynotes(num-1, seen)
       n = randint(3,8)
       people = rand_keynotes(n)
       votes = [randint(1,100) for a in range(0,n)]
