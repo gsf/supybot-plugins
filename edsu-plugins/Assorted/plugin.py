@@ -716,8 +716,10 @@ class Assorted(callbacks.Privmsg):
         irc.reply("%s %s" % (idx, p))
 
     def debt(self, irc, msg, args):
-        """Returns current US gross national debt as
-        calculated at http://zfacts.com/p/461.html"""
+        """
+        Returns current US gross national debt as
+        calculated at http://zfacts.com/p/461.html
+        """
         # values taken from http://zfacts.com/giz/G05ndc.js on 2008-10-03
         gndstart = 10124225067127.69
         add_debt_per_year = 676 # in $ billions
