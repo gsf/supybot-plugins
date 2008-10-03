@@ -715,6 +715,20 @@ class Assorted(callbacks.Privmsg):
             p = "0%"
         irc.reply("%s %s" % (idx, p))
 
+    def debt(self, irc, msg, args):
+        """Returns current US gross national debt as
+        calculated at http://zfacts.com/p/461.html"""
+        # values taken from http://zfacts.com/giz/G05ndc.js on 2008-10-03
+        gndstart = 10124225067127.69
+        add_debt_per_year = 676 # in $ billions
+        add_debt_per_sec = add_debt_per_year*1000000000/(365*24*60*60)
+        from_date = datetime(2008, 10, 01, 11, 0, 0)
+        now = datetime.now()
+        delta = now - from_date
+        add_debt = delta.seconds * add_debt_per_sec
+        gnd = gndstart + add_debt
+        irc.reply("%.2f" % gnd)
+
     def lhc(self, irc, msg, args):
         """
         reports how much time is left until the HLC starts smashing reality^Watoms
