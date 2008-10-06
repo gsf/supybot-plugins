@@ -4,6 +4,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
+from random import randint
 
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
@@ -32,9 +33,14 @@ class Translators(callbacks.Privmsg):
         irc.reply("edsu finds this supremely annoying, but " + ' '.join(args), prefixNick=True)
 
     def mjg(self, irc, msg, args):
-        """truncates your statement and steers it towards delicious pork products
+        """truncates and refocuses your statement
         """
-        irc.reply("%s... OMG! Bacon!" % ' '.join(args)[:20])
+        s = ' '.join(args)
+        low = 10
+        high = len(s) - 10
+        if len(s) < low:
+            low = len(s)
+        irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)]
         
 
 Class = Translators
