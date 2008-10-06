@@ -720,7 +720,7 @@ class Assorted(callbacks.Privmsg):
         """
         irc.reply(self._quote(626307))
 
-    def _quote(cid):
+    def _quote(self, cid):
         # TODO: make this so you can use an ticker
         soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
         try:
