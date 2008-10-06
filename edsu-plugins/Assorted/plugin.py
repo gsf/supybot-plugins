@@ -779,6 +779,19 @@ class Assorted(callbacks.Privmsg):
         data = doc.read()
         soup = BeautifulSoup(data, convertEntities=['html','xml'])
         return soup
+    
+    def noodlr(self, irc, mesg, args):
+        """
+        get ideas for noodles from noodlr.net
+        """
+        url = "http://noodlr.net/"
+        if len(args) <= 1:
+            if args[0] == "vegetarian":
+                postdata = {"vegetarian": "true"}
+            noodles = self._url2soup(url, postdata=postdata)
+            irc.reply(noodles.find('p', attrs={"id": "soup"}))
+        else:
+            irc.reply("usage: noodlr [vegetarian]")
 
 Class = Assorted
 
