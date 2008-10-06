@@ -40,8 +40,7 @@ class Translators(callbacks.Privmsg):
         high = len(s) - 10
         if len(s) < low:
             low = len(s)
-        irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)]
+        irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)])
         
-
 Class = Translators
 
