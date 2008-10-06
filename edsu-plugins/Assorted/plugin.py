@@ -717,6 +717,19 @@ class Assorted(callbacks.Privmsg):
             p = "0%"
         irc.reply("%s %s" % (idx, p))
 
+    # TODO: maybe add general quote() method? need to look up cid though
+
+    def nasdaq(self, irc, msg, args):
+        soup = self._url2soup("http://finance.google.com/finance?cid=13756934")
+        try:
+            i = soup.find(id="ref_13756934_c").string
+            p = soup.find(id="ref_13756934_cp").string
+        except:
+            irc.reply("parsing FAIL")
+        if not p:
+            p = "0%"
+        irc.reply("%s %s" % (i, p))
+
     def debt(self, irc, msg, args):
         """
         Returns current US gross national debt as
