@@ -30,6 +30,11 @@ class Translators(callbacks.Privmsg):
         """states edsu's attitude on selfsame plugin command
         """
         irc.reply("edsu finds this supremely annoying, but " + ' '.join(args), prefixNick=True)
+
+    def mjg(self, irc, msg, args):
+        """truncates your statement and steers it towards delicious pork products
+        """
+        irc.reply("%s... OMG! Bacon!" % ' '.join(args)[:20])
         
 
 Class = Translators
