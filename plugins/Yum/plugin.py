@@ -95,6 +95,19 @@ class Yum(callbacks.Plugin):
         irc.reply(' ; '.join(results), prefixNick=True)
         return
 
+    def noodlr(self, irc, mesg, args):
+        """
+        get ideas for noodles from noodlr.net
+        """
+        url = "http://noodlr.net/"
+        if len(args) <= 1:
+            if args[0] == "vegetarian":
+                postdata = {"vegetarian": "true"}
+            noodles = self._get_soup(url, postdata=postdata)
+            irc.reply(noodles.find('p', attrs={"id": "soup"}), prefixNick=True)
+        else:
+            irc.reply("usage: noodlr [vegetarian]", prefixNick=True)
+
     def calories(self, irc, msg, args):
         """
         Returns the calories for a given food item. Calorie figures
@@ -172,19 +185,5 @@ class Yum(callbacks.Plugin):
         irc.reply(resp, prefixNick=True)
 
     beerme = wrap(beerme, [optional('text')])
-
-    
-    def noodlr(self, irc, mesg, args):
-        """
-        get ideas for noodles from noodlr.net
-        """
-        url = "http://noodlr.net/"
-        if len(args) <= 1:
-            if args[0] == "vegetarian":
-                postdata = {"vegetarian": "true"}
-            noodles = self._get_soup(url, postdata=postdata)
-            irc.reply(noodles.find('p', attrs={"id": "soup"}), prefixNick=True)
-        else:
-            irc.reply("usage: noodlr [vegetarian]", prefixNick=True)
             
 Class = Yum
