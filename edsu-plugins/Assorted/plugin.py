@@ -706,29 +706,32 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
-        soup = self._url2soup("http://finance.google.com/finance?cid=983582")
-        try:
-            idx = soup.find(id="ref_983582_l").string 
-            #updown = soup.find(id="ref_983582_c").string
-            p = soup.find(id="ref_983582_cp").string
-        except:
-            irc.reply("parsing FAIL")
-        if not p:
-            p = "0%"
-        irc.reply("%s %s" % (idx, p))
-
-    # TODO: maybe add general quote() method? need to look up cid though
+        irc.reply(self._quote(983582))
 
     def nasdaq(self, irc, msg, args):
-        soup = self._url2soup("http://finance.google.com/finance?cid=13756934")
+        """
+        Get the NASDAQ from teh GOOG
+        """
+        irc.reply(self._quote(13756934))
+
+    def sandp(self, irc, msg, args):
+        """
+        Get the S&P from teh GOOG
+        """
+        irc.reply(self._quote(626307))
+
+    def _quote(cid)
+        # TODO: make this so you can use an ticker
+        soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
         try:
-            i = soup.find(id="ref_13756934_c").string
-            p = soup.find(id="ref_13756934_cp").string
+            idx = soup.find(id="ref_%s_l" % cid).string 
+            p = soup.find(id="ref_%s_cp" % cid).string
         except:
-            irc.reply("parsing FAIL")
+          return 'ruhroh, me no speak google'
         if not p:
             p = "0%"
-        irc.reply("%s %s" % (i, p))
+        return "%s %s" % (idx, p)
+
 
     def debt(self, irc, msg, args):
         """
