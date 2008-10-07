@@ -104,7 +104,7 @@ class Yum(callbacks.Plugin):
         if len(args) <= 1:
             if len(args) == 1:
                 if args[0] == "vegetarian":
-                    url = "%s?vegetarian=true"
+                    url = "%s?vegetarian=true" % url
             ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
             opener = build_opener()
             opener.addheaders = [('User-Agent', ua)]
