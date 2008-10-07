@@ -100,10 +100,11 @@ class Yum(callbacks.Plugin):
         get ideas for noodles from noodlr.net
         """
         url = "http://noodlr.net/"
+        postdata = {}
         if len(args) <= 1:
             if len(args) == 1:
                 if args[0] == "vegetarian":
-                    postdata = {"vegetarian": "true"}
+                    postdata['vegetarian'] = "true"
             noodles = self._get_soup(url, postdata=postdata)
             irc.reply(noodles.find('p', attrs={"id": "soup"}), prefixNick=True)
         else:
