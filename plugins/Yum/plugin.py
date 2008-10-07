@@ -95,7 +95,7 @@ class Yum(callbacks.Plugin):
         irc.reply(' ; '.join(results), prefixNick=True)
         return
 
-    def noodlr(self, irc, mesg, args):
+    def noodlr(self, irc, msg, args):
         """
         get ideas for noodles from noodlr.net
         """
