@@ -104,10 +104,17 @@ class Yum(callbacks.Plugin):
         if len(args) <= 1:
             if len(args) == 1:
                 if args[0] == "vegetarian":
-                    postdata['vegetarian'] = "true"
-            noodles = self._get_soup(irc, url, postdata=postdata)
-            out = noodles.find('p', attrs={"id": "soup"})
-            irc.reply(out.string.strip(), prefixNick=True)
+                    url = "%s?vegetarian=true"
+            ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+            opener = build_opener()
+            opener.addheaders = [('User-Agent', ua)]
+            html = opener.open(url)
+            html_str = html.read()
+            soup = BeautifulSoup(html_str)
+            out = noodles.find('p', attrs={"id": "soup"}).__unicode__()
+            out = re.sub(r'<[^>]*?>', '', out)
+            out = re.sub(r'\n', ' ', out)
+            irc.reply(out, prefixNick=True)
         else:
             irc.reply("usage: noodlr [vegetarian]", prefixNick=True)
 
