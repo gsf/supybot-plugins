@@ -8,32 +8,36 @@ from random import randint
 
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
-        """translates text into a Canadian dialect
+        """
+        Translates text into a Canadian dialect
         """
         text = ' '.join(args)
         text = re.sub(r'out', 'oat', text)
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
-        irc.reply(text + "  eh?", prefixNick=True)
+        irc.reply(text + ", eh?", prefixNick=True)
 
     def mccainize(self, irc, msg, args):
-        """translates text into McCain speechifyin'
         """
-        irc.reply(re.sub(r'^', 'my friends, ', ' '.join(args)), prefixNick=True)
+        Translates text into McCain speechifyin'
+        """
+        irc.reply('my friends, ' + ' '.join(args), prefixNick=True)
 
     def dick(self, irc, msg, args):
-        """disclaims your desire to be a dick
         """
-        #irc.reply("whatever d00d", prefixNick=True)
+        Disclaims your desire to be a dick
+        """
         irc.reply("I don't mean to be a dick, but " + ' '.join(args), prefixNick=True)
         
     def edsu(self, irc, msg, args):
-        """states edsu's attitude on selfsame plugin command
+        """
+        States edsu's attitude on selfsame plugin command
         """
         irc.reply("edsu finds this supremely annoying, but " + ' '.join(args), prefixNick=True)
 
     def mjg(self, irc, msg, args):
-        """truncates and refocuses your statement
+        """
+        Truncates and refocuses your statement
         """
         s = ' '.join(args)
         low = 10
@@ -41,6 +45,7 @@ class Translators(callbacks.Privmsg):
         if len(s) < low:
             low = len(s)
         irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)])
+
         
 Class = Translators
 
