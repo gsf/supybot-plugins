@@ -114,7 +114,7 @@ class Yum(callbacks.Plugin):
             out = soup.find('p', attrs={"id": "soup"}).__unicode__()
             out = re.sub(r'<[^>]*?>', '', out)
             out = re.sub(r'\n', ' ', out)
-            irc.reply(out, prefixNick=True)
+            irc.reply(out.encode('utf-8'), prefixNick=True)
         else:
             irc.reply("usage: noodlr [vegetarian]", prefixNick=True)
 
