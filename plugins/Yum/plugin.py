@@ -111,7 +111,7 @@ class Yum(callbacks.Plugin):
             html = opener.open(url)
             html_str = html.read()
             soup = BeautifulSoup(html_str)
-            out = noodles.find('p', attrs={"id": "soup"}).__unicode__()
+            out = soup.find('p', attrs={"id": "soup"}).__unicode__()
             out = re.sub(r'<[^>]*?>', '', out)
             out = re.sub(r'\n', ' ', out)
             irc.reply(out, prefixNick=True)
