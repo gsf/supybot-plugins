@@ -755,7 +755,7 @@ class Assorted(callbacks.Privmsg):
             lo = soup.find(id="ref_%s_lo" % cid).string.replace('&nbsp;', '')
             hi52 = soup.find(id="ref_%s_hi52" % cid).string
             lo52 = soup.find(id="ref_%s_lo52" % cid).string
-            name = soup.find('title').string
+            name = soup.find('title').string.strip()
 
             irc.reply("%s - %s %s high:%s low:%s  high52:%s low52:%s p/e:%s mktcap:%s" % (name, idx, p, hi, lo, hi52, lo52, pe, mktcap))
         except:
