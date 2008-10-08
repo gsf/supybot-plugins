@@ -706,27 +706,27 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
-        irc.reply(self._quote(983582))
+        irc.reply(self._cid_quote(983582))
 
     def nasdaq(self, irc, msg, args):
         """
         Get the NASDAQ from teh GOOG
         """
-        irc.reply(self._quote(13756934))
+        irc.reply(self._cid_quote(13756934))
 
     def sandp(self, irc, msg, args):
         """
         Get the S&P from teh GOOG
         """
-        irc.reply(self._quote(626307))
+        irc.reply(self._cid_quote(626307))
 
     def ftse(self, irc, msg, args):
         """
         Get the FTSE from teh GOOG
         """
-        irc.reply(self._quote(12590587))
+        irc.reply(self._cid_quote(12590587))
 
-    def _quote(self, cid):
+    def _cid_quote(self, cid):
         # TODO: make this so you can use an ticker
         soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
         try:
@@ -738,6 +738,17 @@ class Assorted(callbacks.Privmsg):
             p = "0%"
         return "%s %s" % (idx, p)
 
+    def stock(self, irc, msg, args):
+        t = args[0]
+        soup = self._url2soup("http://finance.google.com/finance?q=%s" % t)
+        match = re.search('var _companyId = (\d+)', str(soup))
+        if not match:
+            irc.reply("gah, couldn't find stock ticker %s" % t)
+            return
+        cid = match.group(1)
+        idx = soup.find(id="ref_%s_1" % cid).string
+        p = soup.find(id="ref_%s_cp" % cid).string
+        irc.reply("%s %s" % (idx, p))
 
     def debt(self, irc, msg, args):
         """
