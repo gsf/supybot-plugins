@@ -680,6 +680,18 @@ class Assorted(callbacks.Privmsg):
         irc.reply("/|", prefixNick=False)
         irc.reply(" >>", prefixNick=False)
 
+    def mf(self, irc, msg, args):
+        irc.reply("Hey, " + ' '.join(args) + "...")
+        irc.reply("    .-. ", prefixNick=False)
+        irc.reply("    |-| ", prefixNick=False)
+        irc.reply("    | | ", prefixNick=False)
+        irc.reply(" _.-|=|-. ", prefixNick=False)
+        irc.reply("/ | | | | ", prefixNick=False)
+        irc.reply("|       |\ ", prefixNick=False)
+        irc.reply("|        / ", prefixNick=False)
+        irc.reply(" \     /` ", prefixNick=False)
+        irc.reply("  |   |  ", prefixNick=False)
+
     def halfbaked(self, irc, msg, args):
         """
         returns a radom half-baked idea from http://halfbakery.com
