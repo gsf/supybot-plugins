@@ -747,14 +747,14 @@ class Assorted(callbacks.Privmsg):
             return
         try:
             cid = match.group(1)
-            idx = soup.find(id="ref_%s_l" % cid).string
-            p = soup.find(id="ref_%s_cp" % cid).string
-            mktcap = soup.find(id="ref_%s_mc" % cid).string
-            pe = soup.find(id="ref_%s_pe" % cid).string
+            idx = soup.find(id="ref_%s_l" % cid).string.replace('&nbsp;', '')
+            p = soup.find(id="ref_%s_cp" % cid).string.replace('&nbsp;', '')
+            mktcap = soup.find(id="ref_%s_mc" % cid).string.replace('&nbsp;','')
+            pe = soup.find(id="ref_%s_pe" % cid).string.replace('&nbsp;', '')
             hi = soup.find(id="ref_%s_hi" % cid).string.replace('&nbsp;', '')
             lo = soup.find(id="ref_%s_lo" % cid).string.replace('&nbsp;', '')
-            hi52 = soup.find(id="ref_%s_hi52" % cid).string
-            lo52 = soup.find(id="ref_%s_lo52" % cid).string
+            hi52 = soup.find(id="ref_%s_hi52" % cid).string.replace('&nbsp;','')
+            lo52 = soup.find(id="ref_%s_lo52" % cid).string.replace('&nbsp;','')
             name = ' - '.join(soup.find('title').string.split('-')[0:2]).strip()
 
             irc.reply("%s - %s %s high:%s low:%s  high52:%s low52:%s p/e:%s mktcap:%s" % (name, idx, p, hi, lo, hi52, lo52, pe, mktcap))
