@@ -40,7 +40,7 @@ class Translators(callbacks.Privmsg):
         Garners attention for your statements in a folksy way
         """
         look = "Look, "
-        if randint(0,1): look = "Look, here's what I'm saying, ... "
+        if randint(0,1): look = "Look, here's what I'm saying... "
         irc.reply(look + ' '.join(args))
 
     def mjg(self, irc, msg, args):
