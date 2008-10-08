@@ -748,7 +748,7 @@ class Assorted(callbacks.Privmsg):
         cid = match.group(1)
         idx = soup.find(id="ref_%s_l" % cid).string
         p = soup.find(id="ref_%s_cp" % cid).string
-        mkt_cap = soup.find(id="ref_%s_mc" % cid).string
+        mktcap = soup.find(id="ref_%s_mc" % cid).string
         pe = soup.find(id="ref_%s_pe" % cid).string
         hi = soup.find(id="ref_%s_hi" % cid).string
         lo = soup.find(id="ref_%s_lo" % cid).string
