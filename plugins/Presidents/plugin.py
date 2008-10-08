@@ -59,6 +59,20 @@ class Presidents(callbacks.Privmsg):
         soup = BeautifulSoup(html_str)
         resp = soup.find('a').string.strip()
         irc.reply(resp.encode('ascii', 'ignore'))
+        
+    def bicycle(self, irc, msg, args, name):
+        """<name>
+        grabs a line from http://[name].isyournewbicycle.com/
+        """
+        url = 'http://%s.isyournewbicycle.com/' % name
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+        html = opener.open(url)
+        html_str = html.read()
+        soup = BeautifulSoup(html_str)
+        irc.reply(soup.find('a').string.strip().upper())
+    bicycle = wrap(bicycle,['somethingWithoutSpaces'])
 
 Class = Presidents
 
