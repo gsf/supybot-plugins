@@ -750,8 +750,8 @@ class Assorted(callbacks.Privmsg):
         p = soup.find(id="ref_%s_cp" % cid).string
         mktcap = soup.find(id="ref_%s_mc" % cid).string
         pe = soup.find(id="ref_%s_pe" % cid).string
-        hi = soup.find(id="ref_%s_hi" % cid).string
-        lo = soup.find(id="ref_%s_lo" % cid).string
+        hi = soup.find(id="ref_%s_hi" % cid).string.replace('&nbsp;', '')
+        lo = soup.find(id="ref_%s_lo" % cid).string.replace('&nbsp;', '')
         hi52 = soup.find(id="ref_%s_hi52" % cid).string
         lo52 = soup.find(id="ref_%s_lo52" % cid).string
 
