@@ -739,7 +739,7 @@ class Assorted(callbacks.Privmsg):
         return "%s %s" % (idx, p)
 
     def stock(self, irc, msg, args):
-        t = args[0]
+        t = ' '.join(args)
         soup = self._url2soup("http://finance.google.com/finance?q=%s" % t)
         match = re.search('var _companyId = (\d+)', str(soup))
         if not match:
