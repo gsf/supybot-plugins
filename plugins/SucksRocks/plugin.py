@@ -33,7 +33,7 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
-from urllib2 import urlopen, Request, HTTPError
+from urllib2 import urlopen, Request, HTTPError, URLError
 from urllib import urlencode
 import simplejson
 
@@ -56,8 +56,10 @@ class SucksRocks(callbacks.Plugin):
                 url = 'http://www.sucks-rocks.com/query?' + urlencode({'term':term})
                 try:
                     json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-                except HTTPError:
-                    json = '{"term": "' + term + '", "sucks": 0, "rocks": 0 }'
+                except HTTPError, e:
+                    json = '{"term": %s (HTTP Error %d)", "sucks": 0, "rocks": 0 }' % (term, e.code)
+                except URLError, e:
+                    json = '{"term": %s (Error: %s)", "sucks": 0, "rocks": 0 }' % (term, e.reason)
                 ratings = simplejson.loads(json)
                 sucks = float(ratings['sucks'])
                 rocks = float(ratings['rocks'])
