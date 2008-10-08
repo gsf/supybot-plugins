@@ -745,10 +745,14 @@ class Assorted(callbacks.Privmsg):
         if not match:
             irc.reply("gah, couldn't find stock ticker %s" % t)
             return
-        cid = match.group(1)
-        idx = soup.find(id="ref_%s_1" % cid).string
-        p = soup.find(id="ref_%s_cp" % cid).string
-        irc.reply("%s %s" % (idx, p))
+        try:
+            cid = match.group(1)
+            irc.reply(cid)
+            idx = soup.find(id="ref_%s_l" % cid).string
+            p = soup.find(id="ref_%s_cp" % cid).string
+            irc.reply("%s %s" % (idx, p))
+        except:
+            irc.reply("ruhroh, me no speak google")
 
     def debt(self, irc, msg, args):
         """
