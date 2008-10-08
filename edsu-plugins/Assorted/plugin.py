@@ -745,21 +745,20 @@ class Assorted(callbacks.Privmsg):
         if not match:
             irc.reply("gah, couldn't find stock ticker %s" % t)
             return
-        try:
-            cid = match.group(1)
-            idx = soup.find(id="ref_%s_l" % cid).string
-            p = soup.find(id="ref_%s_cp" % cid).string
-            mkt_cap = soup.find(id="ref_%s_mc" % cid).string
-            pe = soup.find(id="ref_%s_pe" % cid).string
-            hi = soup.find(id="ref_%s_hi" % cid).string
-            lo = soup.find(id="ref_%s_lo" % cid).string
-            hi52 = soup.find(id="ref_%s_hi52" % cid).string
-            lo52 = soup.find(id="ref_%s_lo52" % cid).string
+        cid = match.group(1)
+        idx = soup.find(id="ref_%s_l" % cid).string
+        p = soup.find(id="ref_%s_cp" % cid).string
+        mkt_cap = soup.find(id="ref_%s_mc" % cid).string
+        pe = soup.find(id="ref_%s_pe" % cid).string
+        hi = soup.find(id="ref_%s_hi" % cid).string
+        lo = soup.find(id="ref_%s_lo" % cid).string
+        hi52 = soup.find(id="ref_%s_hi52" % cid).string
+        lo52 = soup.find(id="ref_%s_lo52" % cid).string
 
-            irc.reply("[%s %s] hi:%s lo:%s  hi52:%s lo52:%s p/e:%s mktcap:%s" \
-                % (idx, p, hi, lo, hi52, lo52, pe, mktcap))
-        except:
-            irc.reply("ruhroh, me no speak google")
+        irc.reply("[%s %s] hi:%s lo:%s  hi52:%s lo52:%s p/e:%s mktcap:%s" \
+            % (idx, p, hi, lo, hi52, lo52, pe, mktcap))
+        #except:
+        #    irc.reply("ruhroh, me no speak google")
 
     def debt(self, irc, msg, args):
         """
