@@ -72,7 +72,7 @@ class Presidents(callbacks.Privmsg):
         html_str = html.read()
         soup = BeautifulSoup(html_str)
         irc.reply(soup.find('a').string.strip().upper())
-    bicycle = wrap(bicycle,['something'])
+    bicycle = wrap(bicycle,['text'])
 
 Class = Presidents
 
