@@ -24,7 +24,7 @@ class AudioScrobbler(callbacks.Privmsg):
         'Slocketman', 'jaydatema', 'miker_', 'bradl', 'eby', 'pbinkley', 
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
-        'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar',
+        'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar', 'DataGazetteer',
         'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys', 'bosteen']
     users.sort()
     
