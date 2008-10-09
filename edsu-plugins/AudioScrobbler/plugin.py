@@ -30,7 +30,9 @@ class AudioScrobbler(callbacks.Privmsg):
     
     nickmap = dict(
 #       last.fm username = 'nick',
+        pmurray = 'DataGazetteer',
         leftwing = 'mjgiarlo',
+        LTjake = 'bricas',
         moil = 'gsf',
         rtennant = 'royt',
         inkdroid = 'edsu',
