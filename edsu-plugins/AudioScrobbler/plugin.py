@@ -228,6 +228,19 @@ class AudioScrobbler(callbacks.Privmsg):
         irc.reply(', '.join(tracks).encode('utf8','ignore'))
 
     def topten2(self,irc,msg,args):
+        artists = self.get_topbands()
+        irc.reply(', '.join(artists).encode('utf8','ignore'))
+
+    def randband(self, irc, msg, args):
+        """
+        Returns a random band from the weekly top 
+        artists chart of the code4lib last.fm group
+        """
+        artists = self.get_topbands()
+        artist = artists[randint(0, len(artists)-1)]
+        irc.reply(artist)
+
+    def get_topbands(self)
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklyartistchart.xml'
         try:
             response = urlopen(url)
@@ -240,7 +253,7 @@ class AudioScrobbler(callbacks.Privmsg):
         for track in root.findall('.//artist'):
             name = track.find('.//name')
             artists.append(name.text.strip())
-        irc.reply(', '.join(artists).encode('utf8','ignore'))
+        return artists
 
     def tagged (self,irc,msg,args):
         tag = quote(' '.join(args))
