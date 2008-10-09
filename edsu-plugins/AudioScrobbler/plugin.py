@@ -240,7 +240,7 @@ class AudioScrobbler(callbacks.Privmsg):
         artist = artists[randint(0, len(artists)-1)]
         irc.reply(artist)
 
-    def get_topbands(self)
+    def get_topbands(self):
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklyartistchart.xml'
         try:
             response = urlopen(url)
