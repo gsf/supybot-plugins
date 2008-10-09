@@ -681,7 +681,7 @@ class Assorted(callbacks.Privmsg):
         irc.reply(" >>", prefixNick=False)
 
     def mf(self, irc, msg, args):
-        irc.reply("Hey, " + ' '.join(args) + "...")
+        irc.reply("Hey, " + ' '.join(args) + "...", prefixNick=False)
         irc.reply("    .-. ", prefixNick=False)
         irc.reply("    |-| ", prefixNick=False)
         irc.reply("    | | ", prefixNick=False)
