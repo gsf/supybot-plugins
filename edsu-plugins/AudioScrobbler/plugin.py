@@ -25,7 +25,8 @@ class AudioScrobbler(callbacks.Privmsg):
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
         'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar', 'DataGazetteer',
-        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys', 'bosteen']
+        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys',
+        'bosteen', 'tomkeays']
     users.sort()
     
     nickmap = dict(
@@ -46,7 +47,8 @@ class AudioScrobbler(callbacks.Privmsg):
         ranginui = 'rangi',
         mangrue = 'jtgorman',
         dys = 'MrDys',
-        bosteen = 'BenO'
+        bosteen = 'BenO',
+        tomkeys = 'madtom',
         )
 
     def get_songs(self,username):
