@@ -37,6 +37,13 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply("edsu finds this supremely annoying, but " + ' '.join(args), prefixNick=True)
 
+    def kgs(self, irc, msg, args):
+        """
+        bad kgs imitation
+        """
+        irc.reply("nosrsly, " + ' '.join(args), prefixNick=True)
+
+
     def obamit(self, irc, msg, args):
         """
         Garners attention for your statements in a folksy way
