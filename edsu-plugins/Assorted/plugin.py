@@ -137,6 +137,23 @@ class Assorted(callbacks.Privmsg):
       def fmt(t): return "%s [%s]" % t
       irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
 
+    def necode4lib(self,irc,msg,args):
+      """
+      Gets tally of location votes for upcoming ne code4lib
+      """
+      url = 'http://dilettantes.code4lib.org/voting_booth/election/results/5'
+      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
+      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
+      votes = simplejson.loads(json)
+      tallies = []
+      for count in votes:
+        locs = votes[count]
+        for loc in locs:
+          tallies.append((loc['attributes']['name'], count))
+      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
+      def fmt(t): return "%s [%s]" % t
+      irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
+
     def keynotes2009(self,irc,msg,args):
       """
       Gets tally of keynoter votes for 2009 conference from http://dilettantes.code4lib.org/voting_booth/election/results/4
