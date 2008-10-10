@@ -21,7 +21,9 @@ class Translators(callbacks.Privmsg):
         """
         Translates text into McCain speechifyin'
         """
-        irc.reply('my friends, ' + ' '.join(args), prefixNick=True)
+        prefix = "My friends, "
+        if randint(0,2) == 2: prefix = "My fellow prisoners, "
+        irc.reply(prefix + ' '.join(args), prefixNick=True)
 
     def dick(self, irc, msg, args):
         """
