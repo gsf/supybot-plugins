@@ -54,7 +54,7 @@ class Translators(callbacks.Privmsg):
         """
         Truncates and refocuses your statement
         """
-        s = ' '.join(args
+        s = ' '.join(args)
         high = len(s)
         low = min(10, high)
         irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)])
