@@ -56,7 +56,7 @@ class Translators(callbacks.Privmsg):
         """
         s = ' '.join(args)
         high = len(s)
-        low = min(10, high-1)
+        low = min(7, high-1)
         irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)])
 
         
