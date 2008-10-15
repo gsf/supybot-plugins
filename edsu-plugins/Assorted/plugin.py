@@ -638,7 +638,7 @@ class Assorted(callbacks.Privmsg):
         status = tweets[randint(0, len(tweets)-1)]
         twit = status.user.screen_name.string
         tweet = status.text.string
-        irc.reply("%s: %s".encode('utf-8') % (twit, tweet))
+        irc.reply("%s: %s".encode('utf8', 'ignore') % (twit, tweet))
 
     def itr(self,irc,msg,args,continent):
         """
