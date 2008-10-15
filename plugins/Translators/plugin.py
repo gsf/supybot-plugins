@@ -21,8 +21,7 @@ class Translators(callbacks.Privmsg):
         """
         Translates text into McCain speechifyin'
         """
-        prefix = "My friends, "
-        if randint(0,2) == 2: prefix = "My fellow prisoners, "
+        prefix = "My friends, " if randint(0,2) else "My fellow prisoners, "
         irc.reply(prefix + ' '.join(args), prefixNick=True)
 
     def dick(self, irc, msg, args):
@@ -48,19 +47,16 @@ class Translators(callbacks.Privmsg):
         """
         Garners attention for your statements in a folksy way
         """
-        look = "Look, "
-        if randint(0,1): look = "Look, here's what I'm saying... "
+        look = "Look, " if randint(0,1) else "Look, here's what I'm saying... "
         irc.reply(look + ' '.join(args))
 
     def mjg(self, irc, msg, args):
         """
         Truncates and refocuses your statement
         """
-        s = ' '.join(args)
-        low = 10
-        high = len(s) - 10
-        if len(s) < low:
-            low = len(s)
+        s = ' '.join(args
+        high = len(s)
+        low = min(10, high)
         irc.reply("%s... OMG! Bacon!" % s[:randint(low,high)])
 
         
