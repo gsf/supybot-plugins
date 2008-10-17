@@ -735,40 +735,54 @@ class Assorted(callbacks.Privmsg):
         """
         Get the Dow Jones Industrial Average from teh GOOG
         """
-        irc.reply(self._cid_quote(983582))
+        irc.reply(self._cid_quote(983582,args))
 
     def nasdaq(self, irc, msg, args):
         """
         Get the NASDAQ from teh GOOG
         """
-        irc.reply(self._cid_quote(13756934))
+        irc.reply(self._cid_quote(13756934,args))
 
     def sandp(self, irc, msg, args):
         """
         Get the S&P from teh GOOG
         """
-        irc.reply(self._cid_quote(626307))
+        irc.reply(self._cid_quote(626307,args))
 
     def ftse(self, irc, msg, args):
         """
         Get the FTSE from teh GOOG
         """
-        irc.reply(self._cid_quote(12590587))
+        irc.reply(self._cid_quote(12590587,args))
 
-    def _cid_quote(self, cid):
+    def _cid_quote(self, cid, args):
+        directions = { '+' : 'up', '-' : 'down' }
+        formats = {
+          'def' : "%(idx)s; %(sign)s%(diff)s (%(sign)s%(pct)s)",
+          'eng' : "The %(name)s is %(direction)s %(diff)s points (%(pct)s) to %(idx)s."
+        }
+        try:
+          format = formats[args[0].lower()[0:3]]
+        except:
+          format = formats['def']
+        
         # TODO: make this so you can use an ticker
         soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
+        data = {}
         try:
-            idx = soup.find(id="ref_%s_l" % cid).string
-            diff = soup.find(id="ref_%s_c" % cid).string 
-            p = soup.find(id="ref_%s_cp" % cid).string
+            data = {
+              'idx' : soup.find(id="ref_%s_l" % cid).string,
+              'diff' : soup.find(id="ref_%s_c" % cid).string or '+0',
+              'pct' : soup.find(id="ref_%s_cp" % cid).string or '0%',
+              'name' : soup.find(id="companyheader").find('h1').string
+            }
+            data['sign'] = data['diff'][0]
+            data['direction'] = directions[data['sign']]
+            data['diff'] = data['diff'].strip('+-')
+            data['pct'] = data['pct'].strip('()+-')
         except:
-          return 'ruhroh, me no speak google'
-        if not p:
-            p = "0%"
-        if not diff:
-            diff = "+0"
-        return "%s; %s %s" % (idx, diff, p)
+            return 'ruhroh, me no speak google'
+        return format % data
 
     def stock(self, irc, msg, args):
         t = quote(' '.join(args))
