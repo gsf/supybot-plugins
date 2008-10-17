@@ -26,7 +26,7 @@ class AudioScrobbler(callbacks.Privmsg):
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
         'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar', 'DataGazetteer',
         'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys',
-        'bosteen', 'tomkeays']
+        'denials', 'bosteen', 'tomkeays']
     users.sort()
     
     nickmap = dict(
@@ -48,6 +48,7 @@ class AudioScrobbler(callbacks.Privmsg):
         mangrue = 'jtgorman',
         dys = 'MrDys',
         bosteen = 'BenO',
+        denials = 'dbs',
         tomkeys = 'madtom',
         )
 
