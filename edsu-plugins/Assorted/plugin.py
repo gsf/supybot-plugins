@@ -759,13 +759,16 @@ class Assorted(callbacks.Privmsg):
         # TODO: make this so you can use an ticker
         soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
         try:
-            idx = soup.find(id="ref_%s_l" % cid).string 
+            idx = soup.find(id="ref_%s_l" % cid).string
+            diff = soup.find(id="ref_%s_c" % cid).string 
             p = soup.find(id="ref_%s_cp" % cid).string
         except:
           return 'ruhroh, me no speak google'
         if not p:
             p = "0%"
-        return "%s %s" % (idx, p)
+        if not diff:
+            diff = "+0"
+        return "%s; %s %s" % (idx, diff, p)
 
     def stock(self, irc, msg, args):
         t = quote(' '.join(args))
