@@ -58,6 +58,11 @@ class Anagram(callbacks.Privmsg):
 
         irc.reply( parser.anagram )
 
+    def hussein(self, irc, msg, args):
+        """Hussein-ify your anagram!"""
+        args.insert(1, "Hussein")
+        self.ana(irc, msg, args)
+
 Class = Anagram
 
 # vim:set shiftwidth=4 tabstop=8 expandtab textwidth=78:
