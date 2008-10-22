@@ -811,19 +811,19 @@ class Assorted(callbacks.Privmsg):
         """
         Returns expected Presedential race results from http://www.electoral-vote.com/
         """
-        irc.reply(self._senate_house(0))
+        irc.reply(self._electoral(0))
 
     def senate(self, irc, msg, args):
         """
         Returns expected Senate race results from http://www.electoral-vote.com/
         """
-        irc.reply(self._senate_house(1))
+        irc.reply(self._electoral(1))
 
     def house(self, irc, msg, args):
         """
         Returns expected House race results from http://www.electoral-vote.com/
         """
-        irc.reply(self._senate_house(2))
+        irc.reply(self._electoral(2))
 
     def _electoral(self, idx):
         soup = self._url2soup("http://www.electoral-vote.com/")
