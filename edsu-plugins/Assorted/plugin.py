@@ -807,6 +807,31 @@ class Assorted(callbacks.Privmsg):
         except:
             irc.reply("ruhroh, me no speak google")
 
+    def prez(self, irc, msg, args):
+        """
+        Returns expected Presedential race results from http://www.electoral-vote.com/
+        """
+        irc.reply(self._senate_house(0))
+
+    def senate(self, irc, msg, args):
+        """
+        Returns expected Senate race results from http://www.electoral-vote.com/
+        """
+        irc.reply(self._senate_house(1))
+
+    def house(self, irc, msg, args):
+        """
+        Returns expected House race results from http://www.electoral-vote.com/
+        """
+        irc.reply(self._senate_house(2))
+
+    def _electoral(self, idx):
+        soup = self._url2soup("http://www.electoral-vote.com/")
+        dems = soup.findAll('span', {'class':'dem'})
+        gops = soup.findAll('span', {'class':'gop'})
+        ties = gops[idx].next.next
+        return ', '.join([x.string.strip() for x in [dems[idx], gops[idx], ties]])
+
     def debt(self, irc, msg, args):
         """
         Returns current US gross national debt as
