@@ -871,7 +871,7 @@ class Assorted(callbacks.Privmsg):
                   "Did OCLC put co-option of code4lib in your performance review for 2009?",
                   "you don't belong to code4lib, since you acted in an unwelcome fashion there and were shunned accordingly.",
                   "How about enabling comments over on your site, Winer of the library world?",
-                  "Roy's a big boy—think he can speak to OCLC's desire to act like Microsoft and assert dominance over an informal organization",
+                  "Roy's a big boy--think he can speak to OCLC's desire to act like Microsoft and assert dominance over an informal organization",
                   "Follow the money on the code4libcon Google group",
                   "Awesome, hypocrisy.",
                   "Let's say that OCLC and code4lib is about as awesome as DSpace plus HP.",
