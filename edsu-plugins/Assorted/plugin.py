@@ -836,6 +836,15 @@ class Assorted(callbacks.Privmsg):
         delta = targetdate - now
         irc.reply('%d days left' % delta.days)
 
+    def nytags(self, irc, msg, args, **opts):
+        url = 'http://api.nytimes.com/svc/timestags/suggest'
+        key = 'aa51418354ed1dc2378f9679a04a0f54:14:13476879'
+        q = urlencode({'query': ' '.join(args), 'api-key': key})
+        json = urlopen("%s?%s" % (url, q)).read()
+        tags = simplejson.loads(json)
+        result = ', '.join(tags['results'])
+        irc.reply(result)
+
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
         Fetch a url and BeautifulSoup-ify the returned doc
