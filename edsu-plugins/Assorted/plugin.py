@@ -863,6 +863,36 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(data, convertEntities=['html','xml'])
         return soup
     
+    def anon(self, irc, msg, args):
+        """
+        Spits out random nonsense from 'anon,' that loveable idiot of a troll
+        """
+        trolls = ["Hey Roy, get a life.",
+                  "Did OCLC put co-option of code4lib in your performance review for 2009?",
+                  "you don't belong to code4lib, since you acted in an unwelcome fashion there and were shunned accordingly.",
+                  "How about enabling comments over on your site, Winer of the library world?",
+                  "Roy's a big boy—think he can speak to OCLC's desire to act like Microsoft and assert dominance over an informal organization",
+                  "Follow the money on the code4libcon Google group",
+                  "Awesome, hypocrisy.",
+                  "Let's say that OCLC and code4lib is about as awesome as DSpace plus HP.",
+                  "OCLC as largest code4lib sponsor=death",
+                  "Roy as OCLC shill=shame for LJ and code4lib",
+                  "Roy=saint, or Joe of Arc since leaving CDL?",
+                  "court fool of the library world",
+                  "aren't you on strike or something?",
+                  "Hey Roy, what does OCLC think about code4lib?",
+                  "the community voted the ridiculous Ohio location down, so it does know what sponsorship is, indeed",
+                  "Isn't Ohio the state that doesn't know the difference between a business and a non-profit cooperative?",
+                  "OCLC is using Roy and its money to influence a loose collective in the process of expanding.",
+                  "are you affiliated with OCLC?",
+                  "But you don't now--you're a vendor.",
+                  "May as well post an OCLC ad, since you're shilling for their services in your presentation.",
+                  "Oh, does this benefit WorldCat Local?",
+                  "RFP's exist because libraries are public. The Oh Can Libraries Concede trust would prefer otherwise, I'm sure",
+                  "if channels matter, then why not community dot oclc dot org slash roy?",
+        ]
+        troll = trolls[randint(0, len(trolls)-1)]
+        irc.reply(troll, prefixNick=True)
 
 
 Class = Assorted
