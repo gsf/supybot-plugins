@@ -885,7 +885,7 @@ class Assorted(callbacks.Privmsg):
         req = Request(url,postdata,headers)
         doc = urlopen(req)
         data = doc.read()
-        soup = BeautifulSoup(data, convertEntities=['html','xml'])
+        soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
         return soup
     
     def anon(self, irc, msg, args):
