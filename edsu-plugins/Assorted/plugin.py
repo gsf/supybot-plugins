@@ -684,7 +684,7 @@ class Assorted(callbacks.Privmsg):
         haiku = main.find('i')
         lmb = lambda s: s.string and s.string.strip() or None
         resp = [lmb(x) for x in haiku.contents]
-        [irc.reply(x, prefixNick=False) for x in resp if x] 
+        irc.reply(' / '.join([x for x in resp if x]), prefixNick=False)
 
     def zen(self,irc,msg,args):
         """
