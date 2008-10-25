@@ -675,6 +675,15 @@ class Assorted(callbacks.Privmsg):
 
     itr = wrap(itr, [optional('text')])
 
+    def haiku(self, irc, msg, args):
+        """
+        Random haiku from http://www.vikingmud.org/guilds/samurai/?haiku/random
+        """
+        soup = self._url2soup('http://www.vikingmud.org/guilds/samurai/?haiku/random')
+        main = soup.find('td', {'class': 'main'})
+        haiku = main.find('i')
+        [irc.reply(x.string.strip(), prefixNick=False) for x in haiku.contents if x]
+
     def zen(self,irc,msg,args):
         """
         returns a random zen proverb from http://oneproverb.net
