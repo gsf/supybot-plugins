@@ -682,7 +682,9 @@ class Assorted(callbacks.Privmsg):
         soup = self._url2soup('http://www.vikingmud.org/guilds/samurai/?haiku/random')
         main = soup.find('td', {'class': 'main'})
         haiku = main.find('i')
-        [irc.reply(x.string.strip(), prefixNick=False) for x in haiku.contents if len(x.string)]
+        lmb = lambda s: s.string and s.string.strip() or None
+        resp = [lmb(x) for x in haiku.contents]
+        [irc.reply(x, prefixNick=False) for x in resp if x] 
 
     def zen(self,irc,msg,args):
         """
