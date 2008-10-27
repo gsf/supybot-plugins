@@ -23,7 +23,7 @@ class Calais(callbacks.Privmsg):
             if o.startswith('http://s.opencalais.com/1/type/em/e/'):
                 o_type = o.split('/')[-1]
                 for o_name in g.objects(s, name):
-                    found.append('a %s %s' % (o_type.lower(), o_name))
+                    found.append('a %s %s' % (o_type, o_name))
         if len(found) > 0:
             irc.reply("ok I found: " + ', '.join(found))
         else:
