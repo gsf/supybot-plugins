@@ -15,7 +15,6 @@ class Calais(callbacks.Privmsg):
         found = []
         g = rdflib.ConjunctiveGraph()
         key = 'q45p9he7jbyf5xk2hvmv3ue9'
-        url = sys.argv[1]
         calais = "http://service.semanticproxy.com/processurl/%s/rdf/%s" % (key, url)
         name = rdflib.URIRef('http://s.opencalais.com/1/pred/name')
         g.load(calais)
