@@ -25,7 +25,7 @@ class Calais(callbacks.Privmsg):
                 for o_name in g.objects(s, name):
                     found.append('a %s %s' % (o_type.lower(), o_name))
         if len(found) > 0:
-            irc.reply("OK I found " + ', '.join(found))
+            irc.reply("ok I found: " + ', '.join(found))
         else:
             irc.reply("urm, sorry me no find anything")
 
