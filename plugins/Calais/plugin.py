@@ -6,7 +6,7 @@ import supybot.callbacks as callbacks
 
 import rdflib
 
-class Traffic(callbacks.Privmsg):
+class Calais(callbacks.Privmsg):
 
     def entities(self, irc, msg, args):
         """look for entities in a web resource using http://semanticproxy.com
@@ -29,3 +29,5 @@ class Traffic(callbacks.Privmsg):
             irc.reply(' ; '.join(found))
         else:
             irc.reply("urm, sorry me no find anything")
+
+Class = Calais
