@@ -5,11 +5,12 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.utils.web as web
 import supybot.callbacks as callbacks
+from pprint import pformat
 
 import re, logging, time
 from random import randint
 from urllib import urlencode
-from BeautifulSoup import BeautifulStoneSoup as BSS
+from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS
 
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
@@ -38,9 +39,12 @@ def tinyurl(url):
     except:
         return 'http://lyricwiki.org'
 
-def getsoup(url):
-    logger.info('fetching: ' + url)
-    xml = web.getUrl(url, headers=HEADERS)
+def getsoup(url, html=None, xml=None):
+    if html:
+        return BS(html, convertEntities=BS.HTML_ENTITIES)
+    elif not xml: 
+        logger.info('fetching: ' + url)
+        xml = web.getUrl(url, headers=HEADERS)
     return BSS(xml, convertEntities=BSS.XML_ENTITIES)
 
 def getsong(artist, title):
@@ -79,7 +83,7 @@ def formatlyrics(song, startline=None):
                 matcher = re.compile(matchstring, re.I | re.M)
                 endline = [matcher.search(x) and True for x in lines].index(True) + 1
                 startline = endline - 4
-                logger.info('%d,%d' % (startline, endline))
+                logger.info('start,end: %d,%d' % (startline, endline))
                 while startline < 0:
                     startline += 1; endline += 1
                     logger.info('now %d,%d' % (startline, endline))
@@ -94,6 +98,26 @@ def formatlyrics(song, startline=None):
 
     lines = lines[startline:endline]
     return ' / '.join([l for l in lines if re.search('\S', l)])
+
+def lyricsty(artist, title):
+    try:
+        url = 'http://www.lyricsty.com/lyrics/%s/%s/%s.html' % \
+            (artist[0].lower(), \
+             re.sub('\s+', '_', artist.strip()), \
+             re.sub('\s+', '_', title.strip()))
+        logger.info("fetching " + url)
+        html = web.getUrl(url, headers=HEADERS)
+        soup = getsoup(None, html=html)
+        lyricsdiv = soup.find('div', {'class': 'song'})
+        lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
+        song = {
+            'artist': artist, 
+            'song': title, 
+            'lyrics': lyrics
+            }
+        return song
+    except Exception, e:
+        logger.info('Exception fetching lyrics from %s: %s' % (url, e.message))
 
 class Sing(callbacks.Plugin):
     """
@@ -147,11 +171,13 @@ class Sing(callbacks.Plugin):
             irc.reply('No songs found by ' + artist)
             return
 
-        song = getsong(artist, title)
+        song = lyricsty(artist, title)
+        if not song:
+            song = getsong(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
             create = tinyurl(editurl(artist, title))
-            irc.reply('No lyrics for %s by %s. Create them? %s' % (title, artist, create), prefixNick=True)
+            irc.reply('No lyrics for %s by %s. Searched lyricwiki & lyricsty')
         else:
             lyrics = formatlyrics(song, line)
             lyrics = lyrics.encode('ascii', 'ignore')
