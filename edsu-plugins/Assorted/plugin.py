@@ -734,7 +734,7 @@ class Assorted(callbacks.Privmsg):
         idea = soup.find('a', {'name': 'idea'})
         title = idea.h1.string
         try:
-            subtitle = idea.parent.findAll('font')[1].string
+            subtitle = idea.parent.find('font', 'fcl').string
             title = '%s -- %s' % (title, subtitle)
         except:
             pass
