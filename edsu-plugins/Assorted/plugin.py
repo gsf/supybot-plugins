@@ -724,7 +724,6 @@ class Assorted(callbacks.Privmsg):
         """
         returns a radom half-baked idea from http://halfbakery.com
         """
-
         try:
             soup = self._url2soup('http://www.halfbakery.com/random-idea.html')
         except HTTPError, e:
@@ -733,9 +732,9 @@ class Assorted(callbacks.Privmsg):
             irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
         idea = soup.find('a', {'name': 'idea'})
-        title = idea.font.string
+        title = idea.h1.string
         try:
-            subtitle = idea.parent.findAll('font')[1].string
+            subtitle = idea.parent.findAll('font', "fcl")[1].string
             title = '%s -- %s' % (title, subtitle)
         except:
             pass
