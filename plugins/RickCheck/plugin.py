@@ -87,7 +87,7 @@ class RickCheck(callbacks.PluginRegexp,callbacks.Plugin):
         except:
             return
         if prob > 20:
-            irc.reply('WARNING: %s may be attempting a RickRoll (probability: %%%d)' % (msg.nick,prob), prefixNick=False)
+            irc.reply('WARNING: %s may be attempting a RickRoll (probability: %d%%)' % (msg.nick,prob), prefixNick=False)
         return
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
