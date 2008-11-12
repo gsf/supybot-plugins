@@ -20,7 +20,7 @@ def summary_stat(tree, s):
 
 class WordCount(callbacks.Plugin):
     """
-    Detailed text analysis of a web document,
+    Word count and text analysis of a web document,
     courtesy of http://textalyser.net
     """
     threaded = True
@@ -28,7 +28,7 @@ class WordCount(callbacks.Plugin):
     def wc(self, irc, msg, args, url):
         """
         Usage: wc [url] - 
-        Detailed text analysis of a web document,
+        Word count and text analysis of a web document,
         courtesy of http://textalyser.net -
         LD = Lexical Density -
         GFI = Gunning-Fog Index
