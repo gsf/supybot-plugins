@@ -893,7 +893,7 @@ class Assorted(callbacks.Privmsg):
         except:
             print "Error fetching flu data: ", sys.exc_info()[0]
         data = [row for row in reader if len(row) > 2]
-        locations = data[0][1:]
+        locations = [x.lower() for x in data[0][1:]]
         if loc == 'list':
             resp = ', '.join(locations)
             irc.reply(resp)
@@ -902,10 +902,10 @@ class Assorted(callbacks.Privmsg):
         previous_data = ["%.2f" % float(x) for x in data[-2][1:]]
         latest = dict(zip(locations, latest_data))
         previous = dict(zip(locations, previous_data))
-        if loc not in latest:
+        if loc.lower() not in latest:
             irc.reply("No data for location: %s" % loc)
         else:
-            trend = cmp(latest[loc], previous[loc])
+            trend = cmp(latest[loc.lower()], previous[loc.lower()])
             if trend < 0:
                 trend = 'down'
             elif trend == 0:
@@ -913,7 +913,7 @@ class Assorted(callbacks.Privmsg):
             else:
                 trend = 'up'
             resp = "As of %s the flu search activity index for %s was %s; trend is %s" \
-                % (data[-1][0], loc, latest[loc], trend)
+                % (data[-1][0], loc, latest[loc.lower()], trend)
             irc.reply(resp)
     
     flu = wrap(flu, ['text'])
