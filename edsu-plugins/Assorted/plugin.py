@@ -918,6 +918,15 @@ class Assorted(callbacks.Privmsg):
     
     flu = wrap(flu, ['text'])
 
+    def decide(self, irc, msg, args, choices):
+        pattern = re.compile('\s+or\s+', re.I)
+        clist = re.split(pattern, choices)
+        if randint(0, 3) == 0:
+            clist.append("That's a tough one")
+        irc.reply("go with " + clist[randint(0, len(clist)-1)])
+
+    decide = wrap(decide, ['text'])
+
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
         Fetch a url and BeautifulSoup-ify the returned doc
@@ -979,7 +988,6 @@ class Assorted(callbacks.Privmsg):
         ]
         troll = trolls[randint(0, len(trolls)-1)]
         irc.reply(troll, prefixNick=True)
-
 
 Class = Assorted
 
