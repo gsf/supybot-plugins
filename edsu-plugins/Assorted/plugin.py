@@ -943,8 +943,7 @@ class Assorted(callbacks.Privmsg):
             if li.a:
                 beers.append((li.a['href'], li.a.string))
         beer = beers[randint(0, len(beers))]
-        irc.reply("fills a pint glass with %s, and sends it down the aisle to %s
-            (%s)" % (beer[0], 'john', beer[1]))
+        irc.reply("fills a pint glass with %s, and sends it down the aisle to %s (%s)" % (beer[0], 'john', beer[1]))
 
 
     
