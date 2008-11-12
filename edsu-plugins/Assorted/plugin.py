@@ -936,7 +936,7 @@ class Assorted(callbacks.Privmsg):
         soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
         return soup
 
-    def beerme(self, irc, msg, args):
+    def bartender(self, irc, msg, args):
         soup = self._url2soup('http://web.mit.edu/~tcarlile/www/beer/beerlist.html')
         beers = []
         for li in soup.findAll('li'):
