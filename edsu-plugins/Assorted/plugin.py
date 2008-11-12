@@ -935,6 +935,17 @@ class Assorted(callbacks.Privmsg):
         data = doc.read()
         soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
         return soup
+
+    def beerme(self, irc, msg, args):
+        soup = self._url2soup('http://web.mit.edu/~tcarlile/www/beer/beerlist.html')
+        beers = []
+        for li in soup.findAll('li'):
+            if li.a:
+                beers.append((li.a['href'], li.a.string))
+        beer = beers[randint(0, len(beers))]
+        irc.reply("pours a %s (%s)" % beer)
+
+
     
     def anon(self, irc, msg, args):
         """
