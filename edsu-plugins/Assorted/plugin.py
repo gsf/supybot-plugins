@@ -937,13 +937,16 @@ class Assorted(callbacks.Privmsg):
         return soup
 
     def bartender(self, irc, msg, args):
+        """
+        pours a beer from http://web.mit.edu/~tcarlile/www/beer/beerlist.html
+        for you
+        """
         soup = self._url2soup('http://web.mit.edu/~tcarlile/www/beer/beerlist.html')
         beers = []
         for li in soup.findAll('li'):
             if li.a:
                 beers.append((li.a['href'], li.a.string))
         beer = beers[randint(0, len(beers))]
-        self.log.info(str(dir(msg)))
         irc.reply("fills a pint glass with %s, and sends it sliding down the bar to %s (%s)" % (beer[1], msg.nick, beer[0]))
 
     def anon(self, irc, msg, args):
