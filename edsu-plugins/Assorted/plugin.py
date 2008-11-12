@@ -921,8 +921,9 @@ class Assorted(callbacks.Privmsg):
     def decide(self, irc, msg, args, choices):
         pattern = re.compile('\s+or\s+', re.I)
         clist = re.split(pattern, choices)
-        if randint(0, 3) == 0:
-            clist.append("That's a tough one")
+        if randint(0, 10) == 0:
+            irc.reply("That's a tough one...")
+            return
         irc.reply("go with " + clist[randint(0, len(clist)-1)])
 
     decide = wrap(decide, ['text'])
