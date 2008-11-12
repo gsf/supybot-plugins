@@ -33,7 +33,11 @@ class WordCount(callbacks.Plugin):
         LD = Lexical Density -
         GFI = Gunning-Fog Index
         """
-        html = web.getUrl(SERVICE_URL % urlencode({'q': url}), headers=HEADERS)
+        try:
+            html = web.getUrl(SERVICE_URL % urlencode({'q': url}), headers=HEADERS)
+        except:
+            irc.reply("Request to textalyser.net failed: " + sys.exc_info()[0])
+            return
         parser = etree.HTMLParser()
         tree = etree.parse(StringIO(html), parser)
 
