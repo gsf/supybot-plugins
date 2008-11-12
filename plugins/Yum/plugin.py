@@ -162,7 +162,7 @@ class Yum(callbacks.Plugin):
         Returns a random beer from search results of http://whatalesyou.com
         """
         from socket import setdefaulttimeout
-        setdefaulttimeout(60)
+        setdefaulttimeout(120)
         if not q:
             q = 'beer'
         searchuri = 'http://www.whatalesyou.com/beersearch.asp'
