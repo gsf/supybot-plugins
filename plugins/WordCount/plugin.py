@@ -57,7 +57,7 @@ class WordCount(callbacks.Plugin):
         items.sort()
         resp = "Top words are " + ', '.join(["%s: %d" % (k, int(v)) for k,v in items])
 
-        resp += "-- Total words: %d; Different words: %d; LD: %s; GFI: %s" \
+        resp += " -- Total words: %d; Different words: %d; LD: %s; GFI: %s" \
             % (int(total), int(diffwords), ld, gfi)
 
         irc.reply(resp)
