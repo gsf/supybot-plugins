@@ -54,8 +54,8 @@ class WordCount(callbacks.Plugin):
             if i % 4 == 0:
                 counts[cells[i]] = cells[i+1]
 
-        counts = sorted(counts.iteritems(), key=lambda (k,v): (v,k))
-        resp = "Top words are " + ', '.join(["%s: %d" % (k, int(v)) for k,v in counts.items()])
+        sortedcounts = sorted(counts.iteritems(), key=lambda (k,v): (v,k), reverse=True)
+        resp = "Top words are " + ', '.join(["%s: %d" % (k, int(v)) for k,v in sortedcounts])
 
         resp += " -- Total words: %d; Different words: %d; LD: %s; GFI: %s" \
             % (int(total), int(diffwords), ld, gfi)
