@@ -12,6 +12,7 @@ from random import randint
 from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urlparse import urlparse
+import csv
 
 from supybot.commands import *
 import supybot.callbacks as callbacks
@@ -879,6 +880,43 @@ class Assorted(callbacks.Privmsg):
         tags = simplejson.loads(json)
         result = ', '.join(tags['results'])
         irc.reply(result)
+    
+    def flu(self, irc, msg, args, loc):
+        """
+        Estimate of flu search activity for a given region or location. --
+        Usage: flu [location] --
+        Enter "list" as location for a list of options ---
+        Data from http://www.google.org/flutrends/
+        """
+        try:
+            reader = csv.reader(urlopen("http://www.google.org/flutrends/data.txt"))
+        except:
+            print "Error fetching flu data: ", sys.exc_info()[0]
+        data = [row for row in reader if len(row) > 2]
+        locations = data[0][1:]
+        if loc == 'list':
+            resp = ', '.join(locations)
+            irc.reply(resp)
+            return
+        latest_data = ["%.2f" % float(x) for x in data[-1][1:]]
+        previous_data = ["%.2f" % float(x) for x in data[-2][1:]]
+        latest = dict(zip(locations, latest_data))
+        previous = dict(zip(locations, previous_data))
+        if loc not in latest:
+            irc.reply("No data for location: %s" % loc)
+        else:
+            trend = cmp(latest[loc], previous[loc])
+            if trend < 0:
+                trend = 'down'
+            elif trend == 0:
+                trend = 'stable'
+            else:
+                trend = 'up'
+            resp = "As of %s the flu search activity index for %s was %s; trend is %s" \
+                % (data[-1][0], loc, latest[loc], trend)
+            irc.reply(resp)
+    
+    flu = wrap(flu, ['text'])
 
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
