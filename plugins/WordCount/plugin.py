@@ -6,6 +6,7 @@ from StringIO import StringIO
 from lxml import etree
 from urllib import urlencode
 import re
+import sys
 import socket
 from urllib2 import Request, build_opener, HTTPError
 
