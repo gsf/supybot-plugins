@@ -1,15 +1,14 @@
 
 from supybot.commands import *
 import supybot.callbacks as callbacks
-import supybot.utils.web as web
 
 from lxml import etree
-from StringIO import StringIO
 from urllib import urlencode
 import re
+from urllib2 import Request, build_opener, HTTPError
 
 SERVICE_URL = 'http://textalyser.net/?%s'
-HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; WordCount Plugin; http://code4lib.org/irc)')
+UA = 'Zoia/1.0 (Supybot/0.83; WordCount Plugin; http://code4lib.org/irc)'
 
 def summary_stat(tree, s):
     try:
@@ -33,13 +32,17 @@ class WordCount(callbacks.Plugin):
         LD = Lexical Density -
         GFI = Gunning-Fog Index
         """
+        postdata = urlencode(dict(count_numbers=1, is_log=1, min_char=4, site_to_analyze=url, stoplist_lang=1, words_toanalyse=10))
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', UA)]
+        req = Request(SERVICE_URL, postdata)
         try:
-            html = web.getUrl(SERVICE_URL % urlencode({'q': url}), headers=HEADERS)
+            doc = opener.open(req)
         except:
             irc.reply("Request to textalyser.net failed: " + sys.exc_info()[0])
             return
         parser = etree.HTMLParser()
-        tree = etree.parse(StringIO(html), parser)
+        tree = etree.parse(doc, parser)
 
         total = summary_stat(tree, 'Total word count')
         diffwords = summary_stat(tree, 'Number of different words')
