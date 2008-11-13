@@ -55,7 +55,7 @@ class WordCount(callbacks.Plugin):
         cells = wctable.xpath('.//text()')
 
         # filter out whitespace text nodes
-        cells = [x for x in cells if re.match(r'\S', x)][4:]
+        cells = [x.strip() for x in cells if re.match(r'\S', x)][4:]
         counts = {}
         for i in range(0, len(cells)):
             if i % 4 == 0:
