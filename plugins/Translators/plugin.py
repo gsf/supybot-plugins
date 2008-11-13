@@ -17,6 +17,13 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'ache', 'awchee', text)
         irc.reply(text + ", eh?", prefixNick=True)
 
+    def ircnickize(self, irc, msg, args):
+        """ string
+        Normalizes a string per irc nick rules
+        """
+        nick = '_'.join(args)
+        irc.reply(nick, prefixNick=False)
+
     def mccainize(self, irc, msg, args):
         """
         Translates text into McCain speechifyin'
