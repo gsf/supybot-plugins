@@ -34,7 +34,7 @@ class Translators(callbacks.Privmsg):
         """
         States edsu's attitude on selfsame plugin command
         """
-        irc.reply("edsu finds this supremely annoying, but " + ' '.join(args), prefixNick=True)
+        irc.reply("let me remind you people, " + ' '.join(args), prefixNick=True)
 
     def kgs(self, irc, msg, args):
         """
