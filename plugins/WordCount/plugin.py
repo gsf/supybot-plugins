@@ -2,9 +2,11 @@
 from supybot.commands import *
 import supybot.callbacks as callbacks
 
+from StringIO import StringIO
 from lxml import etree
 from urllib import urlencode
 import re
+import socket
 from urllib2 import Request, build_opener, HTTPError
 
 SERVICE_URL = 'http://textalyser.net/?%s'
@@ -36,13 +38,15 @@ class WordCount(callbacks.Plugin):
         opener = build_opener()
         opener.addheaders = [('User-Agent', UA)]
         req = Request(SERVICE_URL, postdata)
+        socket.setdefaulttimeout(20)
         try:
             doc = opener.open(req)
+            html = doc.read()
         except:
             irc.reply("Request to textalyser.net failed: " + sys.exc_info()[0])
             return
         parser = etree.HTMLParser()
-        tree = etree.parse(doc, parser)
+        tree = etree.parse(StringIO(html), parser)
 
         total = summary_stat(tree, 'Total word count')
         diffwords = summary_stat(tree, 'Number of different words')
