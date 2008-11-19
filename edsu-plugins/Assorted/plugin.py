@@ -241,6 +241,7 @@ class Assorted(callbacks.Privmsg):
         "Eclectic, Alabama", "Monkey's Elbow, Kentucky", 
         "Eek, Alaska", "Muck City, Alabama", 
         "Embarrass, Minnesota", "No Name, Colorado",
+        "Gross, Nebraska",
       ]
       def rand_places(num, seen=None):
         if seen == None: 
