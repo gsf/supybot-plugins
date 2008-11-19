@@ -12,6 +12,7 @@ from urllib2 import Request, build_opener, HTTPError
 
 SERVICE_URL = 'http://textalyser.net/?%s'
 UA = 'Zoia/1.0 (Supybot/0.83; WordCount Plugin; http://code4lib.org/irc)'
+httpUrlRe = re.compile(r"(https?://[^\])>\s]+)", re.I)
 
 def summary_stat(tree, s):
     try:
@@ -27,19 +28,27 @@ class WordCount(callbacks.Plugin):
     """
     threaded = True
 
-    def wc(self, irc, msg, args, url):
+    def wc(self, irc, msg, args, url_or_text):
         """
-        Usage: wc [url] - 
+        Usage: wc [url or text] - 
         Word count and text analysis of a web document,
         courtesy of http://textalyser.net -
         LD = Lexical Density -
         GFI = Gunning-Fog Index
         """
-        postdata = urlencode(dict(count_numbers=1, is_log=1, min_char=4, site_to_analyze=url, stoplist_lang=1, words_toanalyse=10))
+        params = dict(count_numbers=1, is_log=1, min_char=4, stoplist_lang=1, words_toanalyse=10)
+
+        if web.httpUrlRe.match(url_or_text):
+            params['site_to_analyze'] = url_or_text
+        else:
+            params['text_main'] = url_or_text
+
+        postdata = urlencode(params)
         opener = build_opener()
         opener.addheaders = [('User-Agent', UA)]
         req = Request(SERVICE_URL, postdata)
         socket.setdefaulttimeout(20)
+
         try:
             doc = opener.open(req)
             html = doc.read()
