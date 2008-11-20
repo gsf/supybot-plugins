@@ -182,27 +182,12 @@ class Assorted(callbacks.Privmsg):
         "Trout Fishing in America", "Freddie Skunkcap", "Dick Assman",
         "Rooster McConaughey", "Hacker John", "Ace Waterwheels"
       ]
-      def get_result(result):
-        return "%s [%i]" % (result[0], result[1])
-      def rand_keynotes(num, seen=None):
-        if seen == None: 
-          seen = []
-        if num == 0:
-          return []
-        keynote = keynotes[randint(0, len(keynotes)-1)]
-        if keynote in seen:
-          keynote = rand_keynotes(1, seen)
-        seen.append(keynote)
-        return [keynote] + rand_keynotes(num-1, seen)
       n = randint(3,8)
-      people = rand_keynotes(n)
+      people = [keynotes.pop(randint(0, len(keynotes)-1)) for i in range(n)]
       votes = [randint(1,100) for a in range(0,n)]
       votes.sort(lambda a,b: cmp(b,a))
       results = zip(people,votes)
-      #msg = map(get_result, results)
-      msg = []
-      for result in results:
-        msg.append("%s [%i]" % (result[0], result[1]))
+      msg = ["%s [%i]" % (result[0], result[1]) for result in results]
       irc.reply('; '.join(msg))
 
     def hosts2010(self,irc,msg,args):
