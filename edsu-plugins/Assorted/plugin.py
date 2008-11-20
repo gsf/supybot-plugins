@@ -786,13 +786,14 @@ class Assorted(callbacks.Privmsg):
               'idx' : soup.find(id="ref_%s_l" % cid).string,
               'diff' : soup.find(id="ref_%s_c" % cid).string or '+0',
               'pct' : soup.find(id="ref_%s_cp" % cid).string or '0%',
-              'name' : soup.find(id="companyheader").find('h1').string
+              'name' : soup.find('h1').string
             }
             data['sign'] = data['diff'][0]
             data['direction'] = directions[data['sign']]
             data['diff'] = data['diff'].strip('+-')
             data['pct'] = data['pct'].strip('()+-')
         except:
+            raise
             return 'ruhroh, me no speak google'
         return format % data
 
