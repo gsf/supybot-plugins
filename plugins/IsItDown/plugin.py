@@ -39,8 +39,7 @@ class Motivate(callbacks.Privmsg):
         except HTTPError, oops:
             irc.reply("Hmm. %s returned the following error: [%s]" % (site, str(oops)), prefixNick=True)
         except AttributeError:
-            irc.reply("Hmm. %s probably changed its response format; please
-update me." % (site), prefixNick=True)
+            irc.reply("Hmm. %s probably changed its response format; please update me." % (site), prefixNick=True)
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
     motivate = wrap(motivate, ['text'])
