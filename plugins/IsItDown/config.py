@@ -12,8 +12,7 @@ def configure(advanced):
     from supybot.questions import output, expect, anything, something, yn
     conf.registerPlugin('Motivate', True)
     if advanced:
-        output('The Motivate plugin gives you an inspiring quote to motivate
-you through your life of dreary librarydom')
+        output('The Motivate plugin gives you an inspiring quote to motivate you through your life of dreary librarydom')
 
 Motivate = conf.registerPlugin('Motivate')
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
