@@ -15,5 +15,5 @@ def configure(advanced):
         output('The Motivate plugin gives you an inspiring quote to motivate
 you through your life of dreary librarydom')
 
-IsItDown = conf.registerPlugin('Motivate')
+Motivate = conf.registerPlugin('Motivate')
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
