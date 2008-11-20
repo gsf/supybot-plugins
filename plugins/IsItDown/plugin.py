@@ -9,7 +9,7 @@ from BeautifulSoup import BeautifulSoup
 from urllib2 import build_opener, HTTPError
 
 class Motivate(callbacks.Privmsg):
-    def motivate(self, irc, msg, args, append):
+    def motivate(self, irc, msg, args, append=None):
         """
         [append] - Just before you slit your throat, get an inspirational quote!
         """
