@@ -8,32 +8,43 @@ import re
 from BeautifulSoup import BeautifulSoup
 from urllib2 import build_opener, HTTPError
 
-class IsItDown(callbacks.Privmsg):
-    def isitdown(self, irc, msg, args, url):
+class Motivate(callbacks.Privmsg):
+    def motivate(self, irc, msg, args, append):
         """
-        <url>: Returns the response from http://www.downforeveryoneorjustme.com/
+        [append] - Just before you slit your throat, get an inspirational quote!
         """
-        site = 'http://downforeveryoneorjustme.com/'
+        site = 'http://www.marchnet.co.uk/random-inspiration.php'
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
         opener = build_opener()
         opener.addheaders = [('User-Agent', ua)]
-        # strip the protocol because downforeveryoneorjustme.com is
-        # too stupid to do that; we're smarter than that, damnit
-        url = re.sub(r'^.*?://', r'', url)
         try:
-            html = opener.open(site + url)
+            html = opener.open(site)
             html_str = html.read()
             soup = BeautifulSoup(html_str)
-            response = soup.div.contents[0].strip()
-            irc.reply(response, prefixNick=True)
+            response = str(soup('p')[0])
+            quote = re.search(r'^.*?"(.*?)"', response, re.S).group(1)
+            response = str(soup('i')[0])
+            attrib = re.search(r'^.*?\((.*?)\)', response, re.S).group(1)
+
+            if not quote:
+                raise AttributeError("Didn't find a quote")
+            if not attrib:
+                raise AttributeError("Didn't find an attribution")
+
+            if append:
+                print("%s%s - %s" % (quote, append, attrib))
+            else:
+                print("%s - %s" % (quote, attrib))
+
         except HTTPError, oops:
-            irc.reply("Hmm. downforeveryoneorjustme.com returned the following error: [%s]" % (str(oops)), prefixNick=True)
+            irc.reply("Hmm. %s returned the following error: [%s]" % (site, str(oops)), prefixNick=True)
         except AttributeError:
-            irc.reply("Hmm. downforeveryoneorjustme.com probably changed its response format; please update me.", prefixNick=True)
+            irc.reply("Hmm. %s probably changed its response format; please
+update me." % (site), prefixNick=True)
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
-    isitdown = wrap(isitdown, ['text'])
+    motivate = wrap(motivate, ['text'])
 
-Class = IsItDown
+Class = Motivate
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
