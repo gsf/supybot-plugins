@@ -9,9 +9,9 @@ from BeautifulSoup import BeautifulSoup
 from urllib2 import build_opener, HTTPError
 
 class Motivate(callbacks.Privmsg):
-    def motivate(self, irc, msg, args, append=None):
+    def motivate(self, irc, msg, args):
         """
-        [append] - Just before you slit your throat, get an inspirational quote!
+        Just before you slit your throat, get an inspirational quote!
         """
         site = 'http://www.marchnet.co.uk/random-inspiration.php'
         ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
@@ -31,10 +31,7 @@ class Motivate(callbacks.Privmsg):
             if not attrib:
                 raise AttributeError("Didn't find an attribution")
 
-            if append:
-                print("%s%s - %s" % (quote, append, attrib))
-            else:
-                print("%s - %s" % (quote, attrib))
+            irc.reply("%s - %s" % (quote, attrib))
 
         except HTTPError, oops:
             irc.reply("Hmm. %s returned the following error: [%s]" % (site, str(oops)), prefixNick=True)
@@ -42,7 +39,6 @@ class Motivate(callbacks.Privmsg):
             irc.reply("Hmm. %s probably changed its response format; please update me." % (site), prefixNick=True)
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
-    motivate = wrap(motivate, ['text'])
 
 Class = Motivate
 
