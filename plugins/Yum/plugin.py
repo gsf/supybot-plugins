@@ -72,10 +72,10 @@ class Yum(callbacks.Plugin):
 
         baseurl = 'http://epicurious.com'
         query = '+'.join(map(urllib.quote, args))
-        url = '%s/tools/searchresults?type=advanced&operator=All&search=%s' % (baseurl,query)
+        url = '%s/tools/searchresults?search=%s&x=3&y=7' % (baseurl,query)
         soup = self._get_soup(irc, url)
 
-        recipes = soup.findAll('a', "hed")[0:ret_count]
+        recipes = soup.findAll('a', "recipeLnk")[0:ret_count]
         results = []
         for r in recipes:
             recTitle = r.string 
