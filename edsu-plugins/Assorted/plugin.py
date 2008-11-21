@@ -906,6 +906,7 @@ class Assorted(callbacks.Privmsg):
     flu = wrap(flu, ['text'])
 
     def orsome(self, irc, msg, args, splitter, s):
+        """Usage: orsome [/separator/] string"""
         if not s:
             return
         if splitter:
