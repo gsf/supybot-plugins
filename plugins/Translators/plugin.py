@@ -76,7 +76,7 @@ class Translators(callbacks.Privmsg):
         if motivate:
             msg = "%s ... in bed - %s" % (motivate.group(1), motivate.group(2))
         else:
-            msg = "%s ... in bed." % s)
+            msg = "%s ... in bed." % s
 
         irc.reply(msg)
         
