@@ -905,6 +905,17 @@ class Assorted(callbacks.Privmsg):
     
     flu = wrap(flu, ['text'])
 
+    def orsome(self, irc, msg, args, splitter, s):
+        if not s:
+            return
+        if splitter:
+            items = [x.strip() for x in re.split(splitter, s)]
+        else:
+            items = [x.strip() for x in re.split('\s+', s)]
+        irc.reply(' or '.join(items), prefixNick=False)
+         
+    orsome = wrap(orsome, [optional('regexpMatcher'), 'text'])
+
     def decide(self, irc, msg, args, choices):
         pattern = re.compile('\s+or\s+', re.I)
         clist = re.split(pattern, choices)
