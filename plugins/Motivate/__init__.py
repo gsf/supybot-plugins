@@ -1,7 +1,8 @@
 """
-Checks downforeveryoneorjustme.com to see if the requested web page is available
+Grabs an inspiring quote to motivate you through dreary moments / lives
 
-Might be useful if your network administrators are incompetent
+Better than going postal. Maybe. Particularly smarmy quotes might provoke
+postal outbursts.
 """
 
 import supybot

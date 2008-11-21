@@ -10,9 +10,9 @@ def configure(advanced):
     # user or not.  You should effect your configuration by manipulating the
     # registry as appropriate.
     from supybot.questions import output, expect, anything, something, yn
-    conf.registerPlugin('IsItDown', True)
+    conf.registerPlugin('Motivate', True)
     if advanced:
-        output('The IsItDown plugin tells you if a given URL is accessible by the rest of the world')
+        output('The Motivate plugin gives you an inspiring quote to motivate you through your life of dreary librarydom')
 
-IsItDown = conf.registerPlugin('IsItDown')
+Motivate = conf.registerPlugin('Motivate')
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:

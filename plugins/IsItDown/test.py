@@ -1,8 +1,9 @@
 from supybot.test import *
 
-class Motivate(PluginTestCase):
-    plugins = ('Motivate',)
-    def testMotivate(self):
-        self.assertNotError('motivate')
+class IsItDownTestCase(PluginTestCase):
+    plugins = ('IsItDown',)
+    def testIsItDown(self):
+        self.assertNotError('isitdown')
+#        self.assertResponse('isitdown laurentian.za?', 'Huh?')
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
