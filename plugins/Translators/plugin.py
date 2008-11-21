@@ -72,7 +72,7 @@ class Translators(callbacks.Privmsg):
         """
         s = ' '.join(args).strip(".")
 
-        motivate = re.match(r'^(.*) - (.*)')
+        motivate = re.match(r'^(.*) - (.*)$', s)
         if motivate:
             msg = "%s ... in bed - %s" % (motivate.group(1), motivate.group(2))
         else:
