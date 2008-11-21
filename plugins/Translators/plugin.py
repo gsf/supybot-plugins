@@ -25,6 +25,8 @@ class Translators(callbacks.Privmsg):
         for arg in args:
             for s in arg.split():
                 nick += s
+        # strip out all non-word characters to make freenode happy
+        nick = re.compile(r'\W', re.I).sub('', nick)        
         # string slice used because freenode restricts >16-char nicks
         irc.reply(nick[0:15], prefixNick=False)
 
