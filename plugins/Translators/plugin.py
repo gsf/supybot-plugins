@@ -22,7 +22,8 @@ class Translators(callbacks.Privmsg):
         Normalizes a string per irc nick rules
         """
         nick = '_'.join(args)
-        irc.reply(nick, prefixNick=False)
+        irc.reply("args: %s ;  msg: %s" % (args, msg), prefixNick=False)
+        #irc.reply(nick, prefixNick=False)
 
     def mccainize(self, irc, msg, args):
         """
