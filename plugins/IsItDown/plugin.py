@@ -23,8 +23,11 @@ class Motivate(callbacks.Privmsg):
             soup = BeautifulSoup(html_str)
             response = str(soup('p')[0])
             quote = re.search(r'^.*?"(.*?)"', response, re.S).group(1)
+            quote = quote.replace('\n', ' ').rstrip()
+            quote = quote.replace("'", '')
             response = str(soup('i')[0])
             attrib = re.search(r'^.*?\((.*?)\)', response, re.S).group(1)
+            attrib = attrib.replace('\n', ' ').lstrip()
 
             if not quote:
                 raise AttributeError("Didn't find a quote")
