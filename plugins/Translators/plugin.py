@@ -71,7 +71,14 @@ class Translators(callbacks.Privmsg):
         Adds "in bed" to the end of a phrase.
         """
         s = ' '.join(args).strip(".")
-        irc.reply("%s ... in bed." % s)
+
+        motivate = re.match(r'^(.*) - (.*)')
+        if motivate:
+            msg = "%s ... in bed - %s" % (motivate.group(1), motivate.group(2))
+        else:
+            msg = "%s ... in bed." % s)
+
+        irc.reply(msg)
         
 Class = Translators
 
