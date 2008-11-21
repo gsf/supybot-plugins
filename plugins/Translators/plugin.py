@@ -78,7 +78,7 @@ class Translators(callbacks.Privmsg):
         if motivate:
             msg = "%s ... in bed - %s" % (motivate.group(1), motivate.group(2))
         elif quote:
-            msg = 'Quote #%sa "%s ... in bed" - (%s)' % (quote.groups[1:])
+            msg = 'Quote #%sa "%s ... in bed" - (%s)' % (quote.groups()[1:])
         else:
             msg = "%s ... in bed." % s
 
