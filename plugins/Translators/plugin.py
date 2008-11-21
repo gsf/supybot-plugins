@@ -8,7 +8,7 @@ from random import randint
 
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
-        """
+        """ string
         Translates text into a Canadian dialect
         """
         text = ' '.join(args)
@@ -16,6 +16,12 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
         irc.reply(text + ", eh?", prefixNick=True)
+
+    def aussie(self, irc, msg, args):
+        """ string
+        Translates string into Australian English Vernacular
+        """
+        irc.reply("SHRIMP ON THE BARBIE, MATES!", prefixNick=True)
 
     def ircnickize(self, irc, msg, args):
         """ string
