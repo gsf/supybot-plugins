@@ -74,11 +74,11 @@ class Translators(callbacks.Privmsg):
         s = ' '.join(args).strip(".")
 
         motivate = re.match(r'^(.*) - (.*)$', s)
-        quote = re.match(r'^Quote #\d+: "(.*)" \((.*)\)$', s)
+        quote = re.match(r'^Quote #(\d+): "(.*)" \((.*)\)$', s)
         if motivate:
             msg = "%s ... in bed - %s" % (motivate.group(1), motivate.group(2))
         elif quote:
-            msg = '"%s ... in bed" - (%s)' % (quote.group(1), quote.group(2))
+          msg = 'Quote #%sa "%s ... in bed" - (%s)' % (quote.groups[1:])
         else:
             msg = "%s ... in bed." % s
 
