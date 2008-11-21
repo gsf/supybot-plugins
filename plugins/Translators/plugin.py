@@ -66,6 +66,12 @@ class Translators(callbacks.Privmsg):
         low = min(7, high-1)
         irc.reply("%s... OMG! Bacon!" % s[0:randint(low,high)])
 
+    def inbed(self, irc, msg, args):
+        """
+        Adds "in bed" to the end of a phrase.
+        """
+        s = ' '.join(args).strip(".")
+        irc.reply("%s ... in bed." % s)
         
 Class = Translators
 
