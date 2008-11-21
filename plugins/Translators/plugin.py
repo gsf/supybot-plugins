@@ -25,7 +25,8 @@ class Translators(callbacks.Privmsg):
         for arg in args:
             for s in arg.split():
                 nick += s
-        irc.reply(nick, prefixNick=False)
+        # string slice used because freenode restricts >16-char nicks
+        irc.reply(nick[0:15], prefixNick=False)
 
     def mccainize(self, irc, msg, args):
         """
