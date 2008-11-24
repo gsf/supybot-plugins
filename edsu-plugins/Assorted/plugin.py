@@ -87,91 +87,6 @@ class Assorted(callbacks.Privmsg):
         results = self.get_votes(120)
         irc.reply('; '.join(results).encode('utf8'))
 
-    def votes2008(self,irc,msg,args):
-      """polls code4libcon 2008 votes
-      """
-      from socket import setdefaulttimeout
-      setdefaulttimeout(60)
-      url = 'http://dilettantes.code4lib.org:6789/election/results/2'
-      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
-      json = json.decode('utf-8', 'ignore')
-      votes = simplejson.loads(json)
-
-      tallies = []
-      for count in votes:
-        talks = votes[count]
-        for talk in talks:
-          tallies.append((talk['attributes']['name'], count))
-
-      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
-      def fmt(t): return "%s [%s]" % t
-
-      if len(args) > 0:
-        try:
-          spot = int(args[0]) - 1
-          if spot < 0 or spot >= len(tallies):
-            raise "whatevah"
-          irc.reply("%s - %s".encode('utf8') % (tallies[spot][0]))
-        except:
-          irc.reply('try again d00d')
-        return
-
-      msg = '; '.join(fmt(t) for t in tallies[0:17])
-      msg += '  --------  ' 
-      msg += '; '.join(fmt(t) for t in tallies[18:])
-      irc.reply(msg.encode('utf-8'))
-
-    def hosts2009(self,irc,msg,args):
-      """hosts vote for 2009
-      """
-      url = 'http://dilettantes.code4lib.org:6789/election/results/3'
-      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
-      votes = simplejson.loads(json)
-      tallies = []
-      for count in votes:
-        venues = votes[count]
-        for venue in venues:
-          tallies.append((venue['attributes']['name'], count))
-      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
-      def fmt(t): return "%s [%s]" % t
-      irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
-
-    def necode4lib(self,irc,msg,args):
-      """
-      Gets tally of location votes for upcoming ne code4lib
-      """
-      url = 'http://dilettantes.code4lib.org/voting_booth/election/results/5'
-      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
-      votes = simplejson.loads(json)
-      tallies = []
-      for count in votes:
-        locs = votes[count]
-        for loc in locs:
-          tallies.append((loc['attributes']['name'], count))
-      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
-      def fmt(t): return "%s [%s]" % t
-      irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
-
-    def keynotes2009(self,irc,msg,args):
-      """
-      Gets tally of keynoter votes for 2009 conference from http://dilettantes.code4lib.org/voting_booth/election/results/4
-      """
-      url = 'http://dilettantes.code4lib.org/voting_booth/election/results/4'
-      json = urlopen(Request(url, None, {'Accept': 'application/json'})).read()
-      json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
-      votes = simplejson.loads(json)
-      tallies = []
-      for count in votes:
-        keynoters = votes[count]
-        for keynoter in keynoters:
-          tallies.append((keynoter['attributes']['name'], count))
-      tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
-      def fmt(t): return "%s [%s]" % t
-      irc.reply(('; '.join(fmt(t) for t in tallies)).encode('utf-8'))
-
     def keynotes2010(self,irc,msg,args):
       """votes for the 2010 code4libcon keynote 
       """
@@ -988,6 +903,107 @@ class Assorted(callbacks.Privmsg):
         ]
         troll = trolls[randint(0, len(trolls)-1)]
         irc.reply(troll, prefixNick=True)
+
+
+    class PollNotFoundException(Exception):
+        pass
+
+
+    def _diebold_tallies(self, tally='', year=''):
+        """ Gets a tally from the diebold-o-tron """
+        base_url = 'http://dilettantes.code4lib.org/voting_booth/election/results/'
+        tallies = {
+            'keynotes': {'2009': '4'},
+            'necode4lib': {'2008': '5'},
+            'hosts': {'2009': '3'},
+            'talks': {'2008': '2', 
+                      '2009': '7'}
+            'logo': {'2008': '6'}
+        }
+        try:
+            poll_number = tallies[tally][year]
+        except KeyError:
+            raise PollNotFoundException()
+        poll_url = base_url + poll_number
+        from socket import setdefaulttimeout
+        setdefaulttimeout(60)
+        json = urlopen(Request(poll_url, None, {'Accept': 'application/json'})).read()
+        json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
+        votes = simplejson.loads(json)
+        tallies = []
+        for count in votes:
+            vote_getters = votes[count]
+            for vote_getter in vote_getters:
+                tallies.append((vote_getter['attributes']['name'], count))
+        tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
+        return tallies
+
+
+    def talks2009(self, irc, msg, args):
+        """ Gets tally of talk votes for 2008 conference
+        """
+        try:
+            tallies = self._diebold_tallies("talks", "2009")
+        except PollNotFoundException:
+            irc.reply("Poll not found for talk votes in 2009")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+
+    def talks2008(self, irc, msg, args):
+        """ Gets tally of talk votes for 2008 conference
+        """
+        try:
+            tallies = self._diebold_tallies("talks", "2008")
+        except PollNotFoundException:
+            irc.reply("Poll not found for talk votes in 2008")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+
+    def logo2008(self, irc, msg, args):
+        """ Gets tally of logo votes (in 2008)
+        """
+        try:
+            tallies = self._diebold_tallies("logo", "2008")
+        except PollNotFoundException:
+            irc.reply("Poll not found for logos in 2008")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+
+    def hosts2009(self, irc, msg, args):
+        """ Gets tally of host votes for 2009 conference
+        """
+        try:
+            tallies = self._diebold_tallies("hosts", "2009")
+        except PollNotFoundException:
+            irc.reply("Poll not found for hosts in 2009")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+
+    def keynotes2009(self, irc, msg, args):
+        """ Gets tally of keynoter votes for 2009 conference
+        """
+        try:
+            tallies = self._diebold_tallies("keynotes", "2009")
+        except PollNotFoundException:
+            irc.reply("Poll not found for keynotes in 2009")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+
+    def necode4lib(self, irc, msg, args):
+        """ Gets tally of location votes for 2008 New England code4lib conference 
+        """
+        try:
+            tallies = self._diebold_tallies("necode4lib", "2008")
+        except PollNotFoundException:
+            irc.reply("Poll not found for necode4lib in 2008")
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
 
 Class = Assorted
 
