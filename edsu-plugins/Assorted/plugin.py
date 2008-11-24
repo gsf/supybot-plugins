@@ -917,7 +917,7 @@ class Assorted(callbacks.Privmsg):
             'necode4lib': {'2008': '5'},
             'hosts': {'2009': '3'},
             'talks': {'2008': '2', 
-                      '2009': '7'}
+                      '2009': '7'},
             'logo': {'2008': '6'}
         }
         try:
