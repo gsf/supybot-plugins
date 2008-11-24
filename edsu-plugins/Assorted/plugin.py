@@ -930,7 +930,7 @@ class Assorted(callbacks.Privmsg):
         try:
             json = urlopen(Request(poll_url, None, {'Accept': 'application/json'})).read()
         except HTTPError, e:
-            return "ERROR: %s" % e
+            raise PollNotFoundException("%s" % e)
         json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
         try:
             votes = simplejson.loads(json)
@@ -949,8 +949,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("talks", "2009")
-        except PollNotFoundException:
-            irc.reply("Poll not found for talk votes in 2009")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2009: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
@@ -960,8 +960,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("talks", "2008")
-        except PollNotFoundException:
-            irc.reply("Poll not found for talk votes in 2008")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2008: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
@@ -971,8 +971,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("logo", "2008")
-        except PollNotFoundException:
-            irc.reply("Poll not found for logos in 2008")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for logos in 2008: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
@@ -982,8 +982,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("hosts", "2009")
-        except PollNotFoundException:
-            irc.reply("Poll not found for hosts in 2009")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for hosts in 2009: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
@@ -993,8 +993,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("keynotes", "2009")
-        except PollNotFoundException:
-            irc.reply("Poll not found for keynotes in 2009")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for keynotes in 2009: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
@@ -1004,8 +1004,8 @@ class Assorted(callbacks.Privmsg):
         """
         try:
             tallies = self._diebold_tallies("necode4lib", "2008")
-        except PollNotFoundException:
-            irc.reply("Poll not found for necode4lib in 2008")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for necode4lib in 2008: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
