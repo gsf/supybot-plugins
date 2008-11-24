@@ -945,7 +945,8 @@ class Assorted(callbacks.Privmsg):
         return tallies
 
     def talks2009(self, irc, msg, args):
-        """ Gets tally of talk votes for 2008 conference
+        """ 
+        Gets tally of talk votes for 2008 conference
         """
         try:
             tallies = self._diebold_tallies("talks", "2009")
@@ -956,7 +957,8 @@ class Assorted(callbacks.Privmsg):
 
 
     def talks2008(self, irc, msg, args):
-        """ Gets tally of talk votes for 2008 conference
+        """ 
+        Gets tally of talk votes for 2008 conference
         """
         try:
             tallies = self._diebold_tallies("talks", "2008")
@@ -967,7 +969,8 @@ class Assorted(callbacks.Privmsg):
 
 
     def logo2008(self, irc, msg, args):
-        """ Gets tally of logo votes (in 2008)
+        """ 
+        Gets tally of logo votes (in 2008)
         """
         try:
             tallies = self._diebold_tallies("logo", "2008")
@@ -978,7 +981,8 @@ class Assorted(callbacks.Privmsg):
 
 
     def hosts2009(self, irc, msg, args):
-        """ Gets tally of host votes for 2009 conference
+        """ 
+        Gets tally of host votes for 2009 conference
         """
         try:
             tallies = self._diebold_tallies("hosts", "2009")
@@ -989,7 +993,8 @@ class Assorted(callbacks.Privmsg):
 
 
     def keynotes2009(self, irc, msg, args):
-        """ Gets tally of keynoter votes for 2009 conference
+        """ 
+        Gets tally of keynoter votes for 2009 conference
         """
         try:
             tallies = self._diebold_tallies("keynotes", "2009")
@@ -1000,7 +1005,8 @@ class Assorted(callbacks.Privmsg):
 
 
     def necode4lib(self, irc, msg, args):
-        """ Gets tally of location votes for 2008 New England code4lib conference 
+        """ 
+        Gets tally of location votes for 2008 New England code4lib conference 
         """
         try:
             tallies = self._diebold_tallies("necode4lib", "2008")
