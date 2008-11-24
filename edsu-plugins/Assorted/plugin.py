@@ -930,10 +930,12 @@ class Assorted(callbacks.Privmsg):
         try:
             json = urlopen(Request(poll_url, None, {'Accept': 'application/json'})).read()
         except HTTPError, e:
-            irc.reply("ERROR: %s" % e)
+            return "ERROR: %s" % e
         json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
-        print json
-        votes = simplejson.loads(json)
+        try:
+            votes = simplejson.loads(json)
+        except UnicodeDecodeError:
+            votes = simplejson.loads(json.decode('ascii', 'ignore'))
         tallies = []
         for count in votes:
             vote_getters = votes[count]
@@ -941,7 +943,6 @@ class Assorted(callbacks.Privmsg):
                 tallies.append((vote_getter['attributes']['name'], count))
         tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
         return tallies
-
 
     def talks2009(self, irc, msg, args):
         """ Gets tally of talk votes for 2008 conference
