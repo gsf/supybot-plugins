@@ -17,6 +17,11 @@ import csv
 from supybot.commands import *
 import supybot.callbacks as callbacks
 
+
+class PollNotFoundException(Exception):
+    pass
+
+
 class Assorted(callbacks.Privmsg):
 
     def devil(self,irc,msg,args):
@@ -903,11 +908,6 @@ class Assorted(callbacks.Privmsg):
         ]
         troll = trolls[randint(0, len(trolls)-1)]
         irc.reply(troll, prefixNick=True)
-
-
-    class PollNotFoundException(Exception):
-        pass
-
 
     def _diebold_tallies(self, tally='', year=''):
         """ Gets a tally from the diebold-o-tron """
