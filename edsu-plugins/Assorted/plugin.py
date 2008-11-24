@@ -946,7 +946,7 @@ class Assorted(callbacks.Privmsg):
 
     def talks2009(self, irc, msg, args):
         """ 
-        Gets tally of talk votes for 2008 conference
+        Gets tally of talk votes for 2009 conference
         """
         try:
             tallies = self._diebold_tallies("talks", "2009")
@@ -970,7 +970,7 @@ class Assorted(callbacks.Privmsg):
 
     def logo2008(self, irc, msg, args):
         """ 
-        Gets tally of logo votes (in 2008)
+        Gets tally of logo votes for 2008
         """
         try:
             tallies = self._diebold_tallies("logo", "2008")
