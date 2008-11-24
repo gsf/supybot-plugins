@@ -927,8 +927,12 @@ class Assorted(callbacks.Privmsg):
         poll_url = base_url + poll_number
         from socket import setdefaulttimeout
         setdefaulttimeout(60)
-        json = urlopen(Request(poll_url, None, {'Accept': 'application/json'})).read()
+        try:
+            json = urlopen(Request(poll_url, None, {'Accept': 'application/json'})).read()
+        except HTTPError, e:
+            irc.reply("ERROR: %s" % e)
         json = re.sub(r'\\[0-9A-fa-f]{3}', '', json)
+        print json
         votes = simplejson.loads(json)
         tallies = []
         for count in votes:
