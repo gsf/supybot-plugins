@@ -955,7 +955,7 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
-    def bubble2009(self, irc, msg, args, cutoff):
+    def bubble2009(self, irc, msg, args):
         """ 
         List talks that are within 4 ranks of the cutoff range for the 2009 conference
         """
