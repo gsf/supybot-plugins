@@ -955,6 +955,17 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
+    def bubble2009(self, irc, msg, args, cutoff):
+        """ 
+        List talks that are within 4 ranks of the cutoff range for the 2009 conference
+        """
+        cutoff = 22
+        try:
+            tallies = self._diebold_tallies("talks", "2009")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2009: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies[cutoff-3:cutoff+2])).encode('utf-8'))
 
     def talks2008(self, irc, msg, args):
         """ 
