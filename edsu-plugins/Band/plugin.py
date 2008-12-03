@@ -21,6 +21,7 @@ from urllib import urlencode
 from urllib2 import urlopen 
 from sgmllib import SGMLParser
 from random import randint
+from os.path import join, dirname, abspath
 import simplejson
 
 def configure(advanced):
@@ -72,13 +73,14 @@ class Band(callbacks.Privmsg):
         """[add {NEW_BAND}]
         Get a band name from dchud's (cached, JSONified) list or add to the list
         """
-        jsonfile = open('bands.json', 'r')
+        f = join(dirname(abspath(__file__)), 'bands.json')
+        jsonfile = open(f, 'r')
         json = simplejson.load(jsonfile)
         jsonfile.close()
         if args[0] == 'add' and len(args) > 1:
             new_band = ' '.join(args[1:]).strip()
             json['bands'].append(new_band)
-            jsonfile = open('bands.json', 'w')
+            jsonfile = open(f, 'w')
             simplejson.dump(json, jsonfile, indent=4)
             jsonfile.close()
             irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
