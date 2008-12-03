@@ -86,7 +86,8 @@ class Band(callbacks.Privmsg):
                 jsonfile.close()
             except IOError, ex:
                 irc.reply("Error opening file '%s': %s" % (f, ex))
-            irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+            else:
+                irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
         else:
             band = json['bands'][randint(0, len(json['bands'])-1)]
             irc.reply(band, prefixNick=True)
