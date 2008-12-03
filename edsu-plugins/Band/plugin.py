@@ -80,9 +80,12 @@ class Band(callbacks.Privmsg):
         if len(args) > 1 and args[0] == 'add':
             new_band = ' '.join(args[1:]).strip()
             json['bands'].append(new_band)
-            jsonfile = open(f, 'w')
-            simplejson.dump(json, jsonfile, indent=4)
-            jsonfile.close()
+            try:
+                jsonfile = open(f, 'w')
+                simplejson.dump(json, jsonfile, indent=4)
+                jsonfile.close()
+            except IOError, ex:
+                irc.reply("Error opening file '%s': %s" % (f, ex))
             irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
         else:
             band = json['bands'][randint(0, len(json['bands'])-1)]
