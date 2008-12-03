@@ -70,24 +70,28 @@ class Band(callbacks.Privmsg):
         irc.reply(band)
 
     def band(self, irc, msg, args):
-        """[add {NEW_BAND}]
-        Get a band name from dchud's (cached, JSONified) list or add to the list
+        """[add {NEW_BAND}] | [search {BAND}]
+        Get a band name from dchud's (cached, JSONified) list, add to the list, search the list
         """
         f = join(dirname(abspath(__file__)), 'bands.json')
         jsonfile = open(f, 'r')
         json = simplejson.load(jsonfile)
         jsonfile.close()
-        if len(args) > 1 and args[0] == 'add':
-            new_band = ' '.join(args[1:]).strip()
-            json['bands'].append(new_band)
-            try:
-                jsonfile = open(f, 'w')
-                simplejson.dump(json, jsonfile, indent=4)
-                jsonfile.close()
-            except IOError, ex:
-                irc.reply("Error opening file '%s': %s" % (f, ex))
-            else:
-                irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+        if len(args) > 1:
+            if args[0] == 'add':
+                new_band = ' '.join(args[1:]).strip()
+                json['bands'].append(new_band)
+                try:
+                    jsonfile = open(f, 'w')
+                    simplejson.dump(json, jsonfile, indent=4)
+                    jsonfile.close()
+                except IOError, ex:
+                    irc.reply("Error opening file '%s': %s" % (f, ex))
+                else:
+                    irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+            elif args[0] == 'search':
+                search_str = ' '.join(args[1:]).strip()
+                irc.reply(';'.join([band for band in json['bands'] if band.find(search_str) != -1]), prefixNick=True)
         else:
             band = json['bands'][randint(0, len(json['bands'])-1)]
             irc.reply(band, prefixNick=True)
