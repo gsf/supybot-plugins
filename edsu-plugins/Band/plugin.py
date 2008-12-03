@@ -55,7 +55,7 @@ class Parser ( SGMLParser ):
 
 class Band(callbacks.Privmsg):
 
-    def band(self,irc,msg,args):
+    def oldband(self,irc,msg,args):
         """ 
         Get a band name from dchud's list: http://www-personal.umich.edu/~dchud/fng/names.html
         """
@@ -69,7 +69,7 @@ class Band(callbacks.Privmsg):
         band = parser.bands[randint(0,len(parser.bands)-1)]
         irc.reply(band)
 
-    def newband(self, irc, msg, args):
+    def band(self, irc, msg, args):
         """[add {NEW_BAND}]
         Get a band name from dchud's (cached, JSONified) list or add to the list
         """
