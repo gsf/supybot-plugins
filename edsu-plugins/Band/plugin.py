@@ -21,6 +21,7 @@ from urllib import urlencode
 from urllib2 import urlopen 
 from sgmllib import SGMLParser
 from random import randint
+import simplejson
 
 def configure(advanced):
     # This will be called by setup.py to configure this module.  Advanced is
@@ -66,6 +67,24 @@ class Band(callbacks.Privmsg):
 
         band = parser.bands[randint(0,len(parser.bands)-1)]
         irc.reply(band)
+
+    def newband(self, irc, msg, args):
+        """[add {NEW_BAND}]
+        Get a band name from dchud's (cached, JSONified) list or add to the list
+        """
+        jsonfile = open('bands.json', 'r')
+        json = simplejson.load(jsonfile)
+        jsonfile.close()
+        if args[0] == 'add' and len(args) > 1:
+            new_band = ' '.join(args[1:]).strip()
+            json['bands'].append(new_band)
+            jsonfile = open('bands.json', 'w')
+            simplejson.dump(json, jsonfile, indent=4)
+            jsonfile.close()
+            irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+        else:
+            band = json['bands'][randint(0, len(json['bands'])-1)]
+            irc.reply(band, prefixNick=True)
 
 Class = Band 
 
