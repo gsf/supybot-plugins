@@ -77,7 +77,7 @@ class Band(callbacks.Privmsg):
         jsonfile = open(f, 'r')
         json = simplejson.load(jsonfile)
         jsonfile.close()
-        if args[0] == 'add' and len(args) > 1:
+        if len(args) > 1 and args[0] == 'add':
             new_band = ' '.join(args[1:]).strip()
             json['bands'].append(new_band)
             jsonfile = open(f, 'w')
