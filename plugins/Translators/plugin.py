@@ -100,15 +100,19 @@ class Translators(callbacks.Privmsg):
         irc.reply(msg)
 
     def chef(self, irc, msg, args):
+        """BORK! BORK! BORK!"""
         self._chefjivevalleypig(irc, 'chef', ' '.join(args))
 
     def jive(self, irc, msg, args):
+        """Like, yeah..."""
         self._chefjivevalleypig(irc, 'jive', ' '.join(args))
 
     def valley(self, irc, msg, args):
+        """Fer sure!"""
         self._chefjivevalleypig(irc, 'valspeak', ' '.join(args))
 
     def igpay(self, irc, msg, args):
+        """Ustjay utwhay ouyay inkthay"""
         self._chefjivevalleypig(irc, 'piglatin', ' '.join(args))
 
     def _chefjivevalleypig(self, irc, type, s):
