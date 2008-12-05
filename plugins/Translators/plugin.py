@@ -5,6 +5,10 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
 from random import randint
+import supybot.utils.web as web
+from urllib import urlencode
+
+HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
@@ -94,6 +98,24 @@ class Translators(callbacks.Privmsg):
             msg = "%s ... in bed." % s
 
         irc.reply(msg)
+
+    def chef(self, irc, msg, args):
+        self._chefjivevalleypig(irc, 'chef', ' '.join(args))
+
+    def jive(self, irc, msg, args):
+        self._chefjivevalleypig(irc, 'jive', ' '.join(args))
+
+    def valley(self, irc, msg, args):
+        self._chefjivevalleypig(irc, 'valspeak', ' '.join(args))
+
+    def igpay(self, irc, msg, args):
+        self._chefjivevalleypig(irc, 'piglatin', ' '.join(args))
+
+    def _chefjivevaleypig(self, irc, type, s):
+        params = urlencode(dict(input=s,type=type))
+        url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
+        resp = web.getUrl(url, headers=HEADERS)
+        irc.reply(resp)
         
 Class = Translators
 
