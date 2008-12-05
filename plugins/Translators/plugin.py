@@ -111,7 +111,7 @@ class Translators(callbacks.Privmsg):
     def igpay(self, irc, msg, args):
         self._chefjivevalleypig(irc, 'piglatin', ' '.join(args))
 
-    def _chefjivevaleypig(self, irc, type, s):
+    def _chefjivevalleypig(self, irc, type, s):
         params = urlencode(dict(input=s,type=type))
         url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
         resp = web.getUrl(url, headers=HEADERS)
