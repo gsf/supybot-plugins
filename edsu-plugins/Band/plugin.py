@@ -93,7 +93,7 @@ class Band(callbacks.Privmsg):
                 search_str = ' '.join(args[1:]).strip()
                 bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
                 if bands:
-                    irc.reply(' ; '.join(bands) != -1]), prefixNick=True)
+                    irc.reply(' ; '.join(bands), prefixNick=True)
                 else:
                     irc.reply("No bands found matching '%s'" % search_str, prefixNick=True)
         else:
