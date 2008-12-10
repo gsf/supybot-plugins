@@ -23,7 +23,7 @@ class Translators(callbacks.Privmsg):
         for match in matches:
             ftemp = float(match[1] + match[2])
             celsius = "%-3.2f" % ((ftemp - 32) * 5 / 9)
-            text = re.sub(match[0], str(celsius) + u"\u00B0" + 'C', text)
+            text = re.sub(match[0], str(celsius) + 'C', text)
         irc.reply(text + ", eh?", prefixNick=True)
 
     def aussie(self, irc, msg, args):
