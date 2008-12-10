@@ -19,6 +19,11 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'out', 'oat', text)
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
+        matches = re.findall(r'((-?\d+)(\.\d+)?.F)', text)
+        for match in matches:
+            ftemp = float(match[1] + match[2])
+            celsius = "%-3.2f" % ((ftemp - 32) * 5 / 9)
+            text = re.sub(match[0], str(celsius) + u"\u00B0" + 'C', text)
         irc.reply(text + ", eh?", prefixNick=True)
 
     def aussie(self, irc, msg, args):
