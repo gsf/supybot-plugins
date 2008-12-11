@@ -22,7 +22,7 @@ class Translators(callbacks.Privmsg):
         matches = re.findall(r'((-?\d+)(\.\d+)?.F)', text)
         for match in matches:
             ftemp = float(match[1] + match[2])
-            celsius = "%-3.2f" % ((ftemp - 32) * 5 / 9)
+            celsius = "%-3.1f" % ((ftemp - 32) * 5 / 9)
             text = re.sub(match[0], str(celsius) + 'C', text)
         irc.reply(text + ", eh?", prefixNick=True)
 
