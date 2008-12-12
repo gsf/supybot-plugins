@@ -16,6 +16,11 @@ class Translators(callbacks.Privmsg):
         Translates text into a Canadian dialect
         """
         text = ' '.join(args)
+        matches = re.findall(r'((-?\d+)(\.\d+)?.F)', text)
+        for match in matches:
+            ftemp = float(match[1] + match[2])
+            celsius = (ftemp - 32) * 5 / 9
+            text = re.sub(match[0], "%-3.1fC (that's %-3.1fF for you Yanks)" % (celsius, ftemp), text)
         text = re.sub(r'z', 'zed', text)
         text = re.sub(r'(\w)or', '\1our', text)
         text = re.sub(r'gray', 'gray', text)
@@ -25,11 +30,6 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'out', 'oat', text)
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
-        matches = re.findall(r'((-?\d+)(\.\d+)?.F)', text)
-        for match in matches:
-            ftemp = float(match[1] + match[2])
-            celsius = (ftemp - 32) * 5 / 9
-            text = re.sub(match[0], "%-3.1fC (that's %-3.1fF for you Yanks)" % (celsius, ftemp), text)
         irc.reply(text + ", eh?", prefixNick=True)
 
     def aussie(self, irc, msg, args):
