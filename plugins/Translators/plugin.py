@@ -16,6 +16,12 @@ class Translators(callbacks.Privmsg):
         Translates text into a Canadian dialect
         """
         text = ' '.join(args)
+        text = re.sub(r'z', 'zed', text)
+        text = re.sub(r'(\w)or', '\1our', text)
+        text = re.sub(r'gray', 'gray', text)
+        text = re.sub(r'catalog(?![ui])', 'catalogue\1', text)
+        text = re.sub(r'(24|twenty.four)', 'two-four', text)
+        text = re.sub(r'(6|six)', 'six-pack', text)
         text = re.sub(r'out', 'oat', text)
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
