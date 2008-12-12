@@ -876,7 +876,11 @@ class Assorted(callbacks.Privmsg):
             if li.a:
                 beers.append((li.a['href'], li.a.string))
         beer = beers[randint(0, len(beers))]
-        irc.reply("fills a pint glass with %s, and sends it sliding down the bar to %s (%s)" % (beer[1], msg.nick, beer[0]), action=True)
+        if len(args) > 0:
+            nick = args[1]
+        else:
+            nick = msg.nick
+        irc.reply("fills a pint glass with %s, and sends it sliding down the bar to %s (%s)" % (beer[1], nick, beer[0]), action=True)
 
     def anon(self, irc, msg, args):
         """
