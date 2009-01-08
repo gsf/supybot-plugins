@@ -31,11 +31,11 @@ class Zillow(callbacks.Plugin):
         json = web.getUrl(url, headers=HEADERS)
         response = simplejson.loads(json)
         rates = response['response']
-        o = """
-        The rate on a 30 year mortgage is %s. Last week it was %s.
-        If you want a 15 year mortgage the rate is %s. Last week it was %s.
-        If you're crazy enough to want a 5-1 ARM the rate is %s. Last week it was %s.
-        """ 
+
+        o = "The rate on a 30 year mortgage is %s. Last week it was %s. " + \
+        "If you want a 15 year mortgage the rate is %s. Last week it was %s. " + \
+        "If you're crazy enough to want a 5-1 ARM the rate is %s. Last week it was %s."
+
         resp = o % (
             rates['today']['thirtyYearFixed'], rates['lastWeek']['thirtyYearFixed'],
             rates['today']['fifteenYearFixed'], rates['lastWeek']['fifteenYearFixed'],
