@@ -8,6 +8,7 @@ from urllib import urlencode
 import re
 import sys
 import socket
+import supybot.utils.web as web
 from urllib2 import Request, build_opener, HTTPError
 
 SERVICE_URL = 'http://textalyser.net/?%s'
