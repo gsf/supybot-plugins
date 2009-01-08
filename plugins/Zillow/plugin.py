@@ -32,9 +32,10 @@ class Zillow(callbacks.Plugin):
         response = simplejson.loads(json)
         rates = response['response']
 
-        o = "The rate on a 30 year mortgage is %s. Last week it was %s. " + \
-        "If you want a 15 year mortgage the rate is %s. Last week it was %s. " + \
-        "If you're crazy enough to want a 5-1 ARM the rate is %s. Last week it was %s."
+        o = "The average rate on a 30 year mortgage is %s. Last week it was %s. " + \
+        "If you want a 15 year mortgage the average rate is %s. Last week it was %s. " + \
+        "If you're crazy enough to want a 5-1 ARM the average rate is %s. Last week it was %s." + \
+        "This is according to the Zillow Mortgage Market."
 
         resp = o % (
             rates['today']['thirtyYearFixed'], rates['lastWeek']['thirtyYearFixed'],
