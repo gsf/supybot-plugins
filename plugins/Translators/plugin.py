@@ -21,8 +21,9 @@ class Translators(callbacks.Privmsg):
         text = re.sub(r'(\w)or', '\1our', text)
         text = re.sub(r'gray', 'gray', text)
         text = re.sub(r'catalog(?![ui])', 'catalogue\1', text)
-        text = re.sub(r'(24|twenty.four)', 'two-four', text)
-        text = re.sub(r'(6|six)', 'six-pack', text)
+        # commenting these out for now since they make output from Weather ugly
+        #text = re.sub(r'(24|twenty.four)', 'two-four', text)
+        #text = re.sub(r'(6|six)', 'six-pack', text)
         text = re.sub(r'out', 'oat', text)
         text = re.sub(r'ouch', 'oach', text)
         text = re.sub(r'ache', 'awchee', text)
@@ -30,7 +31,7 @@ class Translators(callbacks.Privmsg):
         for match in matches:
             ftemp = float(match[1] + match[2])
             celsius = (ftemp - 32) * 5 / 9
-            text = re.sub(match[0], "%-3.1fC (that's %-3.1fF for you Yanks)" % (celsius, ftemp), text)
+            text = re.sub(match[0], "%-3.1fC" % celsius, text)
         irc.reply(text + ", eh?", prefixNick=True)
 
     def aussie(self, irc, msg, args):
