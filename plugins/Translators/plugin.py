@@ -16,7 +16,7 @@ class Translators(callbacks.Privmsg):
         """ string
         Translates text into a Canadian dialect
         """
-        text = ' '.join(args)
+        text = ' '.join(args).strip()
         text = re.sub(r'z', 'zed', text)
         text = re.sub(r'(\w)or', '\1our', text)
         text = re.sub(r'gray', 'gray', text)
