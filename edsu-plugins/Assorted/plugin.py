@@ -110,9 +110,9 @@ class Assorted(callbacks.Privmsg):
       msg = ["%s [%i]" % (result[0], result[1]) for result in results]
       irc.reply('; '.join(msg))
 
-    def hosts2010(self,irc,msg,args):
-      """
-      Shows votes for the 2010 code4libcon. Courtesy of 
+    def hosts2011(self,irc,msg,args):
+      """ 
+      Shows votes for the 2011 code4libcon. Courtesy of 
       http://www.floydpinkerton.net/fun/citynames.html
       """
       places = [
