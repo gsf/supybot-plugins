@@ -1046,7 +1046,7 @@ class Assorted(callbacks.Privmsg):
         """
         irc.reply("BBRRRRrrringgg! It's for %s" % who, prefixNick=False)
 
-    who = wrap(who, ['text'])
+    cluephone = wrap(cluephone, ['text'])
 
     def necode4lib(self, irc, msg, args):
         """ 
