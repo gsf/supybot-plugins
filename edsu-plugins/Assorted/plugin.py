@@ -1040,6 +1040,8 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
+    def cluephone(self, irc, msg, args):
+        irc.reply("BBRRRRrrringgg!", prefixNick=False)
 
     def necode4lib(self, irc, msg, args):
         """ 
