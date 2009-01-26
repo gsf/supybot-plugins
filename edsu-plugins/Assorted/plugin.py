@@ -942,12 +942,8 @@ class Assorted(callbacks.Privmsg):
             votes = simplejson.loads(json)
         except UnicodeDecodeError:
             votes = simplejson.loads(json.decode('ascii', 'ignore'))
-        tallies = []
-        for count in votes:
-            vote_getters = votes[count]
-            for vote_getter in vote_getters:
-                tallies.append((vote_getter['attributes']['name'], count))
-        tallies.sort(lambda a,b: cmp(int(b[1]), int(a[1])))
+        tallies = [(vote['title'], vote['score']) for vote in votes]
+        tallies = sorted(votes, cmp=lambda x,y: y['score']-x['score'])
         return tallies
 
     def talks2009(self, irc, msg, args):
