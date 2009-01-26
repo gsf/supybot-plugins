@@ -966,8 +966,7 @@ class Assorted(callbacks.Privmsg):
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for t-shirt votes in 2009: %s" % pnfe)
         else:
-            irc.reply("KSCLARKE WINS!  Plz remit payment to mjgiarlo.")
-            #irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
     def bubble2009(self, irc, msg, args):
         """ 
