@@ -942,7 +942,7 @@ class Assorted(callbacks.Privmsg):
             votes = simplejson.loads(json)
         except UnicodeDecodeError:
             votes = simplejson.loads(json.decode('ascii', 'ignore'))
-        tallies = [(vote['title'], vote['score']) for vote in votes]
+        tallies = [(vote['title'], int(vote['score'])) for vote in votes]
         tallies = sorted(votes, cmp=lambda x,y: y['score']-x['score'])
         return tallies
 
