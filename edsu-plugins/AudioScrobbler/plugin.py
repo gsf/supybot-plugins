@@ -19,7 +19,7 @@ class AudioScrobbler(callbacks.Privmsg):
 
     users = [
         'asmodai', 'moil', 'LTjake', 'rtennant', 'inkdroid', 'dchud', 
-        'ksclarke', 'wattsferry', 'tholbroo', 'inkcow', 'phasefx', 'rexsavior', 
+        'ksclarke', 'wattsferry', 'inkcow', 'phasefx', 'rexsavior', 
         'roblivian', 'mdxi', 'ph0rman', 'bsadler', 'Gugek', 'Sarphram', 
         'Slocketman', 'jaydatema', 'miker_', 'bradl', 'eby', 'pbinkley', 
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
