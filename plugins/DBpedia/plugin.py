@@ -45,7 +45,7 @@ class DBpedia(callbacks.Plugin):
     def lucky(self, irc, msg, args, term):
         results = self._search(term)
         if len(results) >= 1:
-            parts = self._describe(results[2])
+            parts = self._describe(str(results[2]))
             irc.reply('; '.join(parts).encode('utf-8'))
         else:
             irc.reply('better luck next time')
