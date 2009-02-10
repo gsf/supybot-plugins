@@ -51,7 +51,7 @@ class DBpedia(callbacks.Plugin):
                     label = p.split('#')[-1]
                 else:
                     label = p.split('/')[-1]
-                desc.append("%s %s" % (label, o))
+                parts.append("%s %s" % (label, o))
         irc.reply('; '.join(parts).encode('utf-8'))
 
 
