@@ -45,7 +45,7 @@ class DBpedia(callbacks.Plugin):
         g = rdflib.ConjunctiveGraph()
         g.load(uri)
         desc = ""
-        for s, p, o in d:
+        for s, p, o in g:
             if o == rdflib.Literal:
                 desc += str(o)
         irc.reply(desc.encode('utf-8'))
