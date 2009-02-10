@@ -47,7 +47,7 @@ class DBpedia(callbacks.Plugin):
             desc = ""
             for s, p, o in d:
                 if o == rdflib.Literal:
-                    desc += o
+                    desc += str(o)
             irc.reply(desc.encode('utf-8'))
         except:
             irc.reply("argh, something wrong in the metaverse")
