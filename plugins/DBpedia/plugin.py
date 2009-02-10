@@ -46,7 +46,7 @@ class DBpedia(callbacks.Plugin):
         results = self._search(term)
         if len(results) >= 1:
             irc.reply(results[2])
-            parts = self._describe(results[2])
+            parts = self._describe(results[0][2])
             irc.reply('; '.join(parts).encode('utf-8'))
         else:
             irc.reply('better luck next time')
