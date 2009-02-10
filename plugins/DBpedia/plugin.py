@@ -42,15 +42,12 @@ class DBpedia(callbacks.Plugin):
     uri = wrap(uri, ['text'])
 
     def describe(self, irc, msg, args, uri):
-        try:
-            g = rdflib.ConjunctiveGraph.load(uri)
-            desc = ""
-            for s, p, o in d:
-                if o == rdflib.Literal:
-                    desc += str(o)
-            irc.reply(desc.encode('utf-8'))
-        except:
-            irc.reply("argh, something wrong in the metaverse")
+        g = rdflib.ConjunctiveGraph.load(uri)
+        desc = ""
+        for s, p, o in d:
+            if o == rdflib.Literal:
+                desc += str(o)
+        irc.reply(desc.encode('utf-8'))
 
 
     describe = wrap(describe, ['text'])
