@@ -44,11 +44,15 @@ class DBpedia(callbacks.Plugin):
     def describe(self, irc, msg, args, uri):
         g = rdflib.ConjunctiveGraph()
         g.load(uri)
-        desc = ""
+        parts = []
         for s, p, o in g:
-            if o == rdflib.Literal:
-                desc += str(o)
-        irc.reply(desc.encode('utf-8'))
+            if type(o) == rdflib.Literal and o.language == 'en':
+                if '#' in p:
+                    label = p.split('#')[-1]
+                else:
+                    label = p.split('/')[-1]
+                desc.append("%s %s" % (label, o))
+        irc.reply('; '.join(parts).encode('utf-8'))
 
 
     describe = wrap(describe, ['text'])
