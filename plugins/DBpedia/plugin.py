@@ -24,15 +24,7 @@ class DBpedia(callbacks.Plugin):
         """
         find the most-likely DBpedia URIs for a given keyword(s)
         """
-        xml = web.getUrl(SERVICE_URL % urlencode({ 'QueryString': term }), headers=HEADERS)
-        parser = etree.XMLParser(ns_clean=True, remove_blank_text=True)
-        tree = etree.parse(StringIO(xml), parser)
-        results = []
-        for r in tree.xpath('//ns:Result', namespaces=NSMAP):
-            label = r.xpath('ns:Label/text()', namespaces=NSMAP)[0]
-            uri = r.xpath('ns:URI/text()', namespaces=NSMAP)[0]
-            category = r.xpath('ns:Categories/ns:Category/ns:Label/text()', namespaces=NSMAP)[0]
-            results.append((label,category,uri))
+        results = self._search(term)
         if not len(results):
             irc.reply("no matches :(")
             return
@@ -42,6 +34,37 @@ class DBpedia(callbacks.Plugin):
     uri = wrap(uri, ['text'])
 
     def describe(self, irc, msg, args, uri):
+        parts = self._describe(uri)
+        if len(parts) > 0:
+            irc.reply('; '.join(parts).encode('utf-8'))
+        else:
+            irc.reply('sorry something went wrong, i am a strange hack')
+
+    describe = wrap(describe, ['text'])
+
+    def lucky(self, irc, msg, args, term):
+        results = self._search(term)
+        if len(results) >= 1:
+            parts = self._describe(results[2])
+            irc.reply('; '.join(parts).encode('utf-8'))
+        else:
+            irc.reply('better luck next time')
+
+    lucky = wrap(lucky, ['text'])
+
+    def _search(self, term):
+        xml = web.getUrl(SERVICE_URL % urlencode({ 'QueryString': term }), headers=HEADERS)
+        parser = etree.XMLParser(ns_clean=True, remove_blank_text=True)
+        tree = etree.parse(StringIO(xml), parser)
+        results = []
+        for r in tree.xpath('//ns:Result', namespaces=NSMAP):
+            label = r.xpath('ns:Label/text()', namespaces=NSMAP)[0]
+            uri = r.xpath('ns:URI/text()', namespaces=NSMAP)[0]
+            category = r.xpath('ns:Categories/ns:Category/ns:Label/text()', namespaces=NSMAP)[0]
+            results.append((label,category,uri))
+        return results
+
+    def _describe(self, uri):
         g = rdflib.ConjunctiveGraph()
         g.load(uri)
         parts = []
@@ -52,10 +75,7 @@ class DBpedia(callbacks.Plugin):
                 else:
                     label = p.split('/')[-1]
                 parts.append("%s: %s" % (label, o))
-        irc.reply('; '.join(parts).encode('utf-8'))
-
-
-    describe = wrap(describe, ['text'])
+        return parts
 
 Class = DBpedia
 
