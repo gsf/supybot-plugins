@@ -45,7 +45,8 @@ class DBpedia(callbacks.Plugin):
     describe = wrap(describe, ['text'])
 
     def whatis(self, irc, msg, args, term):
-        """find the first resource hit in dbpedia for a string
+        """does a search in dbpedia and extracts the description for the first
+        hit
         """
         results = self._search(term)
         if len(results) >= 1:
