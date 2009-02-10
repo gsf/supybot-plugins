@@ -10,6 +10,8 @@ from StringIO import StringIO
 import supybot.utils.web as web
 from urllib import urlencode
 
+import rdflib
+
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 SERVICE_URL = 'http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?QueryClass=String&MaxHits=10&%s'
 NSMAP = {'ns':'http://lookup.dbpedia.org/'}
@@ -38,6 +40,20 @@ class DBpedia(callbacks.Plugin):
         irc.reply("DBpedia has URIs for... %s" % resp)
 
     uri = wrap(uri, ['text'])
+
+    def describe(self, irc, msg, args, uri):
+        try:
+            g = rdflib.ConjunctiveGraph.load(uri)
+            desc = ""
+            for s, p, o in d:
+                if o == rdflib.Literal:
+                    desc += o
+            irc.reply(desc.encode('utf-8'))
+        except:
+            irc.reply("argh, something wrong in the metaverse")
+
+
+    uri = wrap(describe, ['uri'])
 
 Class = DBpedia
 
