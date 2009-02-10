@@ -34,6 +34,8 @@ class DBpedia(callbacks.Plugin):
     uri = wrap(uri, ['text'])
 
     def describe(self, irc, msg, args, uri):
+        """print out some extracted text for a given RDF resource URI
+        """
         parts = self._describe(uri)
         if len(parts) > 0:
             irc.reply('; '.join(parts).encode('utf-8'))
@@ -42,16 +44,17 @@ class DBpedia(callbacks.Plugin):
 
     describe = wrap(describe, ['text'])
 
-    def lucky(self, irc, msg, args, term):
+    def ducky(self, irc, msg, args, term):
+        """find the first resource hit in dbpedia for a string
+        """
         results = self._search(term)
         if len(results) >= 1:
-            irc.reply(results[2])
             parts = self._describe(results[0][2])
             irc.reply('; '.join(parts).encode('utf-8'))
         else:
             irc.reply('better luck next time')
 
-    lucky = wrap(lucky, ['text'])
+    lucky = wrap(ducky, ['text'])
 
     def _search(self, term):
         xml = web.getUrl(SERVICE_URL % urlencode({ 'QueryString': term }), headers=HEADERS)
