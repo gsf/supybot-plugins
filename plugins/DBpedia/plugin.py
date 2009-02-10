@@ -44,7 +44,7 @@ class DBpedia(callbacks.Plugin):
 
     describe = wrap(describe, ['text'])
 
-    def ducky(self, irc, msg, args, term):
+    def whatis(self, irc, msg, args, term):
         """find the first resource hit in dbpedia for a string
         """
         results = self._search(term)
@@ -56,7 +56,7 @@ class DBpedia(callbacks.Plugin):
         else:
             irc.reply('better luck next time')
 
-    ducky = wrap(ducky, ['text'])
+    whatis = wrap(whatis, ['text'])
 
     def _search(self, term):
         xml = web.getUrl(SERVICE_URL % urlencode({ 'QueryString': term }), headers=HEADERS)
@@ -75,7 +75,9 @@ class DBpedia(callbacks.Plugin):
         g.load(uri)
         parts = []
         for s, p, o in g:
-            if type(o) == rdflib.Literal and o.language == 'en':
+            if type(o) == rdflib.Literal:
+                if o.language and o.language != 'en':
+                    continue
                 if '#' in p:
                     label = p.split('#')[-1]
                 else:
