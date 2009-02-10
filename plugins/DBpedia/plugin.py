@@ -54,7 +54,7 @@ class DBpedia(callbacks.Plugin):
         else:
             irc.reply('better luck next time')
 
-    lucky = wrap(ducky, ['text'])
+    ducky = wrap(ducky, ['text'])
 
     def _search(self, term):
         xml = web.getUrl(SERVICE_URL % urlencode({ 'QueryString': term }), headers=HEADERS)
