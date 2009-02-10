@@ -42,7 +42,8 @@ class DBpedia(callbacks.Plugin):
     uri = wrap(uri, ['text'])
 
     def describe(self, irc, msg, args, uri):
-        g = rdflib.ConjunctiveGraph.load(uri)
+        g = rdflib.ConjunctiveGraph()
+        g.load(uri)
         desc = ""
         for s, p, o in d:
             if o == rdflib.Literal:
