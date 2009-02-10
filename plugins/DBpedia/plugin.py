@@ -53,7 +53,7 @@ class DBpedia(callbacks.Plugin):
             irc.reply("argh, something wrong in the metaverse")
 
 
-    uri = wrap(describe, ['uri'])
+    uri = wrap(describe, ['text'])
 
 Class = DBpedia
 
