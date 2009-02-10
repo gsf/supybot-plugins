@@ -52,7 +52,7 @@ class DBpedia(callbacks.Plugin):
             uri = results[0][2]
             parts = self._describe(uri)
             desc = '; '.join(parts)
-            irc.reply('<%s> %s' % (uri, desc).encode('utf-8'))
+            irc.reply(('<%s> %s' % (uri, desc)).encode('utf-8'))
         else:
             irc.reply('better luck next time')
 
