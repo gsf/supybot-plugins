@@ -12,7 +12,7 @@ from urllib import urlencode
 
 import rdflib
 
-HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
+HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; DBPedia Plugin; http://code4lib.org/irc)')
 SERVICE_URL = 'http://lookup.dbpedia.org/api/search.asmx/KeywordSearch?QueryClass=String&MaxHits=10&%s'
 NSMAP = {'ns':'http://lookup.dbpedia.org/'}
 
