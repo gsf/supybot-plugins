@@ -44,8 +44,8 @@ class DBpedia(callbacks.Plugin):
 
     describe = wrap(describe, ['text'])
 
-    def sameas(self, irc, msg, args, uri):
-        """print out other URIs for a given resource
+    def uris(self, irc, msg, args, uri):
+        """find other URIs for a given resource using owl:sameAs, rdfs:seeAlso 
         """
         sameas = []
         try:
@@ -59,11 +59,11 @@ class DBpedia(callbacks.Plugin):
         except:
             pass # uhoh
         if len(sameas) > 0:
-            irc.reply("%s is the same as: %s" % (uri, ', '.join(sameas)))
+            irc.reply("more info about %s can be found at: %s" % (uri, ', '.join(sameas)))
         else:
             irc.reply('no equivalent resources found')
 
-    sameas = wrap(sameas, ['text'])
+    uris = wrap(uris, ['text'])
 
     def whatis(self, irc, msg, args, term):
         """does a search in dbpedia and extracts the description for the first
