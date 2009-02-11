@@ -44,6 +44,25 @@ class DBpedia(callbacks.Plugin):
 
     describe = wrap(describe, ['text'])
 
+    def sameas(self, irc, msg, args, uri):
+        """print out other URIs for a given resource
+        """
+        sameas = []
+        try:
+            g = rdflib.ConjunctiveGraph()
+            g.load(uri)
+            for s, p, o in g:
+                if p == URIRef("http://www.w3.org/2002/07/owl#sameAs"):
+                    sameas.append(o)
+        except:
+            pass # uhoh
+        if len(sameas) > 0:
+            irc.reply("found: %s" % ', '.join(sameas))
+        else:
+            irc.reply('no equivalent resources found')
+
+    sameas = wrap(sameas, ['text'])
+
     def whatis(self, irc, msg, args, term):
         """does a search in dbpedia and extracts the description for the first
         hit
