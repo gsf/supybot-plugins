@@ -52,7 +52,7 @@ class DBpedia(callbacks.Plugin):
             g = rdflib.ConjunctiveGraph()
             g.load(uri)
             for s, p, o in g:
-                if p == URIRef("http://www.w3.org/2002/07/owl#sameAs"):
+                if p == rdflib.URIRef("http://www.w3.org/2002/07/owl#sameAs"):
                     sameas.append(o)
         except:
             pass # uhoh
