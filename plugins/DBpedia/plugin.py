@@ -57,7 +57,7 @@ class DBpedia(callbacks.Plugin):
         except:
             pass # uhoh
         if len(sameas) > 0:
-            irc.reply("%s is the same as: %s" % ', '.join(sameas))
+            irc.reply("%s is the same as: %s" % (uri, ', '.join(sameas)))
         else:
             irc.reply('no equivalent resources found')
 
