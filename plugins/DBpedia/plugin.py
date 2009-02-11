@@ -53,7 +53,7 @@ class DBpedia(callbacks.Plugin):
             g.load(uri)
             for s, p, o in g:
                 if p in (rdflib.URIRef("http://www.w3.org/2002/07/owl#sameAs"),
-                         rdflib.RDF.seeAlso):
+                         rdflib.RDFS.seeAlso):
                     sameas.append(o)
 
         except:
