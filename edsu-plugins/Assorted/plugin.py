@@ -1056,20 +1056,23 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
-    def reminder(self, irc, msg, args, seconds, note):
+    def reminder(self, irc, msg, args, nick, seconds, note):
         """
         Set a timer to remind you to do something - Usage: reminder seconds [note]
         """
         note = note or "This is your reminder to do that thing"
 
         def remind():
-            irc.reply("DING DING DING! " + note)
+            if nick:
+                irc.reply("DING DING DING! " + note, to=nick)
+            else:
+                irc.reply("DING DING DING! " + note)
 
         t = Timer(float(seconds), remind)
         t.start()
         irc.reply("OK. I'll remind you in %s seconds" % seconds)
 
-    reminder = wrap(reminder, ['int', optional('text')])
+    reminder = wrap(reminder, [optional('nickInChannel'), 'int', optional('text')])
 
 Class = Assorted
 
