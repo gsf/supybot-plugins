@@ -1058,7 +1058,7 @@ class Assorted(callbacks.Privmsg):
 
     def reminder(self, irc, msg, args, seconds, note):
         """
-        Set a timer to remind you to do something
+        Set a timer to remind you to do something - Usage: reminder seconds [note]
         """
         note = note or "This is your reminder to do that thing"
 
