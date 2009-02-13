@@ -12,6 +12,7 @@ from random import randint
 from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urlparse import urlparse
+from threading import Timer
 import csv
 
 from supybot.commands import *
@@ -1055,6 +1056,20 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
+    def reminder(self, irc, msg, args, seconds, note):
+        """
+        Set a timer to remind you to do something
+        """
+        note = note or "This is your reminder to do that thing"
+
+        def remind():
+            irc.reply("DING DING DING! " + note)
+
+        t = Timer(float(seconds), remind)
+        t.start()
+        irc.reply("OK. I'll remind you in %s seconds" % seconds)
+
+    reminder = wrap(reminder, ['int', optional('text')])
 
 Class = Assorted
 
