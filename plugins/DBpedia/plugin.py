@@ -85,12 +85,22 @@ class DBpedia(callbacks.Plugin):
         parser = etree.XMLParser(ns_clean=True, remove_blank_text=True)
         tree = etree.parse(StringIO(xml), parser)
         results = []
-        for r in tree.xpath('//ns:Result', namespaces=NSMAP):
-            label = r.xpath('ns:Label/text()', namespaces=NSMAP)[0]
-            uri = r.xpath('ns:URI/text()', namespaces=NSMAP)[0]
-            category = r.xpath('ns:Categories/ns:Category/ns:Label/text()', namespaces=NSMAP)[0]
+        for r in self._xpath(tree, '//ns:Result'):
+            label = self._xpath(r, 'ns:Label/text()', 0)
+            uri = self._xpath(r, 'ns:URI/text()', 0)
+            category = self._xpath(r, 'ns:Categories/ns:Category/ns:Label/text()', 0)
             results.append((label,category,uri))
         return results
+
+    def _xpath(self, node, expr, idx=None):
+        res = node.xpath(expr, namespaces=NSMAP)
+        if idx is None:
+            return res
+        else:
+            try:
+                return res[idx]
+            except IndexError:
+                return None
 
     def _describe(self, uri):
         g = rdflib.ConjunctiveGraph()
