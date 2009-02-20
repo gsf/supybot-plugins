@@ -1080,7 +1080,7 @@ class Assorted(callbacks.Privmsg):
         """
 
 	url = "http://meyerweb.com/feeds/excuse/"
-	xpath = "/html/body/div[3]/div[3]/p"
+	xpath = "//div(@id='excuse')/p"
         try:
             tree = TidyHTMLTreeBuilder.parse(urlopen(url));
         except HTTPError, e:
@@ -1089,6 +1089,7 @@ class Assorted(callbacks.Privmsg):
             irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
 
         excuseNode = tree.find(xpath)
+        
         excuseStr = excuseNode.text
         irc.reply(excuseStr)
 
