@@ -1080,7 +1080,7 @@ class Assorted(callbacks.Privmsg):
         """
 
 	url = "http://meyerweb.com/feeds/excuse/"
-	xpath = "//div(@id='excuse')/p"
+	xpath = "//div[@id='excuse']/p"
         try:
             tree = TidyHTMLTreeBuilder.parse(urlopen(url));
         except HTTPError, e:
