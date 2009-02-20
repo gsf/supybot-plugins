@@ -1073,6 +1073,26 @@ class Assorted(callbacks.Privmsg):
         irc.reply("OK. I'll remind you in %s seconds" % seconds)
 
     reminder = wrap(reminder, [optional('nickInChannel'), 'int', optional('text')])
+    
+    def excuse(self, irc, msg, args):
+        """
+        returns the excuse of the day  http://meyerweb.com/feeds/excuse/
+        """
+
+	url = "http://meyerweb.com/feeds/excuse/"
+	xpath = "/html/body/div[3]/div[3]/p"
+        try:
+            tree = TidyHTMLTreeBuilder.parse(urlopen(url));
+        except HTTPError, e:
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+        except StopParsing, e:
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+
+        excuseNode = tree.find(xpath)
+        excuseStr = excuseNode.text
+        irc.reply(excuseStr)
+
+
 
 Class = Assorted
 
