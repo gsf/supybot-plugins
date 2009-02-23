@@ -13,6 +13,7 @@
   <Person rdf:about="http://www.code4lib.org/id/zoia">
     <name>Zoia</name>
     <nick>zoia</nick>
+		<depiction rdf:resource="http://rc98.net/img/zoia.jpg" />
     <based_near rdf:parseType="Resource">
       <geo:lat>40.7355556</geo:lat>
       <geo:long>-74.1727778</geo:long>
