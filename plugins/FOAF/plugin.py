@@ -5,6 +5,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
 import os
+import shutil
 from rdflib import ConjunctiveGraph as Graph
 from rdflib import Namespace
 from rdflib import URIRef
@@ -55,7 +56,10 @@ class FOAF(callbacks.Privmsg):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
     def reloadfoaf(self, irc, msg, args):
-      irc.reply(os.getcwd())
+      originalFOAF = 'supybot-plugins/plugins/foaf.rdf'
+      liveFOAF = '/var/www/rc98.net/zoia.rdf'
+      shutil.copyfile(originalFOAF, liveFOAF)
+      irc.reply('File copied')
       
 
 Class = FOAF
