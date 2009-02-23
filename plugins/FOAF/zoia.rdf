@@ -19,7 +19,11 @@
       <geo:long>-74.1727778</geo:long>
     </based_near>
     <s:comment>This URI indentifies me the person. Feel free to use it when making statements about me the person (such as "your_uri foaf:knows http://www.code4lib.org/id/zoia").</s:comment>
-    <knows rdf:resource="http://rc98.net/foaf#me" />
+    <knows>
+      <Person rdf:about="http://rc98.net/foaf#me">
+        <nick>gsf</nick>
+      </Person>
+    </knows>
     <holdsAccount>
       <OnlineChatAccount>
         <accountServiceHomepage rdf:resource="http://www.freenode.net/irc_servers.shtml" />
