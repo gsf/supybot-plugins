@@ -57,7 +57,7 @@ class FOAF(callbacks.Privmsg):
       
     def reloadfoaf(self, irc, msg, args):
       g = Graph()
-      g.parse('supypot/plugins/FOAF/zoia.rdf')
+      g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
       g.serialize('/var/www/rc98.net/zoia.rdf')
       irc.reply('File copied')
       
