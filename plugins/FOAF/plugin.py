@@ -27,7 +27,7 @@ class FOAF(callbacks.Privmsg):
       result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri1 ?uri2 WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri1 foaf:nick ?nick1 . ?uri2 foaf:nick ?nick2}', initBindings={'?nick1': usernick1, '?nick2': usernick2} )
       
     def known(self, irc, msg, args):
-      if len(args) != 1:
+      if len(args) == 1:
         usernick = args[0]
       else:
         irc.reply("Usage: @known [nick]")
@@ -40,7 +40,7 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+usernick+"'s URI")
         
     def know(self, irc, msg, args):
-      if len(args) != 1:
+      if len(args) == 1:
         uri = args[0]
       else:
         irc.reply("Usage: @know [URI]")
