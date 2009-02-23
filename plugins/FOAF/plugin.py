@@ -4,6 +4,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
+import os
 from rdflib import ConjunctiveGraph as Graph
 from rdflib import Namespace
 from rdflib import URIRef
@@ -48,10 +49,14 @@ class FOAF(callbacks.Privmsg):
       FOAF = self.FOAF
       user = rdflib.URIRef(uri)
       self.g.add((user, rdflib.RDF.type, FOAF['Person']))
-      self.g.add((user, FOAF['nick'], msg.nick))
+      self.g.add((user, FOAF['nick'], rdflib.Literal(msg.nick)))
       self.g.add((self.uri, FOAF['knows'], user))
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
+      
+    def reloadOriginalFOAF(self, irc, msg, args):
+      irc.reply(os.getcwd())
+      
 
 Class = FOAF
 
