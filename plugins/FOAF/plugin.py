@@ -54,7 +54,7 @@ class FOAF(callbacks.Privmsg):
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
-    def reloadOriginalFOAF(self, irc, msg, args):
+    def reloadfoaf(self, irc, msg, args):
       irc.reply(os.getcwd())
       
 
