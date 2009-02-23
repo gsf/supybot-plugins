@@ -54,6 +54,7 @@ class FOAF(callbacks.Privmsg):
       self.g.add((self.uri, FOAF['knows'], user))
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
+      irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
       
     def reloadfoaf(self, irc, msg, args):
       g = Graph()
