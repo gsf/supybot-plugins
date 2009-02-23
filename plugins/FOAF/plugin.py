@@ -56,11 +56,9 @@ class FOAF(callbacks.Privmsg):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
     def reloadfoaf(self, irc, msg, args):
-      irc.reply(os.listdir(os.path.join(os.getcwd(),'supybot', 'plugins', 'FOAF')))
-      return
-      originalFOAF = 'supypot/plugins/FOAF/zoia.rdf'
-      liveFOAF = '/var/www/rc98.net/zoia.rdf'
-      shutil.copyfile(originalFOAF, liveFOAF)
+      g = Graph()
+      g.parse('supypot/plugins/FOAF/zoia.rdf')
+      g.serialize('/var/www/rc98.net/zoia.rdf')
       irc.reply('File copied')
       
 
