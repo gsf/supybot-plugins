@@ -8,6 +8,7 @@ from rdflib import ConjunctiveGraph as Graph
 from rdflib import Namespace
 from rdflib import URIRef
 from rdflib import Literal
+import rdflib
 
 
 class FOAF(callbacks.Privmsg):
