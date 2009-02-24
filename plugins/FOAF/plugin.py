@@ -83,7 +83,7 @@ class FOAF(callbacks.Privmsg):
       else:
         irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
         
-    knows = wrap(knows,['text','text'])
+    knows = wrap(knows,['nick','nick'])
 
     def known(self, irc, msg, args, usernick):
       """<nick>
@@ -95,7 +95,7 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+usernick+"'s URI")
       else:
         irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
-    known = wrap(known,['text'])
+    known = wrap(known,['nick'])
         
     def know(self, irc, msg, args, uri):
       """<foaf-uri>
