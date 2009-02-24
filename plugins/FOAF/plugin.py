@@ -92,7 +92,7 @@ class FOAF(callbacks.Privmsg):
       irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
       
       
-    def unknow(self, nick, userURI):
+    def unknow(nick, userURI):
       try:
         FOAF = self.FOAF
         self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
