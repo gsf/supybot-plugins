@@ -17,8 +17,8 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
-#      self.g.parse('http://rc98.net/zoia.rdf')
-      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
+      self.g.parse('http://rc98.net/zoia.rdf')
+#      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -30,6 +30,11 @@ class FOAF(callbacks.Privmsg):
         return(userURI)
       else:
         return(None)
+        
+    def _user_graph(self, uri):
+      userGraph = Graph()
+      userGraph.parse(uri)
+      return userGraph
 
     def _forget_user(self, nick):
       userURI = self._uri_of_user(nick)
@@ -48,8 +53,7 @@ class FOAF(callbacks.Privmsg):
       self.g.add((self.uri, FOAF['knows'], userURI))
 
     def _knows(self, uri1, uri2):
-      userGraph = Graph()
-      userGraph.parse(uri1)
+      userGraph = self._user_graph(uri1)
       result = list(userGraph.triples((uri1,self.FOAF['knows'],uri2)))
       return len(result) > 0
       
@@ -63,16 +67,40 @@ class FOAF(callbacks.Privmsg):
       """
       userURI = self._uri_of_user(nick)
       if userURI == None:
-        irc.reply("I didn't know "+nick+"'s URI anyway.")
+        irc.reply("I don't know "+nick+"'s URI.")
       else:
-        userGraph = Graph()
-        userGraph.parse(userURI)
+        userGraph = self._user_graph(userURI)
         result = []
         for obj in userGraph.objects(userURI,self.FOAF[predicate]):
-          result.append(str(obj))
+          result.append('<' + str(obj) + '>')
         irc.reply(nick + ' <foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
     foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
+    
+    def predicates(self, irc, msg, args, nick, obj):
+      """<nick> <nick-or-uri>
       
+      Displays the relationships that have been asserted by the given nick about the
+      other nick or URI.
+      """
+      subject = self._uri_of_user(nick)
+      if subject == None:
+        irc.reply("I didn't know "+nick+"'s URI anyway.")
+      else:
+        userGraph = self._user_graph(subject)
+        match = re.search('^<(.+)>$',obj)
+        if match == None:
+          objURI = self._uri_of_user(obj)
+          if objURI == None:
+            irc.reply("I don't know "+obj+"'s URI.")
+            return
+        else:
+          objURI = rdflib.URIRef(match.group(1))
+        result = []
+        for predicate in userGraph.predicates(subject, objURI):
+          result.append('<' + str(predicate) + '>')
+        irc.reply('Relationships asserted by ' + nick + ' about ' + obj + ': ' + ', '.join(result), prefixNick=True)
+    predicates = wrap(predicates,['nick','somethingWithoutSpaces'])
+            
     def forget(self, irc, msg, args, nick):
       """<nick>
 
