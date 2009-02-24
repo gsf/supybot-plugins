@@ -85,7 +85,11 @@ class FOAF(callbacks.Privmsg):
         if userURI == None:
           irc.reply("I don't know "+nick+"'s URI.")
           return
-        commonGraph.parse(userURI)
+        try:
+          commonGraph.parse(userURI)
+        except Exception, e:
+          u = "http://www.w3.org/2007/08/pyRdfa/extract?space-preserve=true&uri=" + userURI
+          commonGraph.parse(u, identifier=userURI)
         uris.append(userURI)
 
       query = ''
