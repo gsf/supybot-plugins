@@ -57,9 +57,16 @@ class FOAF(callbacks.Privmsg):
         return
       FOAF = self.FOAF
       
-      self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
-      self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
-      self.g.remove(self.uri, FOAF['knows'], userURI)
+      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
+      
+      if len(result) > 0:
+        irc.reply('about to remove nick')
+        self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
+        irc.reply('about to remove type')
+        self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
+        irc.reply('about to remove knows')
+        self.g.remove(self.uri, FOAF['knows'], userURI)
+        irc.reply('everything removed')
       
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
