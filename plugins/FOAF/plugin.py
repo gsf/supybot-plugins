@@ -58,15 +58,8 @@ class FOAF(callbacks.Privmsg):
       FOAF = self.FOAF
       
       result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
-      
       if len(result) > 0:
-        irc.reply('about to remove nick')
-        self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
-        irc.reply('about to remove type')
-        self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
-        irc.reply('about to remove knows')
-        self.g.remove((self.uri, FOAF['knows'], userURI))
-        irc.reply('everything removed')
+        self.__unknow(usernick, userURI)
       
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
@@ -92,22 +85,18 @@ class FOAF(callbacks.Privmsg):
         
       FOAF = self.FOAF
       userURI = list(result)[0][0]
-      self.unknow(usernick, userURI)
+      self.__unknow(usernick, userURI)
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
       irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
       
       
-    def unknow(nick, userURI):
-      try:
-        FOAF = self.FOAF
-        self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
-        self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
-        self.g.remove(self.uri, FOAF['knows'], userURI)
-      except:
-        irc.reply('Error')
-        raise
+    def __unknow(self, nick, userURI):
+      FOAF = self.FOAF
+      self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
+      self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
+      self.g.remove((self.uri, FOAF['knows'], userURI))
       
       
     def reloadfoaf(self, irc, msg, args):
