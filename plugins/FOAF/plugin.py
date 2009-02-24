@@ -31,8 +31,10 @@ class FOAF(callbacks.Privmsg):
     def known(self, irc, msg, args):
       if len(args) == 1:
         usernick = args[0]
+      elif len(args) == 0:
+        usernick = msg.nick
       else:
-        irc.reply("Usage: @known [nick]")
+        irc.reply("Usage: @known [nick (optional)]")
         return
       result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
       if len(result) > 0:
@@ -54,7 +56,7 @@ class FOAF(callbacks.Privmsg):
         irc.reply("Usage: @know [nick (optional)] [URI]")
         return
       FOAF = self.FOAF
-      #self._unknow(usernick, userURI)
+      self._unknow(usernick, userURI)
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
       self.g.add((self.uri, FOAF['knows'], userURI))
@@ -87,6 +89,7 @@ class FOAF(callbacks.Privmsg):
       
       
     def _unknow(self, nick, userURI):
+      FOAF = self.FOAF
       self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
       self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
       self.g.remove(self.uri, FOAF['knows'], userURI)
