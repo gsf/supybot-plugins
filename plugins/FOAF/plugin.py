@@ -62,6 +62,7 @@ class FOAF(callbacks.Privmsg):
       """
       self._forget_user(msg.nick)
       self._save_graph();
+      irc.reply("I've forgotten " + msg.nick + "'s URI")
     forget = wrap(forget,[])
       
     def knows(self, irc, msg, args, usernick1, usernick2):
