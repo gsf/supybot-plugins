@@ -74,6 +74,10 @@ class FOAF(callbacks.Privmsg):
       return result
       
     def common(self, irc, msg, args, predicate, nicks):
+      """<foaf-predicate> <nick>, <nick>[, <nick>...]
+      
+      Returns the objects that all nicks have in common related to the given predicate.
+      """
       commonGraph = Graph()
       uris = []
       for nick in nicks:
