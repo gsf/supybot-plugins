@@ -56,14 +56,14 @@ class FOAF(callbacks.Privmsg):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
     def forget(self, irc, msg, args):
-      """
+      """me
 
       Forgets the URI associated with the nick of the calling user.
       """
       self._forget_user(msg.nick)
       self._save_graph();
       irc.reply("I've forgotten " + msg.nick + "'s URI")
-    forget = wrap(forget,[])
+    forget = wrap(forget,[('literal',('me'))])
       
     def knows(self, irc, msg, args, usernick1, usernick2):
       """<nick1> <nick2>
