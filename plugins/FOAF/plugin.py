@@ -87,13 +87,13 @@ class FOAF(callbacks.Privmsg):
 
       try:
         knows1 = self._knows(userURI1, userURI2)
-      except ParseError, e:
+      except rdflib.error, e:
         irc.reply('Error parsing <' + str(userURI1) + '>: ' + str(e))
         return
 
       try:
         knows2 = self._knows(userURI2, userURI1)
-      except ParseError, e:
+      except rdflib.error, e:
         irc.reply('Error parsing <' + str(userURI2) + '>: ' + str(e))
         return
     
