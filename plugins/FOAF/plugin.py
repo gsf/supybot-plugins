@@ -76,7 +76,10 @@ class FOAF(callbacks.Privmsg):
         userGraph = self._user_graph(userURI)
         result = []
         for obj in userGraph.objects(userURI,self.FOAF[predicate]):
-          result.append('<' + str(obj) + '>')
+          if type(obj) == rdflib.URIRef:
+            result.append('<' + str(obj) + '>')
+          else:
+            result.append('"' + str(obj) + '"')
         irc.reply(nick + ' <foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
     foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
     
