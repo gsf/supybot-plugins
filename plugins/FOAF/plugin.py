@@ -60,7 +60,7 @@ class FOAF(callbacks.Privmsg):
 
       Forgets the URI associated with the given nick.
       """
-      if self._uri_for_user(nick) == None:
+      if self._uri_of_user(nick) == None:
         irc.reply("I didn't know "+nick+"'s URI anyway.")
       else:
         self._forget_user(nick)
