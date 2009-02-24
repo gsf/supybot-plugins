@@ -59,7 +59,7 @@ class FOAF(callbacks.Privmsg):
       
       result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
       if len(result) > 0:
-        self.__unknow(usernick, userURI)
+        __unknow(usernick, userURI)
       
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
@@ -92,7 +92,7 @@ class FOAF(callbacks.Privmsg):
       irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
       
       
-    def __unknow(self, nick, userURI):
+    def __unknow(nick, userURI):
       FOAF = self.FOAF
       self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
       self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
