@@ -129,7 +129,7 @@ class FOAF(callbacks.Privmsg):
       self._know_user(nick, uri)
       self._save_graph()
 
-      irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
+      irc.reply(nick + "'s URI is now <"+uri+">", prefixNick=True)
     know = wrap(know,[optional('nick'),'url'])
     
 #    def reloadfoaf(self, irc, msg, args):
