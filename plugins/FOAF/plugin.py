@@ -56,7 +56,7 @@ class FOAF(callbacks.Privmsg):
         irc.reply("Usage: @know [nick (optional)] [URI]")
         return
       FOAF = self.FOAF
-      self.__unknow(usernick, userURI)
+      self.unknow(usernick, userURI)
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
       self.g.add((self.uri, FOAF['knows'], userURI))
@@ -81,14 +81,14 @@ class FOAF(callbacks.Privmsg):
         
       FOAF = self.FOAF
       userURI = list(result)[0][0]
-      self.__unknow(usernick, userURI)
+      self.unknow(usernick, userURI)
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
       irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
       
       
-    def __unknow(self, nick, userURI):
+    def unknow(self, nick, userURI):
       try:
         FOAF = self.FOAF
         self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
