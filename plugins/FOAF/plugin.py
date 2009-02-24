@@ -69,8 +69,8 @@ class FOAF(callbacks.Privmsg):
         result = []
         for obj in userGraph.objects(self.uri,FOAF[predicate]):
           result.append(str(obj))
-        irc.reply(nick + '<foaf:' + predicate + '>: ' + ', '.join(result))
-    foaf = wrap(foaf,['nick','predicate'])
+        irc.reply(nick + '<foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
+    foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
       
     def forget(self, irc, msg, args, nick):
       """<nick>
