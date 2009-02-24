@@ -45,9 +45,11 @@ class FOAF(callbacks.Privmsg):
       if len(args) == 2:
         usernick = args[0]
         userURI = rdflib.URIRef(args[1])
+        uristring = args[1]
       elif len(args) == 1:
         usernick = msg.nick
         userURI = rdflib.URIRef(args[0])
+        uristring = args[0]
       else:
         irc.reply("Usage: @know [nick (optional)] [URI]")
         return
@@ -58,7 +60,7 @@ class FOAF(callbacks.Privmsg):
       self.g.add((self.uri, FOAF['knows'], userURI))
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
-      irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
+      irc.reply('Your URI is now <'+uristring+'>', prefixNick=True)
       
     def forget(self, irc, msg, args):
       if len(args) == 1:
