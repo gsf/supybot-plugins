@@ -103,11 +103,11 @@ class FOAF(callbacks.Privmsg):
     #  self.g.remove((self.uri, FOAF['knows'], userURI))
       
       
-    def reloadfoaf(self, irc, msg, args):
-      g = Graph()
-      g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
-      g.serialize('/var/www/rc98.net/zoia.rdf')
-      irc.reply('File copied')
+    #def reloadfoaf(self, irc, msg, args):
+    #  g = Graph()
+    #  g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
+    #  g.serialize('/var/www/rc98.net/zoia.rdf')
+    #  irc.reply('File copied')
       
 
 Class = FOAF
