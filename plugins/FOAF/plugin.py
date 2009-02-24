@@ -17,8 +17,8 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
-#      self.g.parse('http://rc98.net/zoia.rdf')
-      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
+      self.g.parse('http://rc98.net/zoia.rdf')
+#      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -64,6 +64,38 @@ class FOAF(callbacks.Privmsg):
     def _save_graph(self):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
+    def _list(self, entities):
+      result = []
+      for thing in entities:
+        if type(thing) == rdflib.URIRef:
+          result.append('<' + str(thing) + '>')
+        else:
+          result.append('"' + str(thing) + '"')
+      return result
+      
+    def common(self, irc, msg, args, predicate, nicks):
+      commonGraph = Graph()
+      uris = []
+      for nick in nicks:
+        userURI = self._uri_of_user(nick)
+        if userURI == None:
+          irc.reply("I don't know "+nick+"'s URI.")
+          return
+        commonGraph.parse(userURI)
+        uris.append(userURI)
+
+      query = ''
+      for uri in uris:
+        query = query + ('<%s> ?predicate ?obj . ' % str(uri))
+      
+      result = commonGraph.query('SELECT ?obj WHERE { %s }' % query, initBindings={'?predicate':self.FOAF[predicate]})
+      entities = []
+      for entity in result:
+        entities.append(entity[0])
+      reply = self._list(entities)
+      irc.reply(', '.join(reply),prefixNick=True)
+    common = wrap(common,['somethingWithoutSpaces',many('nick')])
+      
     def foaf(self, irc, msg, args, nick, predicate):
       """<nick> <foaf-predicate>
       
@@ -74,12 +106,7 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+nick+"'s URI.")
       else:
         userGraph = self._user_graph(userURI)
-        result = []
-        for obj in userGraph.objects(userURI,self.FOAF[predicate]):
-          if type(obj) == rdflib.URIRef:
-            result.append('<' + str(obj) + '>')
-          else:
-            result.append('"' + str(obj) + '"')
+        result = self._list(userGraph.objects(userURI,self.FOAF[predicate]))
         irc.reply(nick + ' <foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
     foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
     
