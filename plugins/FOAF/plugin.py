@@ -17,8 +17,8 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
-      self.g.parse('http://rc98.net/zoia.rdf')
-#      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
+#      self.g.parse('http://rc98.net/zoia.rdf')
+      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -33,7 +33,11 @@ class FOAF(callbacks.Privmsg):
         
     def _user_graph(self, uri):
       userGraph = Graph()
-      userGraph.parse(uri)
+      try:
+        userGraph.parse(uri)
+      except Exception, e:
+        u = "http://www.w3.org/2007/08/pyRdfa/extract?space-preserve=true&uri=" + uri
+        userGraph.parse(u, identifier=uri)
       return userGraph
 
     def _forget_user(self, nick):
