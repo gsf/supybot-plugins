@@ -17,6 +17,7 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
+#      self.g.parse('http://rc98.net/zoia.rdf')
       self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
@@ -65,11 +66,11 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I didn't know "+nick+"'s URI anyway.")
       else:
         userGraph = Graph()
-        userGraph.parse(userGraph)
+        userGraph.parse(userURI)
         result = []
-        for obj in userGraph.objects(self.uri,FOAF[predicate]):
+        for obj in userGraph.objects(userURI,self.FOAF[predicate]):
           result.append(str(obj))
-        irc.reply(nick + '<foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
+        irc.reply(nick + ' <foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
     foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
       
     def forget(self, irc, msg, args, nick):
