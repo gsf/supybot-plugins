@@ -42,19 +42,53 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+usernick+"'s URI")
         
     def know(self, irc, msg, args):
-      if len(args) == 1:
-        uri = args[0]
+      if len(args) == 2:
+        usernick = args[0]
+        userURI = rdflib.URIRef(args[1])
+      elif len(args) == 1:
+        usernick = msg.nick
+        userURI = rdflib.URIRef(args[0])
       else:
-        irc.reply("Usage: @know [URI]")
+        irc.reply("Usage: @know [nick (optional)] [URI]")
         return
       FOAF = self.FOAF
-      user = rdflib.URIRef(uri)
-      self.g.add((user, rdflib.RDF.type, FOAF['Person']))
-      self.g.add((user, FOAF['nick'], rdflib.Literal(msg.nick)))
-      self.g.add((self.uri, FOAF['knows'], user))
+      self._unknow(usernick, userURI)
+      self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
+      self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
+      self.g.add((self.uri, FOAF['knows'], userURI))
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
+      
+    def forget(self, irc, msg, args):
+      if len(args) == 1:
+        usernick = args[0]
+      elif len(args) == 0:
+        usernick = msg.nick
+      else:
+        irc.reply("Usage: @forget [nick (optional]")
+        return
+      
+      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
+      
+      if len(result) == 0:
+        irc.reply("I don't know "+nick, prefixNick=True)
+        return
+        
+      FOAF = self.FOAF
+      userURI = list(result)[0][0]
+      self._unknow(usernick, userURI)
+      
+      self.g.serialize('/var/www/rc98.net/zoia.rdf')
+      
+      irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
+      
+      
+    def _unknow(self, nick, URI):
+      self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
+      self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
+      self.g.remove(self.uri, FOAF['knows'], userURI)
+      
       
     def reloadfoaf(self, irc, msg, args):
       g = Graph()
