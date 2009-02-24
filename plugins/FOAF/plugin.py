@@ -22,92 +22,99 @@ class FOAF(callbacks.Privmsg):
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
       
+    def _uri_of_user(nick):
+      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}', initBindings={'?nick': nick} )
+      if len(result) > 0:
+        userURI = list(result)[0][0]
+        return(userURI)
+      else:
+        return(None)
 
-    def knows(self, irc, msg, args):
-      usernick1 = args[0]
-      usernick2 = args[0]
-      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri1 ?uri2 WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri1 foaf:nick ?nick1 . ?uri2 foaf:nick ?nick2}', initBindings={'?nick1': usernick1, '?nick2': usernick2} )
-      
-    def known(self, irc, msg, args):
-      if len(args) == 1:
-        usernick = args[0]
-      elif len(args) == 0:
-        usernick = msg.nick
-      else:
-        irc.reply("Usage: @known [nick (optional)]")
-        return
-      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
-      if len(result) > 0:
-        userURI = list(result)[0][0].__str__()
-        irc.reply(usernick+"'s URI is <"+userURI+">", prefixNick=True)
-      else:
-        irc.reply("I don't know "+usernick+"'s URI")
-        
-    def know(self, irc, msg, args):
-      if len(args) == 2:
-        usernick = args[0]
-        userURI = rdflib.URIRef(args[1])
-        uristring = args[1]
-      elif len(args) == 1:
-        usernick = msg.nick
-        userURI = rdflib.URIRef(args[0])
-        uristring = args[0]
-      else:
-        irc.reply("Usage: @know [nick (optional)] [URI]")
-        return
-      FOAF = self.FOAF
-      
-      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
-      if len(result) > 0:
-        self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
-        self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
+    def _forget_user(nick):
+      userURI = self._uri_of_user(nick)
+      if userURI != None:
+        FOAF = self.FOAF
         self.g.remove((self.uri, FOAF['knows'], userURI))
-      
+        self.g.remove((userURI, FOAF['nick'], rdflib.Literal(nick)))
+        self.g.remove((userURI, rdflib.RDF.type, FOAF['Person']))
+        
+    def _know_user(nick, uri):
+      self._forget_user(nick)
+      FOAF = self.FOAF
+      userURI = rdflib.URIRef(uri)
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
-      self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
+      self.g.add((userURI, FOAF['nick'], rdflib.Literal(nick)))
       self.g.add((self.uri, FOAF['knows'], userURI))
+
+    def _knows(uri1, uri2):
+      userGraph = Graph()
+      userGraph.parse(uri1)
+      result = list(userGraph.triples((uri1,self.FOAF['knows'],uri2)))
+      return len(result) > 0
       
+    def _save_graph():
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
-      irc.reply(usernick+'\'s URI is now <'+uristring+'>', prefixNick=True)
       
     def forget(self, irc, msg, args):
-      if len(args) == 1:
-        usernick = args[0]
-      elif len(args) == 0:
-        usernick = msg.nick
+      """
+
+      Forgets the URI associated with the nick of the calling user.
+      """
+      self._forget_user(msg.nick)
+      self._save_graph();
+    forget = wrap(forget,[])
+      
+    def knows(self, irc, msg, args, usernick1, usernick2):
+      """<nick1> <nick2>
+
+      Determines if the two given nicks know each other based on their registered FOAFs.
+      """
+      userURI1 = _uri_of_user(usernick1)
+      userURI2 = _uri_of_user(usernick2)
+      knows1 = _knows(userURI1, userURI2)
+      knows2 = _knows(userURI2, userURI1)
+      
+      if knows1 and knows2:
+        irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
+      elif knows1:
+        irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
+      elif knows2:
+        irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
       else:
-        irc.reply("Usage: @forget [nick (optional]")
-        return
-      
-      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {?uri foaf:nick ?nick .}', initBindings={'?nick': usernick} )
-      
-      if len(result) == 0:
-        irc.reply("I don't know "+nick, prefixNick=True)
-        return
+        irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
         
-      FOAF = self.FOAF
-      userURI = list(result)[0][0]
-      self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
-      self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
-      self.g.remove((self.uri, FOAF['knows'], userURI))
-      
-      self.g.serialize('/var/www/rc98.net/zoia.rdf')
-      
-      irc.reply("I've forgotten who "+usernick+" is", prefixNick=True)
-      
-      
-    #def unknow(nick, userURI):
-    #  FOAF = self.FOAF
-    #  self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
-    #  self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
-    #  self.g.remove((self.uri, FOAF['knows'], userURI))
-      
-      
-    #def reloadfoaf(self, irc, msg, args):
-    #  g = Graph()
-    #  g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
-    #  g.serialize('/var/www/rc98.net/zoia.rdf')
-    #  irc.reply('File copied')
+    knows = wrap(knows,['text','text'])
+
+    def known(self, irc, msg, args, usernick):
+      """<nick>
+
+      Returns the URI associated with the given nick.
+      """
+      usernick = args[0]
+      userURI = self._uri_of_user(usernick)
+      if userURI == None:
+        irc.reply("I don't know "+usernick+"'s URI")
+      else:
+        irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
+    known = wrap(known,['text'])
+        
+    def know(self, irc, msg, args, uri):
+      """<foaf-uri>
+
+      Associates the given URI with the nick of the user making the call. If the nick
+      already has a URI, it will be forgotten.
+      """
+      self._know_user(msg.nick, uri)
+      self._save_graph()
+
+      irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
+    know = wrap(know,['text'])
+    
+#    def reloadfoaf(self, irc, msg, args):
+#      g = Graph()
+#      g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
+#      g.serialize('/var/www/rc98.net/zoia.rdf')
+#      irc.reply('File copied')
       
 
 Class = FOAF
