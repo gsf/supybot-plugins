@@ -62,6 +62,8 @@ class FOAF(callbacks.Privmsg):
       """
       if self._uri_of_user(nick) == None:
         irc.reply("I didn't know "+nick+"'s URI anyway.")
+      elif nick == 'zoia':
+        irc.reply('Funny. Not.',prefixNick=True)
       else:
         self._forget_user(nick)
         self._save_graph();
@@ -83,18 +85,24 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+usernick2+"'s URI")
         return
 
-      knows1 = self._knows(userURI1, userURI2)
-      knows2 = self._knows(userURI2, userURI1)
+        try:
+          knows1 = self._knows(userURI1, userURI2)
+        except rdflib.ParseError, e:
+          irc.reply('Error parsing <' + str(userURI1) + '>: ' + str(e))
+
+        try:
+          knows2 = self._knows(userURI2, userURI1)
+        except rdflib.ParseError, e:
+          irc.reply('Error parsing <' + str(userURI2) + '>: ' + str(e))
       
-      if knows1 and knows2:
-        irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
-      elif knows1:
-        irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
-      elif knows2:
-        irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
-      else:
-        irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
-        
+        if knows1 and knows2:
+          irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
+        elif knows1:
+          irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
+        elif knows2:
+          irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
+        else:
+          irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
     knows = wrap(knows,['nick','nick'])
 
     def known(self, irc, msg, args, usernick):
@@ -115,7 +123,7 @@ class FOAF(callbacks.Privmsg):
         if userURI == None:
           irc.reply("I don't know "+usernick+"'s URI")
         else:
-          irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
+          irc.reply(usernick+"'s URI is <"+str(userURI)+">", prefixNick=True)
     known = wrap(known,[optional('nick')])
         
     def know(self, irc, msg, args, nick, uri):
