@@ -85,24 +85,26 @@ class FOAF(callbacks.Privmsg):
         irc.reply("I don't know "+usernick2+"'s URI")
         return
 
-        try:
-          knows1 = self._knows(userURI1, userURI2)
-        except rdflib.ParseError, e:
-          irc.reply('Error parsing <' + str(userURI1) + '>: ' + str(e))
+      try:
+        knows1 = self._knows(userURI1, userURI2)
+      except rdflib.ParseError, e:
+        irc.reply('Error parsing <' + str(userURI1) + '>: ' + str(e))
+        return
 
-        try:
-          knows2 = self._knows(userURI2, userURI1)
-        except rdflib.ParseError, e:
-          irc.reply('Error parsing <' + str(userURI2) + '>: ' + str(e))
-      
-        if knows1 and knows2:
-          irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
-        elif knows1:
-          irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
-        elif knows2:
-          irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
-        else:
-          irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
+      try:
+        knows2 = self._knows(userURI2, userURI1)
+      except rdflib.ParseError, e:
+        irc.reply('Error parsing <' + str(userURI2) + '>: ' + str(e))
+        return
+    
+      if knows1 and knows2:
+        irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
+      elif knows1:
+        irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
+      elif knows2:
+        irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
+      else:
+        irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
     knows = wrap(knows,['nick','nick'])
 
     def known(self, irc, msg, args, usernick):
