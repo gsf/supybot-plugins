@@ -90,7 +90,6 @@ class FOAF(callbacks.Privmsg):
 
       Returns the URI associated with the given nick.
       """
-      usernick = args[0]
       userURI = self._uri_of_user(usernick)
       if userURI == None:
         irc.reply("I don't know "+usernick+"'s URI")
