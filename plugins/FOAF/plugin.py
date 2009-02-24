@@ -57,7 +57,7 @@ class FOAF(callbacks.Privmsg):
         return
       FOAF = self.FOAF
       try:
-        self.unknow(usernick, userURI)
+        unknow(usernick, userURI)
       except:
         irc.reply('Error in @know')
         raise
