@@ -22,7 +22,7 @@ class FOAF(callbacks.Privmsg):
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
       
-    def _uri_of_user(nick):
+    def _uri_of_user(self, nick):
       result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}', initBindings={'?nick': nick} )
       if len(result) > 0:
         userURI = list(result)[0][0]
@@ -30,7 +30,7 @@ class FOAF(callbacks.Privmsg):
       else:
         return(None)
 
-    def _forget_user(nick):
+    def _forget_user(self, nick):
       userURI = self._uri_of_user(nick)
       if userURI != None:
         FOAF = self.FOAF
@@ -38,7 +38,7 @@ class FOAF(callbacks.Privmsg):
         self.g.remove((userURI, FOAF['nick'], rdflib.Literal(nick)))
         self.g.remove((userURI, rdflib.RDF.type, FOAF['Person']))
         
-    def _know_user(nick, uri):
+    def _know_user(self, nick, uri):
       self._forget_user(nick)
       FOAF = self.FOAF
       userURI = rdflib.URIRef(uri)
@@ -46,13 +46,13 @@ class FOAF(callbacks.Privmsg):
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(nick)))
       self.g.add((self.uri, FOAF['knows'], userURI))
 
-    def _knows(uri1, uri2):
+    def _knows(self, uri1, uri2):
       userGraph = Graph()
       userGraph.parse(uri1)
       result = list(userGraph.triples((uri1,self.FOAF['knows'],uri2)))
       return len(result) > 0
       
-    def _save_graph():
+    def _save_graph(self):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
     def forget(self, irc, msg, args):
@@ -69,10 +69,10 @@ class FOAF(callbacks.Privmsg):
 
       Determines if the two given nicks know each other based on their registered FOAFs.
       """
-      userURI1 = _uri_of_user(usernick1)
-      userURI2 = _uri_of_user(usernick2)
-      knows1 = _knows(userURI1, userURI2)
-      knows2 = _knows(userURI2, userURI1)
+      userURI1 = self._uri_of_user(usernick1)
+      userURI2 = self._uri_of_user(usernick2)
+      knows1 = self._knows(userURI1, userURI2)
+      knows2 = self._knows(userURI2, userURI1)
       
       if knows1 and knows2:
         irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
