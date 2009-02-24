@@ -94,8 +94,9 @@ class FOAF(callbacks.Privmsg):
         self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
         self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
         self.g.remove(self.uri, FOAF['knows'], userURI)
-      except Exception as e:
+      except StandardError as e:
         irc.reply(e.value)
+        raise
       
       
     def reloadfoaf(self, irc, msg, args):
