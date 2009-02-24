@@ -68,7 +68,7 @@ class FOAF(callbacks.Privmsg):
       self.g.add((self.uri, FOAF['knows'], userURI))
       
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
-      irc.reply('Your URI is now <'+uristring+'>', prefixNick=True)
+      irc.reply(usernick+'\'s URI is now <'+uristring+'>', prefixNick=True)
       
     def forget(self, irc, msg, args):
       if len(args) == 1:
