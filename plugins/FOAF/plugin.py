@@ -104,7 +104,7 @@ class FOAF(callbacks.Privmsg):
       returns a list of nicks which have an associated URI.
       """
       if usernick == None:
-        result = g.query('PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?nick WHERE { <http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick }')
+        result = self.g.query('PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?nick WHERE { <http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick }')
         users = []
         for row in result:
           users.append(row[0])
