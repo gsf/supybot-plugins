@@ -111,13 +111,15 @@ class FOAF(callbacks.Privmsg):
         irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
     known = wrap(known,[optional('nick')])
         
-    def know(self, irc, msg, args, uri):
+    def know(self, irc, msg, args, nick, uri):
       """[<nick>] <foaf-uri>
 
       Associates the given URI with the given nick. If the nick already has a URI, 
       it will be forgotten. Defaults to the calling user.
       """
-      self._know_user(msg.nick, uri)
+      if nick == None:
+        nick == msg.nick
+      self._know_user(nick, uri)
       self._save_graph()
 
       irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
