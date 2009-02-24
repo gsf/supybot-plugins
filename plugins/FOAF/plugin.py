@@ -61,11 +61,11 @@ class FOAF(callbacks.Privmsg):
       
       if len(result) > 0:
         irc.reply('about to remove nick')
-        self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
+        self.g.remove((userURI, FOAF['nick'], rdflib.Literal(usernick)))
         irc.reply('about to remove type')
-        self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
+        self.g.remove((userURI, rdflib.RDF.type, FOAF['person']))
         irc.reply('about to remove knows')
-        self.g.remove(self.uri, FOAF['knows'], userURI)
+        self.g.remove((self.uri, FOAF['knows'], userURI))
         irc.reply('everything removed')
       
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
