@@ -1,38 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rdf:RDF xmlns="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:s="http://www.w3.org/2000/01/rdf-schema#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:cc="http://creativecommons.org/ns#" xmlns:swc="http://data.semanticweb.org/ns/swc/ontology#" xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <PersonalProfileDocument rdf:about="">
-    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/PersonalProfileDocument"/>
-    <dc:title>Zoia's FOAF document</dc:title>
+<rdf:RDF
+   xmlns="http://xmlns.com/foaf/0.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:swc="http://data.semanticweb.org/ns/swc/ontology#"
+>
+  <rdf:Description rdf:about="http://kevinclarke.info/foaf.rdf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>ksclarke_</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://freerangelibrarian.com/foaf.rdf#kgs">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>kgs</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://justgiblets.com/scolford/foaf.rdf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>scolford</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.code4lib.org/id/zoia">
+    <name>Zoia</name>
+    <interest rdf:resource="http://dbpedia.org/resource/Singing"/>
+    <interest rdf:resource="http://dbpedia.org/resource/Python_%28programming_language%29"/>
+    <depiction rdf:resource="http://rc98.net/img/zoia.jpg"/>
+    <rdfs:comment>This URI indentifies me the person. Feel free to use it when making statements about me the person (such as "your_uri foaf:knows http://www.code4lib.org/id/zoia").</rdfs:comment>
+    <knows rdf:resource="http://kevinclarke.info/foaf.rdf#me"/>
+    <knows rdf:resource="http://freerangelibrarian.com/foaf.rdf#kgs"/>
+    <knows rdf:resource="http://justgiblets.com/scolford/foaf.rdf#me"/>
+    <knows rdf:resource="http://www.code4lib.org/id/zoia"/>
+    <knows rdf:resource="http://jodischneider.com#me"/>
+    <knows rdf:resource="http://lackoftalent.org/michael/id/"/>
+    <knows rdf:resource="http://www.billdueber.com/foaf.rdf"/>
+    <knows rdf:resource="http://roytennant.com/foaf.rdf#me"/>
+    <knows rdf:resource="http://michael.is.outoffoc.us/michael/foaf.rdf#me"/>
+    <knows rdf:resource="http://rc98.net/foaf#me"/>
+    <knows rdf:resource="http://ryanwick.net/foaf.rdf#me"/>
+    <knows rdf:resource="http://jbrinley.xplus3.net/id/"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <swc:attendeeAt rdf:resource="http://code4lib.org/node/266#linked-data-preconf"/>
+    <swc:attendeeAt rdf:resource="http://code4lib.org/2009#conference"/>
+    <nick>zoia</nick>
+    <holdsAccount rdf:nodeID="cwQaxxQq367"/>
+    <based_near rdf:nodeID="cwQaxxQq366"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://jodischneider.com#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>JodiS</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://lackoftalent.org/michael/id/">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>mjg_</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.billdueber.com/foaf.rdf">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>BillDueber</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://roytennant.com/foaf.rdf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>royt</nick>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cwQaxxQq366">
+    <geo:long>-74.1727778</geo:long>
+    <geo:lat>40.7355556</geo:lat>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://michael.is.outoffoc.us/michael/foaf.rdf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>mbklein</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://rc98.net/foaf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>gsf</nick>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="cwQaxxQq367">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/OnlineChatAccount"/>
+    <accountName>zoia</accountName>
+    <accountServiceHomepage rdf:resource="http://www.freenode.net/irc_servers.shtml"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://ryanwick.net/foaf.rdf#me">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>wickr</nick>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://michael.is.outoffoc.us/michael/zoia.rdf">
     <cc:license rdf:resource="http://creativecommons.org/licenses/by-nc/3.0/"/>
-    <s:comment>Document with Friend-of-a-Friend description of Zoia.</s:comment>
-    <primaryTopic rdf:resource="http://www.code4lib.org/id/zoia" />
+    <dc:title>Zoia's FOAF document</dc:title>
+    <rdfs:comment>Document with Friend-of-a-Friend description of Zoia.</rdfs:comment>
+    <primaryTopic rdf:resource="http://www.code4lib.org/id/zoia"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/PersonalProfileDocument"/>
+    <maker rdf:resource="http://rc98.net/foaf#me"/>
     <maker rdf:resource="http://jbrinley.xplus3.net/id/"/>
     <maker rdf:resource="http://michael.is.outoffoc.us/michael/foaf.rdf#me"/>
-    <maker rdf:resource="http://rc98.net/foaf#me"/>
-  </PersonalProfileDocument>
-  <Person rdf:about="http://www.code4lib.org/id/zoia">
-    <name>Zoia</name>
-    <nick>zoia</nick>
-		<depiction rdf:resource="http://rc98.net/img/zoia.jpg" />
-    <based_near rdf:parseType="Resource">
-      <geo:lat>40.7355556</geo:lat>
-      <geo:long>-74.1727778</geo:long>
-    </based_near>
-    <s:comment>This URI indentifies me the person. Feel free to use it when making statements about me the person (such as "your_uri foaf:knows http://www.code4lib.org/id/zoia").</s:comment>
-    <knows>
-      <Person rdf:about="http://rc98.net/foaf#me">
-        <nick>gsf</nick>
-      </Person>
-    </knows>
-    <holdsAccount>
-      <OnlineChatAccount>
-        <accountServiceHomepage rdf:resource="http://www.freenode.net/irc_servers.shtml" />
-        <accountName>zoia</accountName>
-      </OnlineChatAccount>
-    </holdsAccount>
-    <swc:attendeeAt rdf:resource="http://code4lib.org/2009#conference" />
-    <swc:attendeeAt rdf:resource="http://code4lib.org/node/266#linked-data-preconf" />
-    <interest rdf:resource="http://dbpedia.org/resource/Python_%28programming_language%29"/>
-    <interest rdf:resource="http://dbpedia.org/resource/Singing"/>
-  </Person>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://jbrinley.xplus3.net/id/">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <nick>jbrinley</nick>
+  </rdf:Description>
 </rdf:RDF>

@@ -100,15 +100,22 @@ class FOAF(callbacks.Privmsg):
     def known(self, irc, msg, args, usernick):
       """[<nick>]
 
-      Returns the URI associated with the given nick. Defaults to the calling user.
+      Returns the URI associated with the given nick. Defaults to the calling user. If no nick given,
+      returns a list of nicks which have an associated URI.
       """
       if usernick == None:
-        usernick = msg.nick
-      userURI = self._uri_of_user(usernick)
-      if userURI == None:
-        irc.reply("I don't know "+usernick+"'s URI")
+        result = g.query('PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?nick WHERE { <http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick }')
+        users = []
+        for row in result:
+          users.append(row[0])
+        user_list = ', '.join(sorted(users))
+        irc.reply('I know URIs for the following users: ' + user_list)
       else:
-        irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
+        userURI = self._uri_of_user(usernick)
+        if userURI == None:
+          irc.reply("I don't know "+usernick+"'s URI")
+        else:
+          irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
     known = wrap(known,[optional('nick')])
         
     def know(self, irc, msg, args, nick, uri):
@@ -118,7 +125,7 @@ class FOAF(callbacks.Privmsg):
       it will be forgotten. Defaults to the calling user.
       """
       if nick == None:
-        nick == msg.nick
+        nick = msg.nick
       self._know_user(nick, uri)
       self._save_graph()
 
