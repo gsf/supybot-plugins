@@ -70,7 +70,15 @@ class FOAF(callbacks.Privmsg):
       Determines if the two given nicks know each other based on their registered FOAFs.
       """
       userURI1 = self._uri_of_user(usernick1)
+      if userURI1 == None:
+        irc.reply("I don't know "+usernick1+"'s URI")
+        return
+        
       userURI2 = self._uri_of_user(usernick2)
+      if userURI2 == None:
+        irc.reply("I don't know "+usernick2+"'s URI")
+        return
+
       knows1 = self._knows(userURI1, userURI2)
       knows2 = self._knows(userURI2, userURI1)
       
