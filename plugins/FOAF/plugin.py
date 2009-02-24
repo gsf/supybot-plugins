@@ -56,11 +56,11 @@ class FOAF(callbacks.Privmsg):
         irc.reply("Usage: @know [nick (optional)] [URI]")
         return
       FOAF = self.FOAF
-      try:
-        unknow(usernick, userURI)
-      except:
-        irc.reply('Error in @know')
-        raise
+      
+      self.g.remove(userURI, FOAF['nick'], rdflib.Literal(usernick))
+      self.g.remove(userURI, rdflib.RDF.type, FOAF['person'])
+      self.g.remove(self.uri, FOAF['knows'], userURI)
+      
       self.g.add((userURI, rdflib.RDF.type, FOAF['Person']))
       self.g.add((userURI, FOAF['nick'], rdflib.Literal(usernick)))
       self.g.add((self.uri, FOAF['knows'], userURI))
