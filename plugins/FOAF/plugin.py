@@ -17,7 +17,7 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
-      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
+      self.g.parse('/Users/michael/workspace/supybot-plugins/plugins/FOAF/zoia.rdf', format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -87,16 +87,11 @@ class FOAF(callbacks.Privmsg):
 
       try:
         knows1 = self._knows(userURI1, userURI2)
-      except StandardError, e:
-        irc.reply('Error parsing <' + str(userURI1) + '>: ' + str(e))
+        knows2 = self._knows(userURI2, userURI1)
+      except rdflib.exceptions.ParserError, e:
+        irc.reply('Error: ' + str(e))
         return
 
-      try:
-        knows2 = self._knows(userURI2, userURI1)
-      except StandardError, e:
-        irc.reply('Error parsing <' + str(userURI2) + '>: ' + str(e))
-        return
-    
       if knows1 and knows2:
         irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
       elif knows1:
