@@ -55,6 +55,23 @@ class FOAF(callbacks.Privmsg):
     def _save_graph(self):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
+    def foaf(self, irc, msg, args, nick, predicate):
+      """<nick> <foaf-predicate>
+      
+      Returns the objects of the given predicate in the given nick's FOAF.
+      """
+      userURI = self._uri_of_user(nick)
+      if userURI == None:
+        irc.reply("I didn't know "+nick+"'s URI anyway.")
+      else:
+        userGraph = Graph()
+        userGraph.parse(userGraph)
+        result = []
+        for obj in userGraph.objects(self.uri,FOAF[predicate]):
+          result.append(str(obj))
+        irc.reply(nick + '<foaf:' + predicate + '>: ' + ', '.join(result))
+    foaf = wrap(foaf,['nick','predicate'])
+      
     def forget(self, irc, msg, args, nick):
       """<nick>
 
