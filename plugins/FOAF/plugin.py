@@ -55,15 +55,18 @@ class FOAF(callbacks.Privmsg):
     def _save_graph(self):
       self.g.serialize('/var/www/rc98.net/zoia.rdf')
       
-    def forget(self, irc, msg, args):
-      """me
+    def forget(self, irc, msg, args, nick):
+      """<nick>
 
-      Forgets the URI associated with the nick of the calling user.
+      Forgets the URI associated with the given nick.
       """
-      self._forget_user(msg.nick)
-      self._save_graph();
-      irc.reply("I've forgotten " + msg.nick + "'s URI")
-    forget = wrap(forget,[('literal',('me'))])
+      if self._uri_for_user(nick) == None:
+        irc.reply("I didn't know "+nick+"'s URI anyway.")
+      else:
+        self._forget_user(nick)
+        self._save_graph();
+        irc.reply("OK, I've forgotten " + nick + "'s URI")
+    forget = wrap(forget,['nick'])
       
     def knows(self, irc, msg, args, usernick1, usernick2):
       """<nick1> <nick2>
@@ -95,28 +98,30 @@ class FOAF(callbacks.Privmsg):
     knows = wrap(knows,['nick','nick'])
 
     def known(self, irc, msg, args, usernick):
-      """<nick>
+      """[<nick>]
 
-      Returns the URI associated with the given nick.
+      Returns the URI associated with the given nick. Defaults to the calling user.
       """
+      if usernick == None:
+        usernick = msg.nick
       userURI = self._uri_of_user(usernick)
       if userURI == None:
         irc.reply("I don't know "+usernick+"'s URI")
       else:
         irc.reply(usernick+"'s URI is <"+userURI.__str__()+">", prefixNick=True)
-    known = wrap(known,['nick'])
+    known = wrap(known,[optional('nick')])
         
     def know(self, irc, msg, args, uri):
-      """<foaf-uri>
+      """[<nick>] <foaf-uri>
 
-      Associates the given URI with the nick of the user making the call. If the nick
-      already has a URI, it will be forgotten.
+      Associates the given URI with the given nick. If the nick already has a URI, 
+      it will be forgotten. Defaults to the calling user.
       """
       self._know_user(msg.nick, uri)
       self._save_graph()
 
       irc.reply('Your URI is now <'+uri+'>', prefixNick=True)
-    know = wrap(know,['text'])
+    know = wrap(know,[optional('nick'),'url'])
     
 #    def reloadfoaf(self, irc, msg, args):
 #      g = Graph()
