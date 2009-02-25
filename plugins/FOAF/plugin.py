@@ -68,9 +68,9 @@ class FOAF(callbacks.Privmsg):
       result = []
       for thing in entities:
         if type(thing) == rdflib.URIRef:
-          result.append('<' + str(thing) + '>')
+          result.append('<%s>' % str(thing))
         else:
-          result.append('"' + str(thing) + '"')
+          result.append('"%s"' % str(thing))
       return result
       
     def common(self, irc, msg, args, predicate, nicks):
@@ -102,9 +102,9 @@ class FOAF(callbacks.Privmsg):
         entities.append(entity[0])
       if len(entities) > 0:
         reply = self._list(entities)
-        irc.reply(', '.join(reply),prefixNick=True)
+        irc.reply('Common <foaf:%s>s: %s' % (predicate, ', '.join(reply)),prefixNick=True)
       else:
-        irc.reply('No common <foaf:' + predicate + '>s found.',prefixNick=True)
+        irc.reply('No common <foaf:%s>s found.' % predicate,prefixNick=True)
     common = wrap(common,['somethingWithoutSpaces',many('nick')])
       
     def foaf(self, irc, msg, args, nick, predicate):
@@ -114,11 +114,11 @@ class FOAF(callbacks.Privmsg):
       """
       userURI = self._uri_of_user(nick)
       if userURI == None:
-        irc.reply("I don't know "+nick+"'s URI.")
+        irc.reply("I don't know %s's URI" % nick)
       else:
         userGraph = self._user_graph(userURI)
         result = self._list(userGraph.objects(userURI,self.FOAF[predicate]))
-        irc.reply(nick + ' <foaf:' + predicate + '>: ' + ', '.join(result),prefixNick=True)
+        irc.reply('%s <foaf:%s>: %s' % (nick, predicate, ', '.join(result)))
     foaf = wrap(foaf,['nick','somethingWithoutSpaces'])
     
     def predicates(self, irc, msg, args, nick, obj):
@@ -129,14 +129,14 @@ class FOAF(callbacks.Privmsg):
       """
       subject = self._uri_of_user(nick)
       if subject == None:
-        irc.reply("I didn't know "+nick+"'s URI anyway.")
+        irc.reply("I don't know %s's URI" % nick)
       else:
         userGraph = self._user_graph(subject)
         match = re.search('^<(.+)>$',obj)
         if match == None:
           objURI = self._uri_of_user(obj)
           if objURI == None:
-            irc.reply("I don't know "+obj+"'s URI.")
+            irc.reply("I don't know %s's URI" % obj)
             return
         else:
           objURI = rdflib.URIRef(match.group(1))
@@ -152,13 +152,13 @@ class FOAF(callbacks.Privmsg):
       Forgets the URI associated with the given nick.
       """
       if self._uri_of_user(nick) == None:
-        irc.reply("I didn't know "+nick+"'s URI anyway.")
+        irc.reply("I didn't know %s's URI anyway." % nick)
       elif nick == 'zoia':
         irc.reply('Funny. Not.',prefixNick=True)
       else:
         self._forget_user(nick)
         self._save_graph();
-        irc.reply("OK, I've forgotten " + nick + "'s URI")
+        irc.reply("OK, I've forgotten %s's URI" % nick)
     forget = wrap(forget,['nick'])
       
     def knows(self, irc, msg, args, usernick1, usernick2):
@@ -168,12 +168,12 @@ class FOAF(callbacks.Privmsg):
       """
       userURI1 = self._uri_of_user(usernick1)
       if userURI1 == None:
-        irc.reply("I don't know "+usernick1+"'s URI")
+        irc.reply("I don't know %s's URI" % usernick1)
         return
         
       userURI2 = self._uri_of_user(usernick2)
       if userURI2 == None:
-        irc.reply("I don't know "+usernick2+"'s URI")
+        irc.reply("I don't know %s's URI" % usernick2)
         return
 
       try:
@@ -184,13 +184,14 @@ class FOAF(callbacks.Privmsg):
         return
 
       if knows1 and knows2:
-        irc.reply(usernick1 + ' and ' + usernick2 + ' know each other.', prefixNick=True)
+        formatstr = '%(nick1) and %(nick2) know each other'
       elif knows1:
-        irc.reply(usernick1 + ' knows ' + usernick2 + ', but ' + usernick2 + ' does not know ' + usernick1 + '.', prefixNick=True)
+        formatstr = '%(nick1) knows %(nick2), but %(nick2) does not know %(nick1)'
       elif knows2:
-        irc.reply(usernick1 + ' does not know ' + usernick2 + ', but ' + usernick2 + ' knows ' + usernick1 + '.', prefixNick=True)
+        formatstr = '%(nick2) knows %(nick1), but %(nick1) does not know %(nick2)'
       else:
-        irc.reply(usernick1 + ' and ' + usernick2 + ' do not know each other.', prefixNick=True)
+        formatstr = '%(nick1) and %(nick2) do not know each other'
+      irc.reply(formatstr % { 'nick1' : usernick1, 'nick2' : usernick2 }, prefixNick=True)
     knows = wrap(knows,['nick','nick'])
 
     def known(self, irc, msg, args, usernick):
@@ -205,13 +206,13 @@ class FOAF(callbacks.Privmsg):
         for row in result:
           users.append(row[0])
         user_list = ', '.join(sorted(users))
-        irc.reply('I know URIs for the following users: ' + user_list)
+        irc.reply('I know URIs for the following %d users: %s' % (len(users), user_list))
       else:
         userURI = self._uri_of_user(usernick)
         if userURI == None:
-          irc.reply("I don't know "+usernick+"'s URI")
+          irc.reply("I don't know %s's URI" % usernick)
         else:
-          irc.reply(usernick+"'s URI is <"+str(userURI)+">", prefixNick=True)
+          irc.reply("%s's URI is <%s>" % (usernick, str(userURI)), prefixNick=True)
     known = wrap(known,[optional('nick')])
         
     def know(self, irc, msg, args, nick, uri):
@@ -225,7 +226,7 @@ class FOAF(callbacks.Privmsg):
       self._know_user(nick, uri)
       self._save_graph()
 
-      irc.reply(nick + "'s URI is now <"+uri+">", prefixNick=True)
+      irc.reply("%s's URI is now <%s>" % (nick, uri), prefixNick=True)
     know = wrap(know,[optional('nick'),'url'])
     
 #    def reloadfoaf(self, irc, msg, args):
