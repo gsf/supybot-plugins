@@ -1092,7 +1092,7 @@ class Assorted(callbacks.Privmsg):
         excuseNode = tree.find(xpathLite)
         
         excuseStr = excuseNode.text
-        irc.reply('The excuse for today is: %s' % excuseStr, prefixNick=True)
+        irc.reply('My excuse for today is "%s"' % excuseStr, prefixNick=True)
 
 
 
