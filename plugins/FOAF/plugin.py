@@ -100,8 +100,11 @@ class FOAF(callbacks.Privmsg):
       entities = []
       for entity in result:
         entities.append(entity[0])
-      reply = self._list(entities)
-      irc.reply(', '.join(reply),prefixNick=True)
+      if len(entities) > 0:
+        reply = self._list(entities)
+        irc.reply(', '.join(reply),prefixNick=True)
+      else:
+        irc.reply('No common <foaf:' + predicate '>s found.',prefixNick=True)
     common = wrap(common,['somethingWithoutSpaces',many('nick')])
       
     def foaf(self, irc, msg, args, nick, predicate):
