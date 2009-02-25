@@ -1037,6 +1037,11 @@ class Assorted(callbacks.Privmsg):
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
+    def inaworld(self, irc, msg, args, s):
+        irc.reply("In a world... where %s" % s, prefixNick=False)
+
+    inaworld = wrap(inaworld, ['text'])
+
     def cluephone(self, irc, msg, args, who):
         """
         Rings the cluephone. Is it for you?
