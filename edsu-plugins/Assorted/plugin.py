@@ -1079,8 +1079,9 @@ class Assorted(callbacks.Privmsg):
         returns the excuse of the day  http://meyerweb.com/feeds/excuse/
         """
 
-	url = "http://meyerweb.com/feeds/excuse/"
-	xpathLite = ".//div/h4/p"
+	ns = 'http://www.w3.org/1999/xhtml'
+	url = 'http://meyerweb.com/feeds/excuse/'
+	xpathLite = ('{%s}body/{%s}div/{%s}div/{%s}p' % (ns, ns, ns, ns))
         try:
             tree = TidyHTMLTreeBuilder.parse(urlopen(url));
         except HTTPError, e:
