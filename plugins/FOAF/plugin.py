@@ -24,7 +24,11 @@ class FOAF(callbacks.Privmsg):
       super(callbacks.Plugin,self).__init__(irc)
       
     def _uri_of_user(self, nick):
-      result = self.g.query( 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?uri WHERE {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}', initBindings={'?nick': nick} )
+      result = self.g.query("""
+          PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+          SELECT ?uri WHERE 
+          {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}
+          """, initBindings={'?nick': nick} )
       if len(result) > 0:
         userURI = list(result)[0][0]
         return(userURI)
@@ -201,7 +205,12 @@ class FOAF(callbacks.Privmsg):
       returns a list of nicks which have an associated URI.
       """
       if usernick == None:
-        result = self.g.query('PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?nick WHERE { <http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick }')
+        result = self.g.query(
+        """
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+        SELECT ?nick WHERE 
+        { <http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick }
+        """)
         users = []
         for row in result:
           users.append(row[0])
@@ -215,6 +224,27 @@ class FOAF(callbacks.Privmsg):
           irc.reply("%s's URI is <%s>" % (usernick, str(userURI)), prefixNick=True)
     known = wrap(known,[optional('nick')])
         
+    def where(self, irc, msg, args, nick):
+        """[<nick>]
+
+        Find out where a friend of zoia's is foaf:based_near
+        """
+        try:
+            if nick == None:
+                nick = msg.nick
+            userURI = self._uri_of_user(nick)
+            userGraph = self._user_graph(userURI)
+            result = userGraph.query("""
+                PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+                select ?place 
+                where { ?nick foaf:based_near ?loc . ?loc foaf:name ?place . }
+              """, initBindings={'?nick': userURI} )
+            irc.reply('%s is based near %s' % (nick, result.selected[0]))
+        except:
+            irc.reply("I don't know where %s is based" % nick)
+
+    where = wrap(where, [optional('nick')])
+
     def know(self, irc, msg, args, nick, uri):
       """[<nick>] <foaf-uri>
 
