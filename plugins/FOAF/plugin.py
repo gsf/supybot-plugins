@@ -190,9 +190,9 @@ class FOAF(callbacks.Privmsg):
       if knows1 and knows2:
         formatstr = '%(nick1)s and %(nick2)s know each other'
       elif knows1:
-        formatstr = '%(nick1)s knows %(nick2)s, but %(nick2) does not know %(nick1)'
+        formatstr = '%(nick1)s knows %(nick2)s, but %(nick2)s does not know %(nick1)s'
       elif knows2:
-        formatstr = '%(nick2)s knows %(nick1)s, but %(nick1) does not know %(nick2)'
+        formatstr = '%(nick2)s knows %(nick1)s, but %(nick1)s does not know %(nick2)s'
       else:
         formatstr = '%(nick1)s and %(nick2)s do not know each other'
       irc.reply(formatstr % { 'nick1' : usernick1, 'nick2' : usernick2 }, prefixNick=True)
