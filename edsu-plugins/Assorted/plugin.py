@@ -685,7 +685,11 @@ class Assorted(callbacks.Privmsg):
           format = formats['def']
         
         # TODO: make this so you can use an ticker
-        soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
+        try:
+	    soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
+	except:
+	    raise
+	    return 'Is it possible Google is sending back invalid HTML?'
         data = {}
         try:
             data = {
