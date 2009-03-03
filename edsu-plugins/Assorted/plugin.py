@@ -688,7 +688,6 @@ class Assorted(callbacks.Privmsg):
         try:
 	    soup = self._url2soup("http://finance.google.com/finance?cid=%s" % cid)
 	except:
-	    raise
 	    return 'Is it possible Google is sending back invalid HTML?'
         data = {}
         try:
