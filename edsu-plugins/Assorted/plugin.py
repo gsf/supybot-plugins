@@ -14,8 +14,6 @@ from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from urlparse import urlparse
 from threading import Timer
 import csv
-import html5lib
-from html5lib import treebuilders
 
 from supybot.commands import *
 import supybot.callbacks as callbacks
@@ -868,9 +866,8 @@ class Assorted(callbacks.Privmsg):
         req = Request(url,postdata,headers)
         doc = urlopen(req)
         data = doc.read()
-	parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("beautifulsoup"))
-	soup = parser.parse(data)
-	return soup
+        soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
+        return soup
 
     def bartender(self, irc, msg, args):
         """
