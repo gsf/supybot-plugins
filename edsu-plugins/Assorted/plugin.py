@@ -1041,7 +1041,7 @@ class Assorted(callbacks.Privmsg):
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
     def inaworld(self, irc, msg, args, s):
-        irc.reply("In a world... where %s" % s, prefixNick=False)
+        irc.reply("In a world... %s..." % s, prefixNick=False)
 
     inaworld = wrap(inaworld, ['text'])
 
