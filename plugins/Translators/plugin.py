@@ -1,3 +1,4 @@
+# coding: utf-8
 import supybot.conf as conf
 import supybot.utils as utils
 from supybot.commands import *
@@ -5,7 +6,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
-from random import randint
+from random import randint, randrange
 import supybot.utils.web as web
 from urllib import urlencode
 
@@ -133,6 +134,50 @@ class Translators(callbacks.Privmsg):
         url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
         resp = web.getUrl(url, headers=HEADERS)
         irc.reply(resp.encode('utf-8', 'ignore').strip())
+    
+    def takify(self, irc, msg, args):
+        """Ć Ẫ Ṗ Ĩ Ṱ Ą Ł Ȋ Ȥ Ḗ Ŝ    Ā Ñ Ɗ    Ȃ Ḓ Ɖ Ŝ    Ȓ Ậ Ñ Ḋ Ỏ Ḿ    Ḓ Î Ḁ Ċ Ṙ Ĩ Ť İ Č Ṧ    Ʈ Ǭ    Ȁ    Ş Ʈ Ṟ Ɨ Ṇ Ɠ    Ȭ ℱ    Ʈ Ệ Ẋ Ṯ"""
+        variants = {
+          'A' : u'ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ',
+          'B' : u'ḂƁḄḆℬ',
+          'C' : u'ĆĈĊČƇÇḈ©',
+          'D' : u'ḊƊḌḎḐḒĎĐƉↁ',
+          'E' : u'ÈÉÊẼĒĔĖËẺĚȄȆẸȨĘḘḚỀẾỄỂḔḖỆḜℰℇƎ',
+          'F' : u'ḞƑℱℲ',
+          'G' : u'ǴĜḠĞĠǦƓĢǤ',
+          'H' : u'ĤḢḦȞǶḤḨḪĦℋ',
+          'I' : u'ÌÍÎĨĪĬİÏỈǏỊĮȈȊḬƗḮ',
+          'J' : u'Ĵ',
+          'K' : u'ḰǨḴƘḲĶ',
+          'L' : u'ĹḺḶĻḼĽĿŁḸℒ',
+          'M' : u'ḾṀṂ',
+          'N' : u'ǸŃÑṄŇŊƝṆŅṊṈ',
+          'O' : u'ÒÓÔÕŌŎȮÖỎŐǑȌȎƠǪỌƟØỒỐỖỔȰȪȬṌṎṐṒỜỚỠỞỢǬỘǾ',
+          'P' : u'ṔṖƤ℗',
+          'Q' : u'Q',
+          'R' : u'ŔṘŘȐȒṚŖṞṜƦ®',
+          'S' : u'ŚŜṠŠṢȘŞṤṦṨ',
+          'T' : u'ṪŤƬƮṬȚŢṰṮŦ',
+          'U' : u'ÙÚÛŨŪŬÜỦŮŰǓȔȖƯỤṲŲṶṴṸṺǛǗǕǙỪỨỮỬỰ',
+          'V' : u'ṼṾ',
+          'W' : u'ẀẂŴẆẄẈ',
+          'X' : u'ẊẌ',
+          'Y' : u'ỲÝŶỸȲẎŸỶƳỴ',
+          'Z' : u'ŹẐŻŽȤẒẔƵ'
+        }
+
+        source = ' '.join(args).upper()
+        result = []
+        for ltr in source:
+          if variants.has_key(ltr):
+            possibles = variants[ltr]
+            index = randrange(0,len(possibles)-1)
+            char = possibles[index]
+            result += char
+          else:
+            result += ltr
+        response = ' '.join(result)
+        irc.reply(response.encode('utf-8', 'ignore'))
         
 Class = Translators
 
