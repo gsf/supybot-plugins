@@ -179,7 +179,7 @@ class Translators(callbacks.Privmsg):
             result += char
           else:
             result += ltr
-        response = ' '.join(result)
+        response = ''.join(result)
         irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
         
 Class = Translators
