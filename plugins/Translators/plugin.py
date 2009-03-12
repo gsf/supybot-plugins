@@ -136,7 +136,7 @@ class Translators(callbacks.Privmsg):
         irc.reply(resp.encode('utf-8', 'ignore').strip())
     
     def takify(self, irc, msg, args):
-        """Ć Ẫ Ṗ Ĩ Ṱ Ą Ł Ȋ Ȥ Ḗ Ŝ    Ā Ñ Ɗ    Ȃ Ḓ Ɖ Ŝ    Ȓ Ậ Ñ Ḋ Ỏ Ḿ    Ḓ Î Ḁ Ċ Ṙ Ĩ Ť İ Č Ṧ    Ʈ Ǭ    Ȁ    Ş Ʈ Ṟ Ɨ Ṇ Ɠ    Ȭ ℱ    Ʈ Ệ Ẋ Ṯ"""
+        """ĆẪṖĨṰĄŁȊȤḖŜ ĀÑƊ ȂḒƉŜ ȒẬÑḊỎḾ ḒÎḀĊṘĨŤİČṦ ƮǬ Ȁ ŞƮṞƗṆƓ Ȭℱ ƮỆẊṮ"""
         variants = {
           'A' : u'ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ',
           'B' : u'ḂƁḄḆℬ',
@@ -179,7 +179,7 @@ class Translators(callbacks.Privmsg):
             result += char
           else:
             result += ltr
-        response = ''.join(result)
+        response = u' '.join(result)
         irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
         
 Class = Translators
