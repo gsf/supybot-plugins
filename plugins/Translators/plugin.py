@@ -180,7 +180,7 @@ class Translators(callbacks.Privmsg):
           else:
             result += ltr
         response = ' '.join(result)
-        irc.reply(response.encode('utf-8', 'ignore'))
+        irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
         
 Class = Translators
 
