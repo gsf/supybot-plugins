@@ -138,47 +138,42 @@ class Translators(callbacks.Privmsg):
     def takify(self, irc, msg, args):
         """ĆẪṖĨṰĄŁȊȤḖŜ ĀÑƊ ȂḒƉŜ ȒẬÑḊỎḾ ḒÎḀĊṘĨŤİČṦ ƮǬ Ȁ ŞƮṞƗṆƓ Ȭℱ ƮỆẊṮ"""
         variants = {
-          'A' : u'ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ',
-          'B' : u'ḂƁḄḆℬ',
-          'C' : u'ĆĈĊČƇÇḈ©',
-          'D' : u'ḊƊḌḎḐḒĎĐƉↁ',
-          'E' : u'ÈÉÊẼĒĔĖËẺĚȄȆẸȨĘḘḚỀẾỄỂḔḖỆḜℰℇƎ',
-          'F' : u'ḞƑℱℲ',
-          'G' : u'ǴĜḠĞĠǦƓĢǤ',
-          'H' : u'ĤḢḦȞǶḤḨḪĦℋ',
-          'I' : u'ÌÍÎĨĪĬİÏỈǏỊĮȈȊḬƗḮ',
-          'J' : u'Ĵ',
-          'K' : u'ḰǨḴƘḲĶ',
-          'L' : u'ĹḺḶĻḼĽĿŁḸℒ',
-          'M' : u'ḾṀṂ',
-          'N' : u'ǸŃÑṄŇŊƝṆŅṊṈ',
-          'O' : u'ÒÓÔÕŌŎȮÖỎŐǑȌȎƠǪỌƟØỒỐỖỔȰȪȬṌṎṐṒỜỚỠỞỢǬỘǾ',
-          'P' : u'ṔṖƤ℗',
-          'Q' : u'Q',
-          'R' : u'ŔṘŘȐȒṚŖṞṜƦ®',
-          'S' : u'ŚŜṠŠṢȘŞṤṦṨ',
-          'T' : u'ṪŤƬƮṬȚŢṰṮŦ',
-          'U' : u'ÙÚÛŨŪŬÜỦŮŰǓȔȖƯỤṲŲṶṴṸṺǛǗǕǙỪỨỮỬỰ',
-          'V' : u'ṼṾ',
-          'W' : u'ẀẂŴẆẄẈ',
-          'X' : u'ẊẌ',
-          'Y' : u'ỲÝŶỸȲẎŸỶƳỴ',
-          'Z' : u'ŹẐŻŽȤẒẔƵ'
+            'A' : u'ÀÁÂÃĀĂȦÄẢÅǍȀȂĄẠḀẦẤẪẨẰẮẴẲǠǞǺẬẶ',
+            'B' : u'ḂƁḄḆℬ',
+            'C' : u'ĆĈĊČƇÇḈ©',
+            'D' : u'ḊƊḌḎḐḒĎĐƉↁ',
+            'E' : u'ÈÉÊẼĒĔĖËẺĚȄȆẸȨĘḘḚỀẾỄỂḔḖỆḜℰℇƎ',
+            'F' : u'ḞƑℱℲ',
+            'G' : u'ǴĜḠĞĠǦƓĢǤ',
+            'H' : u'ĤḢḦȞǶḤḨḪĦℋℍ',
+            'I' : u'ÌÍÎĨĪĬİÏỈǏỊĮȈȊḬƗḮ',
+            'J' : u'Ĵ',
+            'K' : u'ḰǨḴƘḲĶK',
+            'L' : u'ĹḺḶĻḼĽĿŁḸℒ',
+            'M' : u'ḾṀṂℳ',
+            'N' : u'ǸŃÑṄŇŊƝṆŅṊṈ',
+            'O' : u'ÒÓÔÕŌŎȮÖỎŐǑȌȎƠǪỌƟØỒỐỖỔȰȪȬṌṎṐṒỜỚỠỞỢǬỘǾ',
+            'P' : u'ṔṖƤ℗ℙ',
+            'Q' : u'Ԛ℺ℚ',
+            'R' : u'ŔṘŘȐȒṚŖṞṜƦ®ℝℛℜ℟',
+            'S' : u'ŚŜṠŠṢȘŞṤṦṨ',
+            'T' : u'ṪŤƬƮṬȚŢṰṮŦ',
+            'U' : u'ÙÚÛŨŪŬÜỦŮŰǓȔȖƯỤṲŲṶṴṸṺǛǗǕǙỪỨỮỬỰ',
+            'V' : u'ṼṾ℣',
+            'W' : u'ẀẂŴẆẄẈ',
+            'X' : u'ẊẌ',
+            'Y' : u'ỲÝŶỸȲẎŸỶƳỴ',
+            'Z' : u'ŹẐŻŽȤẒẔƵ'
         }
 
         source = ' '.join(args).upper()
         result = []
-        for ltr in source:
-          if variants.has_key(ltr):
-            possibles = variants[ltr]
-            if len(possibles) > 1:
-              index = randrange(0,len(possibles)-1)
-            else:
-              index = 0
-            char = possibles[index]
-            result += char
-          else:
-            result += ltr
+        for letter in source:
+            try:
+                possibles = variants[letter]
+            except KeyError:
+                possibles = [letter]
+            result.append(possibles[randrange(len(possibles))])
         response = u' '.join(result)
         irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
         
