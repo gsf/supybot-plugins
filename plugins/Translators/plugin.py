@@ -171,7 +171,10 @@ class Translators(callbacks.Privmsg):
         for ltr in source:
           if variants.has_key(ltr):
             possibles = variants[ltr]
-            index = randrange(0,len(possibles)-1)
+            if len(possibles) > 1:
+              index = randrange(0,len(possibles)-1)
+            else:
+              index = 0
             char = possibles[index]
             result += char
           else:
