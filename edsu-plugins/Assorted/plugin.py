@@ -1081,6 +1081,12 @@ class Assorted(callbacks.Privmsg):
         irc.reply("OK. I'll remind you in %s seconds" % seconds)
 
     reminder = wrap(reminder, [optional('nickInChannel'), 'int', optional('text')])
+
+    def cowbell(self, irc, msg, args):
+        """
+        adds more cowbell!
+        """
+        irc.reply(" *cowbell* ".join(args), prefixNick=True)      
     
     def excuse(self, irc, msg, args):
         """
@@ -1093,9 +1099,11 @@ class Assorted(callbacks.Privmsg):
         try:
             tree = TidyHTMLTreeBuilder.parse(urlopen(url));
         except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True)
+            return
         except StopParsing, e:
-            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True)
+            return
 
         excuseNode = tree.find(xpathLite)
         
