@@ -1086,7 +1086,12 @@ class Assorted(callbacks.Privmsg):
         """
         adds more cowbell!
         """
-        irc.reply(" *cowbell* ".join(args), prefixNick=True)      
+        cowbell = " *cowbell* "
+        if len(args) > 1:
+            s = cowbell.join(args)
+        else:
+            s = re.compile(r' ').sub(cowbell, args[0])
+        irc.reply(s, prefixNick=True)
     
     def excuse(self, irc, msg, args):
         """
