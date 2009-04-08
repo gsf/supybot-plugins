@@ -14,7 +14,7 @@ def field_desc(tag):
   for f in marcdoc.findall('field'):
     if f.attrib['tag'] == tag:
       desc = f.findtext('description')
-      repeatable = "(Repeatable) " if f.attrib['repeatable'] else ""        
+      repeatable = "(Repeatable) " if f.attrib['repeatable'] == "true" else ""        
       subfields = [sf.attrib['code'] for sf in f.findall('subfield')]
       return "%s %s[%s]" % (desc, repeatable, ','.join(subfields))
   return "unknown tag %s" % tag
@@ -24,7 +24,7 @@ def subfield_desc(tag, code):
     if f.attrib['tag'] == tag:
       for sf in f.findall('subfield'):
         if sf.attrib['code'] == code:
-          repeatable = " (Repeatable) " if f.attrib['repeatable'] else ""
+          repeatable = " (Repeatable) " if f.attrib['repeatable'] == "true" else ""
           return "%s%s" % (sf.findtext('description'), repeatable)
   return "unknown field/subfield combination (%s/%s)" % (tag, code)
 
