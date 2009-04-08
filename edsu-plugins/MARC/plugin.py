@@ -16,7 +16,7 @@ def field_desc(tag):
       desc = f.findtext('description')
       repeatable = "(Repeatable) " if 'repeatable' in f.attrib else ""        
       subfields = [sf.attrib['code'] for sf in f.findall('subfield')]
-      return "%s%s [%s]" % (repeatable, desc, ','.join(subfields))
+      return "%s %s[%s]" % (desc, repeatable, ','.join(subfields))
   return "unknown tag %s" % tag
 
 def subfield_desc(tag, code):
@@ -25,7 +25,7 @@ def subfield_desc(tag, code):
       for sf in f.findall('subfield'):
         repeatable = "(Repeatable) " if 'repeatable' in sf.attrib else ""        
         if sf.attrib['code'] == code:
-          return "%s%s" % (repeatable, sf.findtext('description'))
+          return "%s%s" % (sf.findtext('description'), repeatable)
   return "unknown field/subfield combination (%s/%s)" % (tag, code)
 
 class MARC(callbacks.Privmsg):
