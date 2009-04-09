@@ -33,6 +33,7 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
+from socket import gethostbyname
 from urllib import urlencode
 from urllib2 import urlopen
 from BeautifulSoup import BeautifulSoup, SoupStrainer
@@ -40,7 +41,7 @@ from BeautifulSoup import BeautifulSoup, SoupStrainer
 class IPTools(callbacks.Plugin):
     """IP address utilities."""
     
-    def iplocate(self, irc, msg, args, ip):
+    def locate(self, irc, msg, args, ip):
       """<ip> - Looks up geolocation information about the given 
       IP address from http://blogama.org/ip_query.php"""
       
@@ -54,9 +55,18 @@ class IPTools(callbacks.Plugin):
       lat = soup.find('latitude').find(text=True)
       lng = soup.find('longitude').find(text=True)
       response = "%(ip)s: %(location)s (%(lat)s, %(lng)s)" % { 'ip' : ip, 'location' : ', '.join(location), 'lat' : lat, 'lng' : lng }
-      irc.reply(response,prefixNick=False)
-    iplocate = wrap(iplocate, ['ip'])
+      irc.reply(response,prefixNick=True)
+    locate = wrap(locate, ['ip'])
     
+    def lookup(self, irc, msg, args, hostname):
+      """<hostname> - Looks up the IP address of a hostname"""
+      
+      try:
+        irc.reply(gethostbyname(hostname),prefixNick=True)
+      except:
+        irc.reply('Unknown host: ' + hostname,prefixNick=True)
+    lookup = wrap(lookup, ['text'])
+      
 Class = IPTools
 
 
