@@ -24,13 +24,13 @@ class AudioScrobbler(callbacks.Privmsg):
         'Slocketman', 'jaydatema', 'miker_', 'bradl', 'eby', 'pbinkley', 
         'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
         'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
-        'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar', 'DataGazetteer',
-        'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob', 'mangrue', 'dys',
-        'denials', 'bosteen', 'tomkeays']
+        'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar',
+        'DataGazetteer', 'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob',
+        'mangrue', 'dys', 'denials', 'bosteen', 'tomkeays', 'gmcharlt']
     users.sort()
     
     nickmap = dict(
-#       last.fm username = 'nick',
+#       last.fm username = 'IRC nick',
         leftwing = 'mjgiarlo',
         DataGazetteer = 'pmurray',
         LTjake = 'bricas',
@@ -121,8 +121,19 @@ class AudioScrobbler(callbacks.Privmsg):
         for user in args:
             # in case commas were used instead of spaces
             for u in user.split(','):
-                self.users.append(u)
+                if u not in self.users:
+                    self.users.append(u)
         irc.reply(','.join(args) + " just moved in across the street")
+
+    def remove(self,irc,msg,args):
+        """<user>[,<user>...]
+        Add one or more users to the blockparty
+        """
+        for user in args:
+            # in case commas were used instead of spaces
+            for u in user.split(','):
+                self.users.remove(u)
+        irc.reply(','.join(args) + " was just evicted")
 
     def favs(self,irc,msg,args):
         """<user>
