@@ -1092,6 +1092,23 @@ class Assorted(callbacks.Privmsg):
         else:
             s = re.compile(r' ').sub(cowbell, args[0])
         irc.reply(s, prefixNick=True)
+
+    def slowclap(self, irc, msg, args):
+        """
+        Show your heartfelt appreciation (or mockery) of an
+        underdog who surprises everyone with his or her 
+        classiness, gumption and/or dancing ability
+        """
+        time.sleep(2)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(1.5)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(1)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(.5)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(.5)
+        irc.reply("*clap*", prefixNick=False)
     
     def excuse(self, irc, msg, args):
         """
