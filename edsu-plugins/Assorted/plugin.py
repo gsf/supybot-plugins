@@ -1099,15 +1099,17 @@ class Assorted(callbacks.Privmsg):
         underdog who surprises everyone with his or her 
         classiness, gumption and/or dancing ability
         """
-        time.sleep(2)
-        irc.reply("*clap*", prefixNick=False)
-        time.sleep(1.5)
+        time.sleep(1)
         irc.reply("*clap*", prefixNick=False)
         time.sleep(1)
         irc.reply("*clap*", prefixNick=False)
         time.sleep(.5)
         irc.reply("*clap*", prefixNick=False)
         time.sleep(.5)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(.25)
+        irc.reply("*clap*", prefixNick=False)
+        time.sleep(.25)
         irc.reply("*clap*", prefixNick=False)
     
     def excuse(self, irc, msg, args):
