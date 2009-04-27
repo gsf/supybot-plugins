@@ -1132,7 +1132,7 @@ class Assorted(callbacks.Privmsg):
     def swineflu(self, irc, msg, args):
         html = urlopen('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001').read()
         m = re.search('<strong>(\d+) cases</strong>', html)
-        irc.reply('CDC reports %s cases to date' % m.group(1))
+        irc.reply('CDC reports %s cases to date <http://icanhaz.com/swine-flu>' % m.group(1))
 
 
 Class = Assorted
