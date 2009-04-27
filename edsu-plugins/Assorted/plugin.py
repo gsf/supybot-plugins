@@ -1129,6 +1129,10 @@ class Assorted(callbacks.Privmsg):
         excuseStr = excuseNode.text
         irc.reply('My excuse for today is "%s"' % excuseStr, prefixNick=True)
 
+    def swineflu(self, irc, msg, args):
+        html = urlopen('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001')
+        m = re.search('<strong>(\d+) cases</strong>')
+        irc.reply('CDC reports %s cases to date' % m.group(1))
 
 
 Class = Assorted
