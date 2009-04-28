@@ -1138,7 +1138,9 @@ class Assorted(callbacks.Privmsg):
             if cells[0] == None or cells[1] == None:
                 continue
             cells[1] = cells[1].strip(' cases')
+            count += int(cells[1])
             parts.append('%s:%s' % tuple(cells))
+        parts.append('Total:%s' % count)
         irc.reply(' ; '.join(parts) + ' ; <http://icanhaz.com/swine-flu>')
 
 Class = Assorted
