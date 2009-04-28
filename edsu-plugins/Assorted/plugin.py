@@ -1130,9 +1130,13 @@ class Assorted(callbacks.Privmsg):
         irc.reply('My excuse for today is "%s"' % excuseStr, prefixNick=True)
 
     def swineflu(self, irc, msg, args):
-        html = urlopen('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001').read()
-        m = re.search('<strong>(\d+) cases</strong>', html)
-        irc.reply('CDC reports %s cases to date <http://icanhaz.com/swine-flu>' % m.group(1))
+        soup = self._url2soup('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001')
+        count = 0
+        parts = []
+        for row in soup.table.tr[1:-1]:
+            cells = row.findAll('td')
+            parts.append('%s:%s' cells[0].string, cells[1].string)
+        irc.reply(' ; '.join(cells) + ' <http://icanhaz.com/swine-flu>')
 
 
 Class = Assorted
