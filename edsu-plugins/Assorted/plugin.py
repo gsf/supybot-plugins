@@ -1133,7 +1133,7 @@ class Assorted(callbacks.Privmsg):
         soup = self._url2soup('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001')
         count = 0
         parts = []
-        for row in soup.table.findAll('tr')[1:0]
+        for row in soup.table.findAll('tr')[1:0]:
             cells = [td.string for td in row.findAll('td')]
             if cells[0] == None or cells[1] == None:
               continue
