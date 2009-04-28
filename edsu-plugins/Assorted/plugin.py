@@ -1133,7 +1133,7 @@ class Assorted(callbacks.Privmsg):
         soup = self._url2soup('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001')
         count = 0
         parts = []
-        for row in soup.table.tr[1:-1]:
+        for row in soup.table.findAll('tr')[1:-1]:
             cells = row.findAll('td')
             parts.append('%s:%s' % cells[0].string, cells[1].string)
         irc.reply(' ; '.join(cells) + ' <http://icanhaz.com/swine-flu>')
