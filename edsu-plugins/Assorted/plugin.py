@@ -1135,8 +1135,6 @@ class Assorted(callbacks.Privmsg):
         parts = []
         for row in soup.table.findAll('tr')[1:0]:
             cells = [td.string for td in row.findAll('td')]
-            if cells[0] == None or cells[1] == None:
-              continue
             parts.append('%s:%s' % tuple(cells))
         irc.reply(' ; '.join(parts) + ' <http://icanhaz.com/swine-flu>')
 
