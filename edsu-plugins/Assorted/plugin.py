@@ -1134,11 +1134,8 @@ class Assorted(callbacks.Privmsg):
         count = 0
         parts = []
         for row in soup.table.findAll('tr')[1:-1]:
-            cells = row.findAll('td')
-            parts.append('%s:%s' % cells[0].string, cells[1].string)
-        irc.reply(' ; '.join(cells) + ' <http://icanhaz.com/swine-flu>')
-
+            cells = [td.string for td in row.findAll('td')]
+            parts.append('%s:%s' % cells)
+        irc.reply(' ; '.join(parts) + ' <http://icanhaz.com/swine-flu>')
 
 Class = Assorted
-
-
