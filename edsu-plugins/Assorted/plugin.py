@@ -1131,18 +1131,7 @@ class Assorted(callbacks.Privmsg):
 
     def swineflu(self, irc, msg, args):
         soup = self._url2soup('http://www.cdc.gov/swineflu/?s_cid=swineFlu_outbreak_internal_001')
-        count = 0
-        parts = []
-        for row in soup.table.findAll('tr')[1:]:
-            cells = [td.string for td in row.findAll('td')]
-            if cells[0] == None or cells[1] == None:
-                continue
-            cells[1] = cells[1].strip(' cases')
-            count += int(cells[1])
-            if not cells[2]:
-                cells[2] = '0'
-            parts.append('%s:%s:%s' % tuple(cells))
-        parts.append('Total:%s' % count)
-        irc.reply((' ; '.join(parts) + ' ; <http://icanhaz.com/swine-flu>').encode('utf-8'))
+        cases = soup.find('td', text=re.compile('\d+ cases')).string
+        irc.reply('Total: ' + cases + '; <http://icanhaz.com/swine-flu>')
 
 Class = Assorted
