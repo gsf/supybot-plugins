@@ -1144,6 +1144,6 @@ class Assorted(callbacks.Privmsg):
             elif len(cells) == 3:
                 parts.append('%s:%s!%s' % tuple(cells))
         parts.append('Total:%s' % count)
-        irc.reply(' ; '.join(parts) + ' ; <http://icanhaz.com/swine-flu>')
+        irc.reply((' ; '.join(parts) + ' ; <http://icanhaz.com/swine-flu>').encode('utf-8'))
 
 Class = Assorted
