@@ -1139,7 +1139,10 @@ class Assorted(callbacks.Privmsg):
                 continue
             cells[1] = cells[1].strip(' cases')
             count += int(cells[1])
-            parts.append('%s:%s' % tuple(cells[0:2]))
+            if len(cells) == 2:
+                parts.append('%s:%s' % tuple(cells))
+            elif len(cells) == 3:
+                parts.append('%s:%s!%s' % tuple(cells))
         parts.append('Total:%s' % count)
         irc.reply(' ; '.join(parts) + ' ; <http://icanhaz.com/swine-flu>')
 
