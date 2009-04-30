@@ -36,11 +36,15 @@ class DBpedia(callbacks.Plugin):
     def describe(self, irc, msg, args, uri):
         """print out some extracted text for a given RDF resource URI
         """
-        parts = self._describe(uri)
-        if len(parts) > 0:
-            irc.reply('; '.join(parts).encode('utf-8'))
-        else:
-            irc.reply('sorry something went wrong, i am a strange hack')
+        try:
+            parts = self._describe(uri)
+            if len(parts) > 0:
+                irc.reply('; '.join(parts).encode('utf-8'))
+            else:
+                irc.reply('sorry something went wrong, i am a strange hack')
+        except Exception, e:
+            irc.reply(str(u))
+          
 
     describe = wrap(describe, ['text'])
 
