@@ -530,23 +530,6 @@ class Assorted(callbacks.Privmsg):
 
     nonsense = wrap(nonsense, [optional('int'),optional('anything'),optional('int'),optional('int')])
 
-    def twit(self, irc, msg, args):
-        """
-        returns a random tweet from the public timeline
-        """
-
-        try:
-            soup = self._url2soup('http://twitter.com/statuses/public_timeline.xml')
-        except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
-        except StopParsing, e:
-            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
-
-        tweets = soup.findAll('status')
-        status = tweets[randint(0, len(tweets)-1)]
-        twit = status.user.screen_name.string
-        tweet = status.text.string
-        irc.reply("%s: %s".encode('utf8', 'ignore') % (twit, tweet))
 
     def itr(self,irc,msg,args,continent):
         """
@@ -1134,5 +1117,9 @@ class Assorted(callbacks.Privmsg):
         cases = soup.find('td', text=re.compile('\d+ cases')).string
         deaths = soup.find('td', text=re.compile('\d+ death')).string
         irc.reply(('Total: %s, %s' % (cases, deaths)) + '; <http://icanhaz.com/swine-flu>')
+
+    def bar(self, irc, msg, args):
+        qhash = md5("%s%s%s%d" % ('zoia','random_by_author','william shakespeare', 1))
+        url = 'http://quotesdaddy.com/api/zoia/'
 
 Class = Assorted
