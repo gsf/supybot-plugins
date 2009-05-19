@@ -18,7 +18,7 @@ class Twitter(callbacks.Plugin):
     This should describe *how* to use this plugin."""
     threaded = True
 
-    def twit(self, irc, msg, args, query):
+    def twit(self, irc, msg, args, opts, query):
         """
         @twit [query]
 
@@ -27,25 +27,35 @@ class Twitter(callbacks.Plugin):
         the public timeline if no
         """
 
+        screen_name = None
+        for (opt, arg) in opts:
+            if opt == 'from':
+                screen_name = arg
+
         def fetch_json(url):
             json = web.getUrl(url, headers=HEADERS)
             return simplejson.loads(json)
             
         if query:
+            if screen_name:
+                query = "from:%s %s" % (screen_name, query)
             url = 'http://search.twitter.com/search.json?' 
             tweets = fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))['results']
             extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
             resp = ' ;; '.join(extracted)
         else:
-            url = 'http://twitter.com/statuses/public_timeline.json?'
+            if screen_name:
+                url = 'http://twitter.com/statuses/user_timeline.json?'
+                url = url + urlencode({'screen_name': screen_name})
+            else:
+                url = 'http://twitter.com/statuses/public_timeline.json?'
             tweets = fetch_json(url)
-            tweet = tweets[randint(0, len(tweets)-1)]
+            tweet = tweets[0] #randint(0, len(tweets)-1)]
             resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
 
         irc.reply(resp.encode('utf8','ignore'))
 
-    twit = wrap(twit, [optional('text')])
-    tweet = wrap(twit, [optional('text')])
+    twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
 
 Class = Twitter
 
