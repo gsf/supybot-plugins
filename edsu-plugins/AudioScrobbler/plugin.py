@@ -285,9 +285,9 @@ class AudioScrobbler(callbacks.Privmsg):
         root = tree.getroot()
         tags = []
         for artist in root.findall('.//artist'):
-            tags.append("%s:%s" % (artist.attrib['name'],
-                artist.attrib['count']))
-        irc.reply(', '.join(tags).encode('utf8','ignore'))
+            tags.append("%s: %s%%" % (artist.attrib['name'],
+                int(float(artist.attrib['count']))))
+        irc.reply(' ; '.join(tags).encode('utf8','ignore'))
 
 def shuffle(l):
    randomly_tagged_list = [(random(), x) for x in l]
