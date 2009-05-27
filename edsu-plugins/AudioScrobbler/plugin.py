@@ -224,8 +224,8 @@ class AudioScrobbler(callbacks.Privmsg):
         for tag in root.findall('.//tag'):
             name = tag.find(".//name")
             count = tag.find(".//count")
-            tags.append("%s:%s" % (name.text, count.text))
-        irc.reply(', '.join(tags).encode('utf8','ignore'))
+            tags.append("%s: %s%%" % (name.text, count.text))
+        irc.reply(' ; '.join(tags).encode('utf8','ignore'))
 
     def topten(self,irc,msg,args):
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklytrackchart.xml'
