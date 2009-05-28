@@ -8,6 +8,7 @@ import supybot.callbacks as callbacks
 import re
 from random import randint, randrange
 import supybot.utils.web as web
+import BeautifulSoup as BS
 from urllib import urlencode
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
@@ -133,6 +134,19 @@ class Translators(callbacks.Privmsg):
         params = urlencode(dict(input=s,type=type))
         url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
         resp = web.getUrl(url, headers=HEADERS)
+        resp = re.sub('\n', '', resp)
+        irc.reply(resp.encode('utf-8', 'ignore').strip())
+
+    def drunk(self, irc, msg, s):
+        params = urlencode(dict(text=s,voice='drunk'))
+        url = 'http://www.thevoicesofmany.com/text.php?' + params
+        resp = web.getUrl(url, headers=HEADERS)
+        soup = BS(resp)
+        try:
+            translated = soup.find('td', id='top').blockquote.string
+        except:
+            irc.reply("oops, didn't work")
+
         irc.reply(resp.encode('utf-8', 'ignore').strip())
     
     def takify(self, irc, msg, args):
