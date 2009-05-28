@@ -134,7 +134,7 @@ class Translators(callbacks.Privmsg):
         params = urlencode(dict(input=s,type=type))
         url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
         resp = web.getUrl(url, headers=HEADERS)
-        resp = re.sub('\n', '', resp)
+        resp = re.sub('\n', ' ', resp)
         irc.reply(resp.encode('utf-8', 'ignore').strip())
 
     def drunk(self, irc, msg, s):
