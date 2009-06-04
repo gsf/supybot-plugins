@@ -834,6 +834,19 @@ class Assorted(callbacks.Privmsg):
 
     decide = wrap(decide, ['text'])
 
+    def pick(self, irc, msg, args, choices):
+    	"""
+    	@decide without the niceties 
+    	"""
+        pattern = re.compile('\s+or\s+', re.I)
+        clist = re.split(pattern, choices)
+        if randint(0, 10) == 0:
+            irc.reply("That's a tough one...")
+            return
+        irc.reply(clist[randint(0, len(clist)-1)])
+
+    pick = wrap(pick, ['text'])
+
     def _url2soup(self, url, qsdata={}, postdata=None, headers={}):
         """
         Fetch a url and BeautifulSoup-ify the returned doc
