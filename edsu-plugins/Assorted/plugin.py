@@ -909,7 +909,8 @@ class Assorted(callbacks.Privmsg):
                   "Oh, does this benefit WorldCat Local?",
                   "RFP's exist because libraries are public. The Oh Can Libraries Concede trust would prefer otherwise, I'm sure",
                   "if channels matter, then why not community dot oclc dot org slash roy?",
-        ]
+                  "Nice OCLC shill, Roy.".
+                  ]
         troll = trolls[randint(0, len(trolls)-1)]
         irc.reply(troll, prefixNick=True)
 
