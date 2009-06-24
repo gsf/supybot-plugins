@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from os.path import join, dirname, abspath
 from urllib import urlencode, quote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
@@ -17,17 +18,12 @@ class AudioScrobbler(callbacks.Privmsg):
 
     threaded = True
 
-    users = [
-        'asmodai', 'moil', 'LTjake', 'rtennant', 'inkdroid', 'dchud', 
-        'ksclarke', 'wattsferry', 'inkcow', 'phasefx', 'rexsavior', 
-        'roblivian', 'mdxi', 'ph0rman', 'bsadler', 'Gugek', 'Sarphram', 
-        'Slocketman', 'jaydatema', 'miker_', 'bradl', 'eby', 'pbinkley', 
-        'leww', 'pdxlibrarian', 'djfiander', 'truk77', 'Davey_P', 'pgwillia',
-        'jfrumkin', 'geeklibrarian', 'hubpod', 'williw', 'jonvw', 's|k',
-        'ryanwick', 'leftwing', 'jblyberg', 'lbjay', 'anarchivist', 'sylvar',
-        'DataGazetteer', 'ranginui', 'jbrinley', 'jstroop', 'mmmmmrob',
-        'mangrue', 'dys', 'denials', 'bosteen', 'tomkeays', 'gmcharlt']
+    users_file = join(dirname(abspath(__file__)), 'users.json')
+    f = open(users_file)
+    users = simplejson.load(f)
+    f.close()
     users.sort()
+    
     
     nickmap = dict(
 #       last.fm username = 'IRC nick',
@@ -114,6 +110,11 @@ class AudioScrobbler(callbacks.Privmsg):
 
     blockparty = wrap(blockparty, [optional('text')])
 
+    def __usersave(self):
+        f = open(self.users_file, 'w')
+        simplejson.dump(self.users, f, indent=4)
+        f.close()
+
     def add(self,irc,msg,args):
         """<user>[,<user>...]
         Add one or more users to the blockparty
@@ -123,16 +124,18 @@ class AudioScrobbler(callbacks.Privmsg):
             for u in user.split(','):
                 if u not in self.users:
                     self.users.append(u)
+        self.__usersave()
         irc.reply(','.join(args) + " just moved in across the street")
 
     def remove(self,irc,msg,args):
         """<user>[,<user>...]
-        Add one or more users to the blockparty
+        Remove one or more users from the blockparty
         """
         for user in args:
             # in case commas were used instead of spaces
             for u in user.split(','):
                 self.users.remove(u)
+        self.__usersave()
         irc.reply(','.join(args) + " was just evicted")
 
     def favs(self,irc,msg,args):
