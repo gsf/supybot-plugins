@@ -6,6 +6,7 @@ from urllib2 import urlopen
 from sgmllib import SGMLParser
 from random import randint, random
 from xml.etree import ElementTree as ET
+import simplejson
 
 from supybot.commands import *
 import supybot.plugins as plugins
