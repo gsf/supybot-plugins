@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from os.path import join, dirname, abspath
-from urllib import urlencode, quote
+from urllib import urlencode, quote, unquote
 from urllib2 import urlopen
 from sgmllib import SGMLParser
 from random import randint, random
@@ -219,7 +219,7 @@ class AudioScrobbler(callbacks.Privmsg):
         try:
             response = urlopen(url)
         except:
-            irc.reply("No tags found for %s" % artist)
+            irc.reply("No tags found for %s" % ' '.join(args))
             return
             
         tree = ET.parse(response)
