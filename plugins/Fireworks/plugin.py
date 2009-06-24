@@ -1,6 +1,6 @@
 """
 Get a random firework from the 
-Official List of Approved Fireworks for the City of Albuquerue and the County of Bernalillo
+Official List of Approved Fireworks for the City of Albuquerque and the County of Bernalillo
 http://www.bernco.gov/upload/images/fire_rescue/fw_list_2005.pdf
 """
 
@@ -21,7 +21,7 @@ class Fireworks(callbacks.Plugin):
     def fireworks(self, irc, msg, args):
         """
         Get a random firework from the 
-        Official List of Approved Fireworks for the City of Albuquerue and the County of Bernalillo
+        Official List of Approved Fireworks for the City of Albuquerque and the County of Bernalillo
         """
         f = join(dirname(abspath(__file__)), 'fireworks.js')
         jsonfile = open(f, 'r')
