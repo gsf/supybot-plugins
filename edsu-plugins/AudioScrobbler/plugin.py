@@ -157,8 +157,8 @@ class AudioScrobbler(callbacks.Privmsg):
           except:
             irc.reply('no such user or last.fm is on the fritz')
 
-    def list(self,irc,msg,args):
-        irc.reply( ",".join(self.users) )
+    def scrobblers(self,irc,msg,args):
+        irc.reply("; ".join(self.users))
 
     def recommend(self,irc,msg,args):
         artist = quote(' '.join(args))
