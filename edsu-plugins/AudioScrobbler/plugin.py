@@ -219,7 +219,7 @@ class AudioScrobbler(callbacks.Privmsg):
         try:
             response = urlopen(url)
         except:
-            irc.reply("no such artist or last.fm is on the fritz")
+            irc.reply("No tags found for %s" % artist)
             return
             
         tree = ET.parse(response)
