@@ -1137,11 +1137,13 @@ class Assorted(callbacks.Privmsg):
         url = 'http://quotesdaddy.com/api/zoia/'
 
     def blues(self, irc, msg, args, trouble):
+        """
+        sing your troubles away
+        """
         song = "I woke up this morning / %s / I woke up this morning / Lord, %s" \
             % (trouble, trouble)
         irc.reply(song, prefixNick=False)
 
     blues = wrap(blues, ['text'])
-        
 
 Class = Assorted
