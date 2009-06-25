@@ -909,7 +909,7 @@ class Assorted(callbacks.Privmsg):
                   "Oh, does this benefit WorldCat Local?",
                   "RFP's exist because libraries are public. The Oh Can Libraries Concede trust would prefer otherwise, I'm sure",
                   "if channels matter, then why not community dot oclc dot org slash roy?",
-                  "Nice OCLC shill, Roy.".
+                  "Nice OCLC shill, Roy."
                   ]
         troll = trolls[randint(0, len(trolls)-1)]
         irc.reply(troll, prefixNick=True)
@@ -1135,5 +1135,13 @@ class Assorted(callbacks.Privmsg):
     def bar(self, irc, msg, args):
         qhash = md5("%s%s%s%d" % ('zoia','random_by_author','william shakespeare', 1))
         url = 'http://quotesdaddy.com/api/zoia/'
+
+    def blues(self, irc, msg, args, trouble):
+        song = "I woke up this morning / %s / I woke up this morning / lord %s" \
+            % (trouble, trouble)
+        irc.reply(song, prefixNick=False)
+
+    blues = wrap(blues, ['text'])
+        
 
 Class = Assorted
