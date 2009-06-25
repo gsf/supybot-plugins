@@ -1137,7 +1137,7 @@ class Assorted(callbacks.Privmsg):
         url = 'http://quotesdaddy.com/api/zoia/'
 
     def blues(self, irc, msg, args, trouble):
-        song = "I woke up this morning / %s / I woke up this morning / lord %s" \
+        song = "I woke up this morning / %s / I woke up this morning / Lord, %s" \
             % (trouble, trouble)
         irc.reply(song, prefixNick=False)
 
