@@ -20,10 +20,10 @@ class Twitter(callbacks.Plugin):
 
     def twit(self, irc, msg, args, opts, query):
         """
-        @twit [query]
+        @twit [--from user][query]
 
-        Return the last three tweets matching a given string,
-        if no query specified returns a random tweet from 
+        Return the last three tweets matching a given string 
+        and/or user. if no query specified returns a random tweet from 
         the public timeline if no
         """
 
