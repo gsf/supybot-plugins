@@ -1146,4 +1146,24 @@ class Assorted(callbacks.Privmsg):
 
     blues = wrap(blues, ['text'])
 
+    def someone(self, irc, msg, args, channel):
+        """[<channel>]
+
+        Returns a random nick from <channel>.  <channel> is only necessary if the
+        message isn't sent in the channel itself.
+        """
+		# Modified from Channel.nicks
+		#
+        # Make sure we don't elicit information about private channels to
+        # people or channels that shouldn't know
+        if 's' in irc.state.channels[channel].modes and \
+            msg.args[0] != channel and \
+            (ircutils.isChannel(msg.args[0]) or \
+             msg.nick not in irc.state.channels[channel].users):
+            irc.error('You don\'t have access to that information.')
+        L = list(irc.state.channels[channel].users)
+        irc.reply(L[randint(0, len(L)-1)], prefixNick=False)
+
+    someone = wrap(someone, ['inChannel'])
+		
 Class = Assorted
