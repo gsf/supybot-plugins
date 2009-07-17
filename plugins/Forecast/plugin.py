@@ -23,7 +23,7 @@ class Forecast(callbacks.Privmsg):
             html_str = html.read()
             soup = BeautifulSoup(html_str)
             response = soup.find('div', 'large').findAll(text=True)
-            response = ' '.join([x.strip() for x in response])
+            response = u' '.join([x.strip() for x in response])
             response = response.replace('&deg;', u'\u00BA')
             irc.reply(response, prefixNick=True)
         except:
