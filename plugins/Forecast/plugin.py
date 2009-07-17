@@ -27,6 +27,6 @@ class Forecast(callbacks.Privmsg):
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
 
-    forecast = wrap(forecast, ['positiveInt'])
+    forecast = wrap(forecast, ['text'])
 
 Class = Forecast
