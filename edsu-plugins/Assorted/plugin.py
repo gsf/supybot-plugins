@@ -93,8 +93,8 @@ class Assorted(callbacks.Privmsg):
         results = self.get_votes(120)
         irc.reply('; '.join(results).encode('utf8'))
 
-    def keynotes2010(self,irc,msg,args):
-      """votes for the 2010 code4libcon keynote 
+    def keynotes2011(self,irc,msg,args):
+      """votes for the 2011 code4libcon keynote 
       """
       keynotes = [
         "Estelle Getty", "Sylvester Stallone", "Yngwie Malmsteen",
@@ -918,7 +918,8 @@ class Assorted(callbacks.Privmsg):
         """ Gets a tally from the diebold-o-tron """
         base_url = 'http://vote.code4lib.org/election/results/'
         tallies = {
-            'keynotes': {'2009': '4'},
+            'keynotes': {'2009': '4',
+                         '2010': '10'},
             'necode4lib': {'2008': '5'},
             'tshirts': {'2009': '8'},
             'hosts': {'2009': '3',
@@ -1034,6 +1035,17 @@ class Assorted(callbacks.Privmsg):
             tallies = self._diebold_tallies("keynotes", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for keynotes in 2009: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+    def keynotes2010(self, irc, msg, args):
+        """ 
+        Gets tally of keynoter votes for 2010 conference
+        """
+        try:
+            tallies = self._diebold_tallies("keynotes", "2010")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for keynotes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
