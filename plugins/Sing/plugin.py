@@ -107,6 +107,7 @@ def lyricsty(artist, title):
              re.sub('\s+', '_', title.strip()))
         logger.info("fetching " + url)
         html = web.getUrl(url, headers=HEADERS)
+        logger.info(html)
         soup = getsoup(None, html=html)
         lyricsdiv = soup.find('div', {'class': 'song'})
         lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
