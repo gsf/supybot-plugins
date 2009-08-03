@@ -172,8 +172,9 @@ class Sing(callbacks.Plugin):
             return
 
         song = lyricsty(artist, title)
-        if not song:
-            song = getsong(artist, title)
+# lyricwiki fail
+#        if not song:
+#            song = getsong(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
             create = tinyurl(editurl(artist, title))
