@@ -11,6 +11,7 @@ import re, logging, time
 from random import randint
 from urllib import urlencode
 from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS
+from lxml import html
 
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
@@ -41,11 +42,13 @@ def tinyurl(url):
 
 def getsoup(url, html=None, xml=None):
     if html:
-        return BS(html, convertEntities=BS.HTML_ENTITIES)
+        #return BS(html, convertEntities=BS.HTML_ENTITIES)
+        return html.parse(html)
     elif not xml: 
         logger.info('fetching: ' + url)
         xml = web.getUrl(url, headers=HEADERS)
-    return BSS(xml, convertEntities=BSS.XML_ENTITIES)
+    #return BSS(xml, convertEntities=BSS.XML_ENTITIES)
+    return html.parse(xml)
 
 def getsong(artist, title):
     try:
