@@ -154,7 +154,7 @@ class Sing(callbacks.Plugin):
 
         if not song or song['lyrics'] == 'Not found':
             create = tinyurl(editurl(artist, title))
-            irc.reply('No lyrics for %s by %s. Searched lyricwiki & lyricsty' % (title, artist))
+            irc.reply('Lyricsty has no lyrics for %s by %s' % (title, artist))
         else:
             lyrics = formatlyrics(song, line)
             lyrics = lyrics.encode('ascii', 'ignore')
