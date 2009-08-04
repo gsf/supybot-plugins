@@ -11,7 +11,8 @@ import re, logging, time
 from random import randint
 from urllib import urlencode
 from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS
-from lxml import html
+import html5lib
+from html5lib import treebuilders
 
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
@@ -40,15 +41,11 @@ def tinyurl(url):
     except:
         return 'http://lyricwiki.org'
 
-def getsoup(url, html=None, xml=None):
-    if html:
-        #return BS(html, convertEntities=BS.HTML_ENTITIES)
-        return html.parse(html)
-    elif not xml: 
-        logger.info('fetching: ' + url)
-        xml = web.getUrl(url, headers=HEADERS)
-    #return BSS(xml, convertEntities=BSS.XML_ENTITIES)
-    return html.parse(xml)
+def getsoup(url):
+    logger.info("fetching " + url)
+    html = web.getUrl(url, headers=HEADERS)
+    parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("beautifulsoup"))
+    return parser.parse(html.decode('utf-8', 'ignore'), encoding='utf-8')
 
 def getsong(artist, title):
     try:
@@ -108,9 +105,7 @@ def lyricsty(artist, title):
             (artist[0].lower(), \
              re.sub('\s+', '_', artist.strip()), \
              re.sub('\s+', '_', title.strip()))
-        logger.info("fetching " + url)
-        html = web.getUrl(url, headers=HEADERS)
-        soup = getsoup(None, html=html)
+        soup = getsoup(url)
         lyricsdiv = soup.find('div', {'class': 'song'})
         lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
         song = {
@@ -128,32 +123,13 @@ class Sing(callbacks.Plugin):
     """
     threaded = True
 
-    def sotd(self, irc, msg, args):
-        """
-        Fetches song of the day from http://lyricwiki.org
-        """
-        try:
-            from SOAPpy import SOAPProxy
-            server = SOAPProxy('http://lyricwiki.org/server.php')
-            song = server.getSOTD()
-            title = song['song']
-            artist = song['artist']
-            lyrics = formatlyrics(song, '*')
-            lyrics = lyrics.encode('ascii', 'ignore')
-            irc.reply('%s by %s...' % (title, artist), prefixNick=False)
-            time.sleep(2)
-            irc.reply(lyrics, prefixNick=False)
-            return
-        except Exception, e:
-            irc.reply('SOTD lookup failed: ' + e.message)
-            return
-
     def sing(self, irc, msg, args, input):
         """
         Usage: sing artist [: title] [: * | line | pattern] --
         Example: @sing bon jovi : wanted dead or alive --
         Fetches lyrics from LyricWiki.org
         """
+
         args = map(lambda x: x.strip(), re.split(':', input))
         line = None
         
@@ -175,9 +151,6 @@ class Sing(callbacks.Plugin):
             return
 
         song = lyricsty(artist, title)
-# lyricwiki fail
-#        if not song:
-#            song = getsong(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
             create = tinyurl(editurl(artist, title))
