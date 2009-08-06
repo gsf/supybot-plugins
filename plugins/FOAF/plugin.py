@@ -87,7 +87,7 @@ class FOAF(callbacks.Privmsg):
       for nick in nicks:
         userURI = self._uri_of_user(nick)
         if userURI == None:
-          irc.reply("I don't know "+nick+"'s URI.")
+          irc.reply("I don't know "+nick+"'s URI. Maybe they should get one from http://foaf.me")
           return
         try:
           commonGraph.parse(userURI)
@@ -118,7 +118,7 @@ class FOAF(callbacks.Privmsg):
       """
       userURI = self._uri_of_user(nick)
       if userURI == None:
-        irc.reply("I don't know %s's URI" % nick)
+        irc.reply("I don't know %s's URI. Maybe they should get one from http://foaf.me" % nick)
       else:
         userGraph = self._user_graph(userURI)
         result = self._list(userGraph.objects(userURI,self.FOAF[predicate]))
@@ -133,14 +133,14 @@ class FOAF(callbacks.Privmsg):
       """
       subject = self._uri_of_user(nick)
       if subject == None:
-        irc.reply("I don't know %s's URI" % nick)
+        irc.reply("I don't know %s's URI. Maybe they should get one from http://foaf.me" % nick)
       else:
         userGraph = self._user_graph(subject)
         match = re.search('^<(.+)>$',obj)
         if match == None:
           objURI = self._uri_of_user(obj)
           if objURI == None:
-            irc.reply("I don't know %s's URI" % obj)
+            irc.reply("I don't know %s's URI. Maybe they should get one from http://foaf.me" % obj)
             return
         else:
           objURI = rdflib.URIRef(match.group(1))
@@ -172,12 +172,12 @@ class FOAF(callbacks.Privmsg):
       """
       userURI1 = self._uri_of_user(usernick1)
       if userURI1 == None:
-        irc.reply("I don't know %s's URI" % usernick1)
+        irc.reply("I don't know %s's URI. Maybe they should get one from http://foaf.me" % usernick1)
         return
         
       userURI2 = self._uri_of_user(usernick2)
       if userURI2 == None:
-        irc.reply("I don't know %s's URI" % usernick2)
+        irc.reply("I don't know %s's URI. Maybe they should get one from http://foaf.me" % usernick2)
         return
 
       try:
