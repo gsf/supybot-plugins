@@ -59,23 +59,26 @@ class AlcoholPoisoning(callbacks.Plugin):
           response = 'list [' + '|'.join(responseList) + ']'
           irc.reply(response)
       else:
-        try:
-          split_weight = re.split("([0-9]+)(.*)",weight)
-          weight = split_weight[1]
-          units = split_weight[2] or 'lbs'
+        if not drink:
+          irc.reply('Check yer *hic* syntax, mate.')
+        else:
+          try:
+            split_weight = re.split("([0-9]+)(.*)",weight)
+            weight = split_weight[1]
+            units = split_weight[2] or 'lbs'
           
-          params = urlencode(dict(
-            beverage    = beverage_codes[drink],
-            weight      = weight,
-            weight_type = unit_codes[units],
-            gender      = gender_codes[sex or 'm']
-          ))
-          json = unquote_plus(urlopen("http://www.barstools.net/booze_death/",params).read())
-          data = simplejson.loads(json)
-          amount = data['lethal_drinks']
-          irc.reply("It would take " + amount + " to kill you.", prefixNick=True)
-        except:
-          irc.reply("I don't know what a " + drink + " is.")
+            params = urlencode(dict(
+              beverage    = beverage_codes[drink],
+              weight      = weight,
+              weight_type = unit_codes[units],
+              gender      = gender_codes[sex or 'm']
+            ))
+            json = unquote_plus(urlopen("http://www.barstools.net/booze_death/",params).read())
+            data = simplejson.loads(json)
+            amount = data['lethal_drinks']
+            irc.reply("It would take " + amount + " to kill you.", prefixNick=True)
+          except KeyError:
+            irc.reply(drink + "? Wha's tha'?")
       
     booze=wrap(booze, ['something', optional('something'), optional('text')])
 
