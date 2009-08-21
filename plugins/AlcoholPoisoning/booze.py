@@ -292,6 +292,6 @@ beverage_codes = utils.gen.InsensitivePreservingDict()
 for category in beverages.keys():
   beverage_codes.update(beverages[category])
   
-unit_codes = utils.gen.InsensitivePreservingDict({ 'lbs' : '0', 'kg' : '1' })
+unit_codes = utils.gen.InsensitivePreservingDict({ 'lbs' : '0', 'lb' : '0', 'kg' : '1' })
 
 gender_codes = utils.gen.InsensitivePreservingDict({ 'male' : '0', 'm' : '0', 'female' : '1', 'f' : '1' })
