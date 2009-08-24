@@ -47,7 +47,7 @@ class AlcoholPoisoning(callbacks.Plugin):
     def booze(self, irc, msg, args, weight, sex, drink):
       """<weight>[lbs|kg] <m[ale]|f[emale]> <drink>
             
-      Calculates how many <drink>s it would take to kill you. Use 'list' to get a list of known drinks."""
+      Calculates how many <drink>s it would take to kill you. Use 'list' or 'search <regex>' to get a list of known drinks."""
       print weight + "\n"
       if weight == 'list':
         if (sex in beverages.keys()):
@@ -58,6 +58,14 @@ class AlcoholPoisoning(callbacks.Plugin):
           responseList = beverages.keys()
           response = 'list [' + '|'.join(responseList) + ']'
           irc.reply(response)
+      elif weight == 'search':
+        regex = re.compile(sex,re.IGNORECASE)
+        matches = []
+        for beverage in beverage_codes:
+          if re.search(regex,beverage):
+            matches.append(beverage)
+        matches.sort()
+        irc.reply(', '.join(matches))
       else:
         if not drink:
           irc.reply('Check yer *hic* syntax, mate.')
