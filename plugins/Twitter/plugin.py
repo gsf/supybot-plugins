@@ -34,7 +34,11 @@ class Twitter(callbacks.Plugin):
 
         def fetch_json(url):
             json = web.getUrl(url, headers=HEADERS)
-            return simplejson.loads(json)
+            try:
+                response = simplejson.loads(json)
+            except ValueError:
+                reponse = None
+            return response
             
         if query:
             if screen_name:
@@ -50,9 +54,11 @@ class Twitter(callbacks.Plugin):
             else:
                 url = 'http://twitter.com/statuses/public_timeline.json?'
             tweets = fetch_json(url)
-            tweet = tweets[0] #randint(0, len(tweets)-1)]
-            resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
-
+            if tweets:
+                tweet = tweets[0] #randint(0, len(tweets)-1)]
+                resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
+            else:
+                resp = 'Gettin nothin from teh twitter.'
         irc.reply(resp.encode('utf8','ignore'))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
