@@ -40,13 +40,15 @@ class Twitter(callbacks.Plugin):
                 reponse = None
             return response
             
+        resp = 'Gettin nothin from teh twitter.'
         if query:
             if screen_name:
                 query = "from:%s %s" % (screen_name, query)
             url = 'http://search.twitter.com/search.json?' 
             tweets = fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))['results']
-            extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
-            resp = ' ;; '.join(extracted)
+            if tweets:
+                extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
+                resp = ' ;; '.join(extracted)
         else:
             if screen_name:
                 url = 'http://twitter.com/statuses/user_timeline.json?'
@@ -57,8 +59,6 @@ class Twitter(callbacks.Plugin):
             if tweets:
                 tweet = tweets[0] #randint(0, len(tweets)-1)]
                 resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
-            else:
-                resp = 'Gettin nothin from teh twitter.'
         irc.reply(resp.encode('utf8','ignore'))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
