@@ -460,12 +460,10 @@ class Karma(callbacks.Plugin):
         if not dice:
             dice = 3
         attack_rolls = ["%d" % self.rng.randrange(1, 6) for x in range(3)]
-        irc.reply("%s rolls %d dice: %s" % \
-            (nick, dice, commaAndify(attack_rolls))
-        def_rols = ["%d" % self.rng.randrange(1,6) for x in range(2)]]
-        irc.reply("%s rolls 2 dice: %s" % \
-            (nick, commaAndify(def_rolls))
-
+        irc.reply("%s rolls %d dice: %s" % (nick, dice, commaAndify(attack_rolls)))
+        def_rols = ["%d" % self.rng.randrange(1,6) for x in range(2)]
+        irc.reply("%s rolls 2 dice: %s" % (nick, commaAndify(def_rolls)))
+        
     karmawar = wrap(karmawar, ['nickInChannel', optional('nonNegativeInt')])
 
 Class = Karma
