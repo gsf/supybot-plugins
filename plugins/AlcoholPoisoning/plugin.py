@@ -64,8 +64,11 @@ class AlcoholPoisoning(callbacks.Plugin):
         for beverage in beverage_codes:
           if re.search(regex,beverage):
             matches.append(beverage)
-        matches.sort()
-        irc.reply(', '.join(matches))
+        if len(matches) > 0:
+          matches.sort()
+          irc.reply(', '.join(matches))
+        else:
+          irc.reply("I got nothin'")
       else:
         if not drink:
           irc.reply('Check yer *hic* syntax, mate.')
