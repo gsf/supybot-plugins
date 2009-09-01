@@ -53,16 +53,24 @@ class WrestlingName(callbacks.Plugin):
     def wrestler(self, irc, msg, args, name):
       """<name>
       """
-      irc.reply(self._getname('/', name))
+      if name is None:
+        request_name = msg.nick
+      else:
+        request_name = name
+      irc.reply(self._getname('/', request_name))
 
-    wrestler = wrap(wrestler, ['text'])
+    wrestler = wrap(wrestler, [optional('text')])
       
     def diva(self, irc, msg, args, name):
       """<name>
       """
-      irc.reply(self._getname('/diva/', name))
+      if name is None:
+        request_name = msg.nick
+      else:
+        request_name = name
+      irc.reply(self._getname('/diva/', request_name))
 
-    diva = wrap(diva, ['text'])
+    diva = wrap(diva, [optional('text')])
       
 Class = WrestlingName
 
