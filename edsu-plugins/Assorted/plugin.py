@@ -286,6 +286,14 @@ class Assorted(callbacks.Privmsg):
         dev = ', '.join(["%s:%d" % (attr, self.dnd_attr()) for attr in attrs])
         irc.reply(dev)
 
+    def librarian(self,irc,msg,args):
+        """generate a fantasy librarian"""
+        attrs = ['Management', 'Cataloging', 'Acquisitions', 'Reference',
+            'Circulation', 'Systems', 'Research', 'Custodial']
+        dev = ', '.join(["%s:%d" % (attr, self.dnd_attr()) for attr in attrs])
+        irc.reply(dev)
+
+
     def gamma(self,irc,msg,args):
         """generate a gamma world character"""
         attrs = ['Charisma', 'Constitution', 'Dexterity','Intelligence','Mental Strength','Physical Strength']
