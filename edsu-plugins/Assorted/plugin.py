@@ -585,23 +585,6 @@ class Assorted(callbacks.Privmsg):
         resp = [lmb(x) for x in haiku.contents]
         irc.reply(' / '.join([x for x in resp if x]), prefixNick=False)
 
-    def zen(self,irc,msg,args):
-        """
-        returns a random zen proverb from http://oneproverb.net
-        """
-
-        try:
-            soup = self._url2soup('http://oneproverb.net/cgi-bin/rzp.cgi')
-        except HTTPError, e:
-            irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
-        except StopParsing, e:
-            irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
-
-        zen = soup.findAll('p')[1].string.strip()
-        who = soup.find('span', "who").string.strip()
-        who = who.replace('- ', '')
-        irc.reply(zen, to=who, prefixNick=True)
-
     def dance(self, irc, msg, args):
         irc.reply(" o/", prefixNick=False)
         irc.reply("/|", prefixNick=False)
