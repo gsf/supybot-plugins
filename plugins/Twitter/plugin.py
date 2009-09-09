@@ -40,7 +40,7 @@ class Twitter(callbacks.Plugin):
 
         trends = json['trends'].values()[0]
         tnames = [x['name'] for x in trends]
-        resp = ', '.join(["#%d %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
+        resp = ', '.join(["%d. %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
         irc.reply(resp.encode('utf8','ignore'))
 
     trends = wrap(trends, [optional('text')])
