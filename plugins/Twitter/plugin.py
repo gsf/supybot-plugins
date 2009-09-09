@@ -41,7 +41,7 @@ class Twitter(callbacks.Plugin):
         trends = json['trends'].values()[0]
         tnames = [x['name'] for x in trends]
         resp = ', '.join(["#%d %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
-        irc.reply(resp)
+        irc.reply(resp.encode('utf8','ignore'))
 
     def twit(self, irc, msg, args, opts, query):
         """
@@ -58,12 +58,12 @@ class Twitter(callbacks.Plugin):
                 screen_name = arg
 
         def fetch_json(url):
-            json = web.getUrl(url, headers=HEADERS)
+            doc = web.getUrl(url, headers=HEADERS)
             try:
-                response = simplejson.loads(json)
+                json = simplejson.loads(doc)
             except ValueError:
-                reponse = None
-            return response
+                return None
+            return json
             
         resp = 'Gettin nothin from teh twitter.'
         if query:
