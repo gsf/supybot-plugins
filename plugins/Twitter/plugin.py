@@ -70,10 +70,13 @@ class Twitter(callbacks.Plugin):
             if screen_name:
                 query = "from:%s %s" % (screen_name, query)
             url = 'http://search.twitter.com/search.json?' 
-            tweets = fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))['results']
-            if tweets:
+            json = fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))
+            try:
+                tweets = json['results']
                 extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
                 resp = ' ;; '.join(extracted)
+            except:
+                pass
         else:
             if screen_name:
                 url = 'http://twitter.com/statuses/user_timeline.json?'
