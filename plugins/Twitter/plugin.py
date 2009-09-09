@@ -20,7 +20,7 @@ class Twitter(callbacks.Plugin):
     def trends(self, irc, msg, args, timeframe):
         """@trends [current|daily|weekly]
 
-        Return top ten trending topics for one of three timeframes:
+        Return top trending Twitter topics for one of three timeframes:
         current, daily or weekly. Default is current.
         """
 
