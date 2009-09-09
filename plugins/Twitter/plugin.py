@@ -43,6 +43,8 @@ class Twitter(callbacks.Plugin):
         resp = ', '.join(["#%d %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
         irc.reply(resp.encode('utf8','ignore'))
 
+    trends = wrap(trends, [optional('text')])
+
     def twit(self, irc, msg, args, opts, query):
         """
         @twit [--from user][query]
