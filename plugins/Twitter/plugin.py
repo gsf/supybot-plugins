@@ -33,7 +33,7 @@ class Twitter(callbacks.Plugin):
         url = 'http://search.twitter.com/trends/%s.json' % timeframe
         try:
             doc = web.getUrl(url, headers=HEADERS)
-            json = simplejson.loads(json)
+            json = simplejson.loads(doc)
         except: 
             irc.reply("uh-oh, something went awry")
             return
