@@ -1,4 +1,3 @@
-###
 
 import supybot.utils as utils
 from supybot.commands import *
@@ -17,6 +16,32 @@ class Twitter(callbacks.Plugin):
     """Add the help for "@plugin help Twitter" here
     This should describe *how* to use this plugin."""
     threaded = True
+
+    def trends(self, irc, msg, args, timeframe):
+        """@trends [current|daily|weekly]
+
+        Return top ten trending topics for one of three timeframes:
+        current, daily or weekly. Default is current.
+        """
+
+        if not timeframe:
+            timeframe = 'current'
+        if timeframe not in ['current', 'daily', 'weekly']:
+            irc.reply("Invalid timeframe. Must be one of 'current', 'daily' or 'weekly'")
+            return
+
+        url = 'http://search.twitter.com/trends/%s.json' % timeframe
+        try:
+            doc = web.getUrl(url, headers=HEADERS)
+            json = simplejson.loads(json)
+        except: 
+            irc.reply("uh-oh, something went awry")
+            return
+
+        trends = json['trends'].values()[0]
+        tnames = [x['name'] for x in trends]
+        resp = ', '.join(["#%d %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
+        irc.reply(resp)
 
     def twit(self, irc, msg, args, opts, query):
         """
