@@ -34,7 +34,7 @@ class Gender(callbacks.Plugin):
 
         female_percentage = percentage(response['female'], response['total'])
         male_percentage = percentage(response['male'], response['total'])
-        irc.reply("'%s': %s%% female; %s%% male (%s)" % (name, female_percentage, male_percentage, response), prefixNick=True)
+        irc.reply("'%s': %s%% female; %s%% male" % (name, female_percentage, male_percentage), prefixNick=True)
 
     gender = wrap(gender, ['text'])
         
