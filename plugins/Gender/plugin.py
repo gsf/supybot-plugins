@@ -24,12 +24,12 @@ class Gender(callbacks.Plugin):
         response = simplejson.loads(json)
 
         if not response['total']:
-            irc.reply("The name '%s' was not found on Freebase" % response['name'])
+            irc.reply("The name '%s' was not found on Freebase" % name)
             return
 
         female_percentage = response['female'] / response['total']
         male_percentage = response['male'] / response['total']
-        irc.reply("'%s': %s%% female; %s%% male" % (female_percentage, male_percentage), prefixNick=True)
+        irc.reply("'%s': %s%% female; %s%% male" % (name, female_percentage, male_percentage), prefixNick=True)
 
     gender = wrap(gender, ['text'])
         
