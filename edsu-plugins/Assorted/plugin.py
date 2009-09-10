@@ -602,6 +602,16 @@ class Assorted(callbacks.Privmsg):
         irc.reply(" \     /` ", prefixNick=False)
         irc.reply("  |   |  ", prefixNick=False)
 
+    def toast(self, irc, msg, args):
+        irc.reply("  o  .   o   o ", prefixNick=False)
+        irc.reply("  . o  _o_._'_ ", prefixNick=False)
+        irc.reply(" o_.__'\~~~~~/ ", prefixNick=False)
+        irc.reply("\~~~~~/ '-.-'  ", prefixNick=False)
+        irc.reply(" '-.-'    |   ", prefixNick=False)
+        irc.reply("   |     _|_  ", prefixNick=False)
+        irc.reply('  _|_   `"""` ', prefixNick=False)
+        irc.reply(' `"""`        ', prefixNick=False)
+
     def halfbaked(self, irc, msg, args):
         """
         returns a radom half-baked idea from http://halfbakery.com
