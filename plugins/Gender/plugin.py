@@ -11,7 +11,7 @@ HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Gender Plugin; http://code4lib.org/
 
 def percentage(dividend, divisor):
     """ formats a percentage calculated from two ints """
-    return str((float(dividend) / float(divisor)) * 100)[:4]
+    return str((float(dividend) / float(divisor)) * 100)[:5]
 
 
 class Gender(callbacks.Plugin):
