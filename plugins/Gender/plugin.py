@@ -24,7 +24,7 @@ class Gender(callbacks.Plugin):
         http://genderednames.freebaseapps.com/
         """
 
-        url = API_URL % name
+        url = API_URL % web.urlquote(name)
         json = web.getUrl(url, headers=HEADERS)
         response = simplejson.loads(json)
 
