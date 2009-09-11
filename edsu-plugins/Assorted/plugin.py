@@ -1179,5 +1179,26 @@ class Assorted(callbacks.Privmsg):
         irc.reply(L[randint(0, len(L)-1)], prefixNick=False)
 
     someone = wrap(someone, ['inChannel'])
-		
+
+    def compliment(self, irc, msg, args, who):
+        """[<who>]
+        
+        Delivers surreal compliments from the The Surrealist Compliment Generator 
+        (http://madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG)
+        """
+        url = 'http://madsci.org/cgi-bin/cgiwrap/~lynn/jardin/SCG'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+        html = opener.open(url)
+        html_str = html.read()
+        soup = BeautifulSoup(html_str)
+        text = soup.find('h2').string.replace("\n"," ").strip()
+        if who is None:
+          irc.reply(text, prefixNick=True)
+        else:
+          irc.reply(who + ": " + text, prefixNick=False)
+
+    compliment = wrap(compliment, [optional('text')])
+    
 Class = Assorted
