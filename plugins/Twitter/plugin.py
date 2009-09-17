@@ -9,6 +9,7 @@ from random import randint
 import simplejson
 import supybot.utils.web as web
 from urllib import urlencode
+from BeautifulSoup import BeautifulStoneSoup as BSS
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; DBPedia Plugin; http://code4lib.org/irc)')
 
@@ -89,6 +90,7 @@ class Twitter(callbacks.Plugin):
             if tweets:
                 tweet = tweets[0] #randint(0, len(tweets)-1)]
                 resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
+        resp = BSS(resp, convertEntities=BSS.HTML_ENTITIES)
         irc.reply(resp.encode('utf8','ignore'))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
