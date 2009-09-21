@@ -921,7 +921,7 @@ class Assorted(callbacks.Privmsg):
         base_url = 'http://vote.code4lib.org/election/results/'
         tallies = {
             'keynotes': {'2009': '4',
-                         '2010': '10'},
+                         '2010': '11'},
             'necode4lib': {'2008': '5'},
             'tshirts': {'2009': '8'},
             'hosts': {'2009': '3',
