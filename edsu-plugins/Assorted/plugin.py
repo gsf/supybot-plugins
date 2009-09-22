@@ -1160,26 +1160,41 @@ class Assorted(callbacks.Privmsg):
 
     blues = wrap(blues, ['text'])
 
+    def _random_nick(self, irc, msg, args, channel):
+  		# Modified from Channel.nicks
+  		#
+      # Make sure we don't elicit information about private channels to
+      # people or channels that shouldn't know
+      if 's' in irc.state.channels[channel].modes and \
+          msg.args[0] != channel and \
+          (ircutils.isChannel(msg.args[0]) or \
+           msg.nick not in irc.state.channels[channel].users):
+          irc.error('You don\'t have access to that information.')
+      L = list(irc.state.channels[channel].users)
+      return(L[randint(0, len(L)-1)])
+          
     def someone(self, irc, msg, args, channel):
         """[<channel>]
 
         Returns a random nick from <channel>.  <channel> is only necessary if the
         message isn't sent in the channel itself.
         """
-		# Modified from Channel.nicks
-		#
-        # Make sure we don't elicit information about private channels to
-        # people or channels that shouldn't know
-        if 's' in irc.state.channels[channel].modes and \
-            msg.args[0] != channel and \
-            (ircutils.isChannel(msg.args[0]) or \
-             msg.nick not in irc.state.channels[channel].users):
-            irc.error('You don\'t have access to that information.')
-        L = list(irc.state.channels[channel].users)
-        irc.reply(L[randint(0, len(L)-1)], prefixNick=False)
+        irc.reply(self._random_nick(irc, msg, args, channel), prefixNick=False)
 
     someone = wrap(someone, ['inChannel'])
 
+    def who(self, irc, msg, args, channel, question):
+      """[<channel>] <question>
+
+      Answers <question> with a random nick from <channel>.  <channel> is only 
+      necessary if the message isn't sent in the channel itself.
+      """
+      subject = self._random_nick(irc, msg, args, channel)
+      predicate = re.sub("[^A-Za-z0-9]+$",'',question)
+      irc.reply("%s %s." % (subject, predicate), prefixNick=False)
+      
+    who = wrap(who, ['inChannel', 'text'])
+    
     def compliment(self, irc, msg, args, who):
         """[<who>]
         
