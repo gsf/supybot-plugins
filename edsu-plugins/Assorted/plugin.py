@@ -1050,7 +1050,7 @@ class Assorted(callbacks.Privmsg):
             irc.reply("Poll not found for keynotes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
-            irc.reply("Have you voted? " + poll_url, prefixNick=false)
+            irc.reply("Have you voted? %s" % poll_url)
 
     def inaworld(self, irc, msg, args, s):
         irc.reply("In a world... %s..." % s, prefixNick=False)
