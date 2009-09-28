@@ -935,7 +935,7 @@ class Assorted(callbacks.Privmsg):
         except KeyError:
             raise PollNotFoundException("tally or year not found")
         poll_url = base_url + poll_number
-        vote_url = base_url.replace('results', 'index')
+        vote_url = poll_url.replace('results', 'index')
         from socket import setdefaulttimeout
         setdefaulttimeout(60)
         try:
