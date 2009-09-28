@@ -1045,7 +1045,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of keynoter votes for 2010 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("keynotes", "2010")
+            (tallies, poll_url) = self._diebold_tallies("keynotes", "2010")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for keynotes in 2010: %s" % pnfe)
         else:
