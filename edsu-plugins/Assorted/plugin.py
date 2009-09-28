@@ -935,6 +935,7 @@ class Assorted(callbacks.Privmsg):
         except KeyError:
             raise PollNotFoundException("tally or year not found")
         poll_url = base_url + poll_number
+        vote_url = base_url.replace('results', 'index')
         from socket import setdefaulttimeout
         setdefaulttimeout(60)
         try:
@@ -948,14 +949,14 @@ class Assorted(callbacks.Privmsg):
             votes = simplejson.loads(json.decode('ascii', 'ignore'))
         votes.sort(cmp=lambda x,y: int(y['score'])-int(x['score']))
         tallies = [(vote['title'], vote['score']) for vote in votes]
-        return tallies, poll_url
+        return tallies, vote_url
 
     def talks2009(self, irc, msg, args):
         """ 
         Gets tally of talk votes for 2009 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("talks", "2009")
+            tallies, vote_url = self._diebold_tallies("talks", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for talk votes in 2009: %s" % pnfe)
         else:
@@ -966,7 +967,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of t-shirt votes for 2009 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("tshirts", "2009")
+            tallies, vote_url = self._diebold_tallies("tshirts", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for t-shirt votes in 2009: %s" % pnfe)
         else:
@@ -978,7 +979,7 @@ class Assorted(callbacks.Privmsg):
         """
         cutoff = 22
         try:
-            tallies, poll_url = self._diebold_tallies("talks", "2009")
+            tallies, vote_url = self._diebold_tallies("talks", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for talk votes in 2009: %s" % pnfe)
         else:
@@ -989,7 +990,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of talk votes for 2008 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("talks", "2008")
+            tallies, vote_url = self._diebold_tallies("talks", "2008")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for talk votes in 2008: %s" % pnfe)
         else:
@@ -1001,7 +1002,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of logo votes for 2008
         """
         try:
-            tallies, poll_url = self._diebold_tallies("logo", "2008")
+            tallies, vote_url = self._diebold_tallies("logo", "2008")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for logos in 2008: %s" % pnfe)
         else:
@@ -1012,7 +1013,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of host votes for 2009 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("hosts", "2009")
+            tallies, vote_url = self._diebold_tallies("hosts", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for hosts in 2009: %s" % pnfe)
         else:
@@ -1023,7 +1024,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of host votes for 2010 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("hosts", "2010")
+            tallies, vote_url = self._diebold_tallies("hosts", "2010")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for hosts in 2010: %s" % pnfe)
         else:
@@ -1034,7 +1035,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of keynoter votes for 2009 conference
         """
         try:
-            tallies, poll_url = self._diebold_tallies("keynotes", "2009")
+            tallies, vote_url = self._diebold_tallies("keynotes", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for keynotes in 2009: %s" % pnfe)
         else:
@@ -1045,12 +1046,12 @@ class Assorted(callbacks.Privmsg):
         Gets tally of keynoter votes for 2010 conference
         """
         try:
-            (tallies, poll_url) = self._diebold_tallies("keynotes", "2010")
+            tallies, vote_url = self._diebold_tallies("keynotes", "2010")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for keynotes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
-            irc.reply("Have you voted? %s" % poll_url)
+            irc.reply("Have you voted? %s" % vote_url)
 
     def inaworld(self, irc, msg, args, s):
         irc.reply("In a world... %s..." % s, prefixNick=False)
@@ -1070,7 +1071,7 @@ class Assorted(callbacks.Privmsg):
         Gets tally of location votes for 2008 New England code4lib conference 
         """
         try:
-            tallies, poll_url = self._diebold_tallies("necode4lib", "2008")
+            tallies, vote_url = self._diebold_tallies("necode4lib", "2008")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for necode4lib in 2008: %s" % pnfe)
         else:
