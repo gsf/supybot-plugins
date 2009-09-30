@@ -96,6 +96,10 @@ class Twitter(callbacks.Plugin):
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
     
     def trend(self, irc, msg, args, query):
+      """[<query>]
+      
+      Explain why <query> is trending on Twitter, according to whatthetrend.com. An empty
+      query lists current trending topics."""
       if (query is None) or (query == ''):
         url = 'http://www.whatthetrend.com/api/trend/listAll/json'
         json = self._fetch_json(url)
