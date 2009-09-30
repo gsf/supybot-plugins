@@ -1185,6 +1185,10 @@ class Assorted(callbacks.Privmsg):
 
     someone = wrap(someone, ['inChannel'])
 
+    def _personalize(self,matchobj):
+      replacements = { 'your': 'my', 'my': 'your', 'you': 'me', 'me': 'you' }
+      return replacements[matchobj.group(0)]
+      
     def who(self, irc, msg, args, channel, question):
       """[<channel>] <question>
 
@@ -1193,6 +1197,9 @@ class Assorted(callbacks.Privmsg):
       """
       subject = self._random_nick(irc, msg, args, channel)
       predicate = re.sub("[^A-Za-z0-9]+$",'',question)
+      predicate = re.sub("\\b(your?|me|my)\\b",self._personalize,predicate)
+      predicate = re.sub("\\$whose",subject + "'s",predicate)
+      predicate = re.sub("\\$who",subject,predicate)
       irc.reply("%s %s." % (subject, predicate), prefixNick=False)
       
     who = wrap(who, ['inChannel', 'text'])
