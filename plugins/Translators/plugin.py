@@ -42,6 +42,12 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply("SHRIMP ON THE BARBIE, MATES!", prefixNick=True)
 
+    def viking(self, irc, msg, args):
+        """ string
+        Translates string into Viking
+        """
+        irc.reply("SKÅL!", prefixNick=True)
+
     def ircnickize(self, irc, msg, args):
         """ string
         Normalizes a string per irc nick rules
