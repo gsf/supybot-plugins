@@ -8,7 +8,7 @@ import supybot.callbacks as callbacks
 from random import randint
 import simplejson
 import supybot.utils.web as web
-from urllib import urlencode
+from urllib import urlencode, quote
 from BeautifulSoup import BeautifulStoneSoup as BSS
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; DBPedia Plugin; http://code4lib.org/irc)')
@@ -46,6 +46,14 @@ class Twitter(callbacks.Plugin):
 
     trends = wrap(trends, [optional('text')])
 
+    def _fetch_json(self, url):
+        doc = web.getUrl(url, headers=HEADERS)
+        try:
+            json = simplejson.loads(doc)
+        except ValueError:
+            return None
+        return json
+        
     def twit(self, irc, msg, args, opts, query):
         """
         @twit [--from user][query]
@@ -60,20 +68,12 @@ class Twitter(callbacks.Plugin):
             if opt == 'from':
                 screen_name = arg
 
-        def fetch_json(url):
-            doc = web.getUrl(url, headers=HEADERS)
-            try:
-                json = simplejson.loads(doc)
-            except ValueError:
-                return None
-            return json
-            
         resp = 'Gettin nothin from teh twitter.'
         if query:
             if screen_name:
                 query = "from:%s %s" % (screen_name, query)
             url = 'http://search.twitter.com/search.json?' 
-            json = fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))
+            json = self._fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))
             try:
                 tweets = json['results']
                 extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
@@ -86,7 +86,7 @@ class Twitter(callbacks.Plugin):
                 url = url + urlencode({'screen_name': screen_name})
             else:
                 url = 'http://twitter.com/statuses/public_timeline.json?'
-            tweets = fetch_json(url)
+            tweets = self._fetch_json(url)
             if tweets:
                 tweet = tweets[0] #randint(0, len(tweets)-1)]
                 resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
@@ -94,6 +94,29 @@ class Twitter(callbacks.Plugin):
         irc.reply(resp.encode('utf8','ignore'))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
+    
+    def trend(self, irc, msg, args, query):
+      if (query is None) or (query == ''):
+        url = 'http://www.whatthetrend.com/api/trend/listAll/json'
+        json = self._fetch_json(url)
+        trends = json['api']['trends']['trend']
+        extracted = [trend['name'] for trend in trends]
+        resp = '; '.join(["%d. %s" % t for t in zip(range(1, len(extracted) + 1), extracted)])
+      else:
+        url = 'http://www.whatthetrend.com/api/trend/getByName/%s/json' % quote(query)
+        json = self._fetch_json(url)
+        try:
+          trend = json['api']['trend']
+          try:
+            explanation = trend['blurb']['text']
+          except TypeError:
+            explanation = 'Unexplained trend'
+          resp = '%s - %s (%s)' % (trend['name'], explanation, trend['links']['tinyUrl'])
+        except KeyError:
+          resp = '%s - %s' % (query, json['api']['error'])
+      irc.reply(resp.encode('utf8','ignore'))
+      
+    trend = wrap(trend, [optional('text')])
 
 Class = Twitter
 
