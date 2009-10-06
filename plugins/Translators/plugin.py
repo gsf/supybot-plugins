@@ -120,6 +120,12 @@ class Translators(callbacks.Privmsg):
 
         irc.reply(msg)
 
+    def scalia(self, irc, msg, args):
+        """random dick quote insertion"""
+        quoted = randrange(len(args))
+        args[quoted] = "'%s'" % args[quoted]
+        irc.reply(' '.join(args))
+
     def chef(self, irc, msg, args):
         """BORK! BORK! BORK!"""
         self._chefjivevalleypig(irc, 'chef', ' '.join(args))
