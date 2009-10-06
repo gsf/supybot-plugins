@@ -45,13 +45,24 @@ class Quote(plugins.ChannelIdDatabasePlugin):
             irc.error('I have no quotes in my database for %s.' % channel)
     random = wrap(random, ['channeldb'])
 
-    def raw(self, irc, msg, args, channel):
-      quote = self.db.random(channel)
+    def raw(self, irc, msg, args, channel, id):
+      """[<channel>] [<id>]
+      
+      Returns the quote (identified by <id>) from <channel>, with attribution 
+      and metadata stripped. <channel> is only necessary if the message isn't 
+      sent in the channel itself. If <id> isn't specified, a random quote is 
+      returned.
+      """
+      if id is None:
+        quote = self.db.random(channel)
+      else:
+        quote = self.db.get(channel,id)
+        
       if quote:
         irc.reply(re.sub("^<.+?>\s*",'',quote.text))
       else:
         irc.error('I have no quotes in my database for %s.' % channel)
-    raw = wrap(raw, ['channeldb'])
+    raw = wrap(raw, ['channeldb', optional('id')])
     
 Class = Quote
 
