@@ -27,7 +27,10 @@ def lookup(word):
     if dd: 
         etym = u''
         for part in dd:
-            etym += part.string
+            try:
+                etym += part.string
+            except:
+                pass
         return etym
     else:
         return "%s not found" % word
