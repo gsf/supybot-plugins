@@ -31,7 +31,7 @@ def lookup(word):
                 etym += part.string
             except:
                 pass
-        return etym
+        return etym.strip()
     else:
         return "%s not found" % word
 
