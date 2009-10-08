@@ -70,9 +70,10 @@ class Band(callbacks.Privmsg):
         irc.reply(band)
 
     def band(self, irc, msg, args):
-        """[add {NEW_BAND}] | [search {BAND}]
-        Get a band name from dchud's (cached, JSONified) list, add to the list, search the list
+        """[add|remove|search {BAND}]
+        KA-RAAAAY-ZEE band names!  Get one, add one, remove one, search!
         """
+        # this method is ugly as hell, I know
         f = join(dirname(abspath(__file__)), 'bands.json')
         jsonfile = open(f, 'r')
         json = simplejson.load(jsonfile)
@@ -89,6 +90,17 @@ class Band(callbacks.Privmsg):
                     irc.reply("Error opening file '%s': %s" % (f, ex))
                 else:
                     irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+            elif args[0] == 'remove':
+                band = ' '.join(args[1:]).strip()
+                json['bands'].remove(band)
+                try:
+                    jsonfile = open(f, 'w')
+                    simplejson.dump(json, jsonfile, indent=4)
+                    jsonfile.close()
+                except IOError, ex:
+                    irc.reply("Error opening file '%s': %s" % (f, ex))
+                else:
+                    irc.reply("Band '%s' removed from list" % band, prefixNick=True)
             elif args[0] == 'search':
                 search_str = ' '.join(args[1:]).strip()
                 bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
