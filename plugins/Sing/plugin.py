@@ -14,6 +14,8 @@ from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS
 import html5lib
 from html5lib import treebuilders
 
+from lxml.html import iterlinks, fromstring
+
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 
@@ -99,12 +101,19 @@ def formatlyrics(song, startline=None):
     lines = lines[startline:endline]
     return ' / '.join([l for l in lines if re.search('\S', l)])
 
+def lyricsty_normalize(s):
+    s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
+    s = re.sub('\s+', '_', s)
+    return s
+
 def lyricsty(artist, title):
     try:
+        title_norm = lyricsty_normalize(title)
+        artist_norm = lyricsty_normalize(artist)
+        artist_init = artist_norm[0]
         url = 'http://www.lyricsty.com/lyrics/%s/%s/%s.html' % \
-            (artist[0].lower(), \
-             re.sub('[^A-Za-z0-9]+', '_', artist.strip()), \
-             re.sub('[^A-Za-z0-9]+', '_', title.strip()))
+            (artist_init, artist_norm, title_norm)
+
         soup = getsoup(url)
         lyricsdiv = soup.find('div', {'class': 'song'})
         lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
@@ -161,6 +170,62 @@ class Sing(callbacks.Plugin):
             irc.reply(lyrics, prefixNick=False)
 
     sing = wrap(sing, ['text'])
+
+    def songs(self, irc, msg, args, input):
+        """<string>
+        fetches song list from lyricsty.com"""
+
+        args = map(lambda x: x.strip(), re.split(':', input))
+        try:
+            artist, searchstring = args
+        except:
+            artist, searchstring = args[0], None
+
+        artist = artist.lower()
+        artist_norm = lyricsty_normalize(artist)
+        artist_init = artist_norm[0]
+        url = 'http://lyricsty.com/lyrics/%s/%s' % (artist_init, artist_norm)
+        
+        songs = []
+        href_match = re.compile('/lyrics/%s/%s' % (artist_init, artist_norm))
+
+        try:
+            logger.info("Fetching " + url)
+            html = web.getUrl(url, headers=HEADERS)
+        except:
+            irc.reply("Lyricsty doesn't know about " + artist)
+            return
+
+        try:
+            doc = fromstring(html)
+            songtable = doc.cssselect('table.bandsongs')[0]
+            
+            for tup in songtable.iterlinks():
+                elem = tup[0]
+                try:
+                    href = elem.attrib['href']
+                    if not re.match(href_match, href):
+                        continue
+                except:
+                    continue
+                song = elem.text_content()
+                if searchstring:
+                    if not re.search(searchstring, song, re.I):
+                        continue
+                song = re.sub(' lyrics$', '', song)
+                songs.append(song)
+        except Exception, e:
+            logger.error(utils.exnToString(e))
+            irc.reply("Arrgh! Something went horribly wrong")
+            return
+
+        if len(songs) == 0:
+            irc.reply("No songs found")
+        else:
+            resp = '; '.join(songs)
+            irc.reply(resp)
+
+    songs = wrap(songs, ['text'])
 
 Class = Sing
 
