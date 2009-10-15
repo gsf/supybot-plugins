@@ -1173,7 +1173,7 @@ class Assorted(callbacks.Privmsg):
           irc.reply(url)
         soup = self._url2soup(url)
         try:
-            txt = str(soup.find('div', id='tdihbody').findAll('p')[1].string.encode('utf-8'))
+            txt = unicode(soup.find('div', id='tdihbody').findAll('p')[1].string)
         except RuntimeError, e:
             txt = "d'oh something is b0rk3n: %s" % e
         irc.reply(txt.encode('utf-8'))
