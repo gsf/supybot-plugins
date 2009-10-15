@@ -1172,7 +1172,8 @@ class Assorted(callbacks.Privmsg):
           url += '?setdate=%s' % args[0]
           irc.reply(url)
         soup = self._url2soup(url)
-        txt = soup.find('div', id='tdihbody').findAll('p')[1].string.encode('utf-8')
+        try:
+            txt = soup.find('div', id='tdihbody').findAll('p')[1].string.encode('utf-8')
         except RuntimeError, e:
             txt = "d'oh something is b0rk3n: %s" % e
         irc.reply(txt)
