@@ -1162,19 +1162,17 @@ class Assorted(callbacks.Privmsg):
 
     blues = wrap(blues, ['text'])
 
-    def tdih(self, irc, msg, args, date):
+    def tdih(self, irc, msg, args):
         """
         Get a piece of computing history from 
         http://www.computerhistory.org/tdih
         """
         url = 'http://www.computerhistory.org/tdih'
-        if date:
-          url += '?setdate=%s' % date
+        if len(args) > 0:
+          url += '?setdate=%s' % args[0]
         soup = self._url2soup(url)
         txt = soup.find('div', id='tdihbody').string()
         irc.reply(txt)
-
-    tdih = wrap(tdih, ['text'])
 
     def _random_nick(self, irc, msg, args, channel):
   		# Modified from Channel.nicks
