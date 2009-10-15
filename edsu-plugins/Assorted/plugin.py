@@ -1189,7 +1189,6 @@ class Assorted(callbacks.Privmsg):
       L = list(irc.state.channels[channel].users)
       return(L[randint(0, len(L)-1)])
           
->>>>>>> .r918
     def someone(self, irc, msg, args, channel):
         """[<channel>]
 
