@@ -1172,7 +1172,7 @@ class Assorted(callbacks.Privmsg):
           url += '?setdate=%s' % args[0]
         soup = self._url2soup(url)
         try: 
-            txt = soup.find('div', id='tdihbody').findAll('p')[1].string()
+            txt = soup.find('div', id='tdihbody').findAll('p')[1].string
         except:
             txt = "d'oh something is b0rk3n"
         irc.reply(txt)
