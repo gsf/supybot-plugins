@@ -1170,6 +1170,7 @@ class Assorted(callbacks.Privmsg):
         url = 'http://www.computerhistory.org/tdih'
         if len(args) > 0:
           url += '?setdate=%s' % args[0]
+          irc.reply(url)
         soup = self._url2soup(url)
         try: 
             txt = soup.find('div', id='tdihbody').findAll('p')[1].string
