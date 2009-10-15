@@ -10,11 +10,11 @@ from random import randint, randrange
 import supybot.utils.web as web
 import BeautifulSoup as BS
 from urllib import urlencode
+from os.path import join, dirname, abspath
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
-
-stopwords = open('stopwords.txt').read().split()
-
+STOPWORDS = open(join(dirname(abspath(__file__)), 'stopwords.txt')).read().split()
+        
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
         """ string
