@@ -1172,10 +1172,9 @@ class Assorted(callbacks.Privmsg):
           url += '?setdate=%s' % args[0]
           irc.reply(url)
         soup = self._url2soup(url)
-        #try: 
         txt = soup.find('div', id='tdihbody').findAll('p')[1].string.encode('utf-8')
-        #except:
-        #    txt = "d'oh something is b0rk3n"
+        except RuntimeError, e:
+            txt = "d'oh something is b0rk3n: %s" % e
         irc.reply(txt)
 
     def _random_nick(self, irc, msg, args, channel):
