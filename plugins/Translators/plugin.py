@@ -129,14 +129,13 @@ class Translators(callbacks.Privmsg):
         # containing a multi-word string
         words = []
         token_positions = []
-        i = -1
+        i = 0
         for arg in args:
             for s in arg.split():
-                i += 1
                 words.append(s)
-                if s.lower() in stopwords:
-                    continue
-                token_positions.append(i)
+                if s.strip(r'`!()-{}[]<>"\':;.,?').lower() not in stopwords:
+                    token_positions.append(i)
+                i += 1
         randidx = randrange(len(token_positions))
         words[token_positions[randidx]] = "'%s'" % words[token_positions[randidx]]
         irc.reply(' '.join(words))
