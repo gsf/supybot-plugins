@@ -1164,8 +1164,7 @@ class Assorted(callbacks.Privmsg):
 
     def tdih(self, irc, msg, args):
         """
-        Get a piece of computing history from 
-        http://www.computerhistory.org/tdih
+        Get a piece of computing history from http://www.computerhistory.org/tdih. Optionally pass in MM/DD/YYYY
         """
         url = 'http://www.computerhistory.org/tdih'
         if len(args) > 0:
