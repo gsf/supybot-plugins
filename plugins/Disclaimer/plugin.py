@@ -36,12 +36,13 @@ import supybot.callbacks as callbacks
 
 class Disclaimer(plugins.ChannelIdDatabasePlugin):
 
-    def disclaim(self, irc, msg, args, channel):
+    def disclaimer(self, irc, msg, args, channel):
       """Disclaims any responsibility."""
       
       irc.reply(self.db.random(channel).text, prefixNick = False)
 
-    disclaim = wrap(disclaim, ['channeldb'])
+    disclaimer = wrap(disclaimer, ['channeldb'])
+    disclaim = disclaimer
     
     def seed(self, irc, msg, args, user, channel):
       import disclaimers
