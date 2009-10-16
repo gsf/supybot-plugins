@@ -34,7 +34,6 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
-
 class Disclaimer(plugins.ChannelIdDatabasePlugin):
 
     def disclaim(self, irc, msg, args, channel):
@@ -43,6 +42,19 @@ class Disclaimer(plugins.ChannelIdDatabasePlugin):
       irc.reply(self.db.random(channel).text, prefixNick = False)
 
     disclaim = wrap(disclaim, ['channeldb'])
+    
+    def seed(self, irc, msg, args, user, channel):
+      import disclaimers
+      import time
+      at = time.time()
+      count = 0
+      for disclaimer in disclaimers.seed_list:
+        id = self.db.add(channel, at, user.id, disclaimer)
+        count += 1
+      irc.replySuccess('%d disclaimers added.' % (count))
+        
+    seed = wrap(seed, ['user', 'channeldb'])
+      
 
 Class = Disclaimer
 
