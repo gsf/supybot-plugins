@@ -44,17 +44,17 @@ class Disclaimer(plugins.ChannelIdDatabasePlugin):
     disclaimer = wrap(disclaimer, ['channeldb'])
     disclaim = disclaimer
     
-    def seed(self, irc, msg, args, user, channel):
-      import disclaimers
-      import time
-      at = time.time()
-      count = 0
-      for disclaimer in disclaimers.seed_list:
-        id = self.db.add(channel, at, user.id, disclaimer)
-        count += 1
-      irc.replySuccess('%d disclaimers added.' % (count))
-        
-    seed = wrap(seed, ['user', 'channeldb'])
+#    def seed(self, irc, msg, args, user, channel):
+#      import disclaimers
+#      import time
+#      at = time.time()
+#      count = 0
+#      for disclaimer in disclaimers.seed_list:
+#        id = self.db.add(channel, at, user.id, disclaimer)
+#        count += 1
+#      irc.replySuccess('%d disclaimers added.' % (count))
+#        
+#    seed = wrap(seed, ['user', 'channeldb'])
       
 
 Class = Disclaimer
