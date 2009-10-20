@@ -6,6 +6,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 from random import randint
+import re
 import simplejson
 import supybot.utils.web as web
 from urllib import urlencode, quote
@@ -42,7 +43,7 @@ class Twitter(callbacks.Plugin):
         trends = json['trends'].values()[0]
         tnames = [x['name'] for x in trends]
         resp = ', '.join(["%d. %s" % t for t in zip(range(1, len(tnames) + 1), tnames)])
-        irc.reply(resp.encode('utf8','ignore'))
+        irc.reply(resp.encode('utf8','ignore').replace('\n',' ').strip(' '))
 
     trends = wrap(trends, [optional('text')])
 
@@ -91,7 +92,7 @@ class Twitter(callbacks.Plugin):
                 tweet = tweets[0] #randint(0, len(tweets)-1)]
                 resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
         resp = BSS(resp, convertEntities=BSS.HTML_ENTITIES)
-        irc.reply(resp.encode('utf8','ignore'))
+        irc.reply(resp.encode('utf8','ignore').replace('\n',' ').strip(' '))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
     
