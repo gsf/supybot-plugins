@@ -221,7 +221,11 @@ class Translators(callbacks.Privmsg):
         """ <text>
         Use nebulous sources to present your own screwed-up viewpoint!
         """
-        variants = [ 'Sources claim','In fact, some have said','Official sources have yet to deny' ]
+        variants = [ 
+            'Sources claim',
+            'In fact, some have said',
+            'Can you deny the rumors that',
+            'Official sources have yet to deny' ]
         variant = variants[randrange(len(variants))]
         irc.reply('%s that %s' % (variant, text), prefixNick=False)
         
