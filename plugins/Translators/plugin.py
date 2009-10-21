@@ -224,8 +224,9 @@ class Translators(callbacks.Privmsg):
         variants = [ 
             'Sources claim',
             'In fact, some have said',
-            'Can you deny the rumors that',
-            'Official sources have yet to deny' ]
+            'Can you deny the rumors',
+            'Official sources have yet to deny',
+            ]
         variant = variants[randrange(len(variants))]
         irc.reply('%s that %s' % (variant, text), prefixNick=False)
         
