@@ -218,10 +218,13 @@ class Translators(callbacks.Privmsg):
         irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
     
     def foxnews(self, irc, msg, args, text):
-      variants = [ 'Sources claim','In fact, some have said','Official sources have yet to deny' ]
-      variant = variants[randrange(len(variants))]
-      irc.reply(('%s that %s' % (variant, text)).encode('utf-8', 'ignore'), prefixNick=False)
-    
+        """ <text>
+        Use nebulous sources to present your own screwed-up viewpoint!
+        """
+        variants = [ 'Sources claim','In fact, some have said','Official sources have yet to deny' ]
+        variant = variants[randrange(len(variants))]
+        irc.reply('%s that %s' % (variant, text), prefixNick=False)
+        
     foxnews = wrap(foxnews, ['text'])
     
 Class = Translators
