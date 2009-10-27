@@ -1240,7 +1240,8 @@ class Assorted(callbacks.Privmsg):
     compliment = wrap(compliment, [optional('text')])
 
     def isitwhiskytime(self, irc, msg, args):
-      irc.reply('Yes!', prefixNick=True)
+      affirmatives = ['Yes!','Always!','You need to ask?','When is it not?','Duh! Yes!']
+      irc.reply(affirmatives[randint(0, len(affirmatives)-1)], prefixNick=True)
       
     isitwhiskeytime = isitwhiskytime
     
