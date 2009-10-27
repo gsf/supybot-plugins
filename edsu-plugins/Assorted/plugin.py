@@ -1238,5 +1238,10 @@ class Assorted(callbacks.Privmsg):
           irc.reply(who + ": " + text, prefixNick=False)
 
     compliment = wrap(compliment, [optional('text')])
+
+    def isitwhiskytime(self, irc, msg, args):
+      irc.reply('Yes!', prefixNick=True)
+      
+    isitwhiskeytime = isitwhiskytime
     
 Class = Assorted
