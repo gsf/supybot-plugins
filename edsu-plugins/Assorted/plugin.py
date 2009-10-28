@@ -1195,7 +1195,7 @@ class Assorted(callbacks.Privmsg):
         Returns a random nick from <channel>.  <channel> is only necessary if the
         message isn't sent in the channel itself.
         """
-        irc.reply(self._random_nick(irc, msg, args, channel), prefixNick=False)
+        irc.reply(self._random_nick(irc, msg, args, channel).strip(), prefixNick=False)
 
     someone = wrap(someone, ['inChannel'])
 
