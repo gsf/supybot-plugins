@@ -112,7 +112,7 @@ def lyricsty(artist, title):
         artist_norm = lyricsty_normalize(artist)
         artist_init = artist_norm[0]
         url = 'http://www.lyricsty.com/lyrics/%s/%s/%s.html' % \
-            (artist_init, artist_norm, title_norm)
+            (artist_init.lower(), artist_norm.lower(), title_norm.lower())
 
         soup = getsoup(url)
         lyricsdiv = soup.find('div', {'class': 'song'})
