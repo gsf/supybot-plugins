@@ -179,7 +179,7 @@ class Translators(callbacks.Privmsg):
             quotation = soup.find('font').contents[0].strip()
         except:
             irc.reply(template % "Some stupid error occurred")
-        irc.reply(template % quotation)
+        irc.reply(template % quotation, prefixNick=False)
     
     def drunk(self, irc, msg, s):
         params = urlencode(dict(text=s,voice='drunk'))
