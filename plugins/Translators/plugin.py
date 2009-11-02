@@ -168,7 +168,7 @@ class Translators(callbacks.Privmsg):
         """ [<text>]
         Get @sabram to falsely attribute a quote to Cliff!
         """
-        template = "<sabram> Cliff said that '%s'"
+        template = '<sabram> Cliff said: "%s"'
         if args:
             irc.reply(template % ' '.join(args))
         url = "http://www.ivyjoy.com/quote.shtml"
