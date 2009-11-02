@@ -172,25 +172,21 @@ class Translators(callbacks.Privmsg):
         url = "http://www.ivyjoy.com/quote.shtml"
         try:
             resp = web.getUrl(url, headers={'User-agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.13) Gecko/2009073022 Firefox/3.0.13'})
-        except:
-            irc.reply(template % "Could not get to URL")
-        soup = BS(resp)
-        try:
+            soup = BS.BeautifulSoup(resp)
             quotation = soup.find('font').contents[0].strip()
         except:
-            irc.reply(template % "HTML returned was invalid")
+            irc.reply(template % "Some stupid error occurred")
         irc.reply(template % quotation)
     
     def drunk(self, irc, msg, s):
         params = urlencode(dict(text=s,voice='drunk'))
         url = 'http://www.thevoicesofmany.com/text.php?' + params
         resp = web.getUrl(url, headers=HEADERS)
-        soup = BS(resp)
+        soup = BS.BeautifulSoup(resp)
         try:
             translated = soup.find('td', id='top').blockquote.string
         except:
             irc.reply("oops, didn't work")
-
         irc.reply(resp.encode('utf-8', 'ignore').strip())
     
     def takify(self, irc, msg, args):
