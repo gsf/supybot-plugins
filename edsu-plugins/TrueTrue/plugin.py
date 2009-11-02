@@ -6,7 +6,7 @@ class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
         #'billSnarfer',
         'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'knockSnarfer',
-        'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer'] #, 'hehSnarfer']
+        'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer', 'callMeSomething'] #, 'hehSnarfer']
 
     def cassonSnarfer(self,irc,msg,match):
         r"true, true"
@@ -92,10 +92,15 @@ class TrueTrue(callbacks.PluginRegexp):
 
     def hehSnarfer(self, irc, msg, match):
     	r'^heh$'
-	time.sleep(2)
-	if randint(1,10) == 1: 
-	     irc.reply("it wasn't that funny...")
-	else:
-	     irc.reply("typical...", prefixNick=False)
-        
+    	time.sleep(2)
+    	if randint(1,10) == 1: 
+    	     irc.reply("it wasn't that funny...")
+    	else:
+    	     irc.reply("typical...", prefixNick=False)
+
+    def callMeSomething(self, irc, msg, match):
+      r'^[Cc]all me (.+?)(?:[.;:]|(?:,\s*but)|(?:\s*if))'
+      time.sleep(2)
+      irc.reply("You're %s." % (match.group(1)))
+      
 Class = TrueTrue
