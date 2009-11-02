@@ -168,7 +168,7 @@ class Translators(callbacks.Privmsg):
         """
         Get @sabram to falsely attribute a quote to Cliff!
         """
-        template = "Sorry, @sabram said that Cliff said that '%s'"
+        template = "<sabram> Cliff said that '%s'"
         url = "http://www.ivyjoy.com/quote.shtml"
         try:
             resp = web.getUrl(url, headers={'User-agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.13) Gecko/2009073022 Firefox/3.0.13'})
