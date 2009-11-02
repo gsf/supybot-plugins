@@ -166,16 +166,20 @@ class Translators(callbacks.Privmsg):
 
     def sabram(self, irc, msg, args):
         """
-        Get sabram to falsely attribute a quote to Cliff!
+        Get @sabram to falsely attribute a quote to Cliff!
         """
+        template = "Sorry, @sabram said that Cliff said that '%s'"
         url = "http://www.ivyjoy.com/quote.shtml"
-        resp = web.getUrl(url, headers=HEADERS)
+        try:
+            resp = web.getUrl(url, headers={'User-agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.13) Gecko/2009073022 Firefox/3.0.13'})
+        except:
+            irc.reply(template % "Could not get to URL")
         soup = BS(resp)
         try:
             quotation = soup.find('font').contents[0].strip()
         except:
-            irc.reply("Sorry, sabram decided instead to reply on his blog.")
-        irc.reply("@sabram said that Cliff Lynch said '%s'" % quotation)
+            irc.reply(template % "HTML returned was invalid")
+        irc.reply(template % quotation)
     
     def drunk(self, irc, msg, s):
         params = urlencode(dict(text=s,voice='drunk'))
