@@ -163,6 +163,20 @@ class Translators(callbacks.Privmsg):
         resp = re.sub('\n', ' ', resp)
         irc.reply(resp.encode('utf-8', 'ignore').strip())
 
+
+    def sabram(self, irc, msg, args):
+        """
+        Get sabram to falsely attribute a quote to Cliff!
+        """
+        url = "http://www.ivyjoy.com/quote.shtml"
+        resp = web.getUrl(url, headers=HEADERS)
+        soup = BS(resp)
+        try:
+            quotation = soup.find('font').contents[0].strip()
+        except:
+            irc.reply("Sorry, sabram decided instead to reply on his blog.")
+        irc.reply("@sabram said that Cliff Lynch said '%s'" % quotation)
+    
     def drunk(self, irc, msg, s):
         params = urlencode(dict(text=s,voice='drunk'))
         url = 'http://www.thevoicesofmany.com/text.php?' + params
