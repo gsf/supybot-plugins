@@ -171,6 +171,7 @@ class Translators(callbacks.Privmsg):
         template = '<sabram> Cliff said: "%s"'
         if args:
             irc.reply(template % ' '.join(args))
+            return
         url = "http://www.ivyjoy.com/quote.shtml"
         try:
             resp = web.getUrl(url, headers={'User-agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.13) Gecko/2009073022 Firefox/3.0.13'})
