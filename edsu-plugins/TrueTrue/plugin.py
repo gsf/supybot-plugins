@@ -99,7 +99,7 @@ class TrueTrue(callbacks.PluginRegexp):
     	     irc.reply("typical...", prefixNick=False)
 
     def callMeSomething(self, irc, msg, match):
-      r'^[Cc]all me (.+?)(?:[.;:]|(?:,\s*but)|(?:\s*if))'
+      r'^[Cc]all me (.+?)(?:[.;:]|(?:,\s*but)|(?:\s*\bif\b))'
       time.sleep(2)
       irc.reply("You're %s." % (match.group(1)))
       
