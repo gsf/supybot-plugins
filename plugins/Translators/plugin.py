@@ -165,10 +165,12 @@ class Translators(callbacks.Privmsg):
 
 
     def sabram(self, irc, msg, args):
-        """
+        """ [<text>]
         Get @sabram to falsely attribute a quote to Cliff!
         """
         template = "<sabram> Cliff said that '%s'"
+        if args:
+            irc.reply(template % ' '.join(args))
         url = "http://www.ivyjoy.com/quote.shtml"
         try:
             resp = web.getUrl(url, headers={'User-agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.13) Gecko/2009073022 Firefox/3.0.13'})
