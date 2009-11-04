@@ -124,9 +124,12 @@ class Translators(callbacks.Privmsg):
 
     def scalia(self, irc, msg, args):
         """<string>
-        random 'dick quote' insertion"""
+        random 'scare' quote insertion"""
         # we do this because other plugins pass a one-element list
         # containing a multi-word string
+        if len(args) != 0:
+            irc.reply("try providing some text, morno")
+            return
         words = []
         token_positions = []
         i = 0
