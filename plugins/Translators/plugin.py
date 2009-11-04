@@ -137,8 +137,12 @@ class Translators(callbacks.Privmsg):
                 if s.strip(r'`!()-{}[]<>"\':;.,?').lower() not in STOPWORDS:
                     token_positions.append(i)
                 i += 1
-        randidx = randrange(len(token_positions))
-        words[token_positions[randidx]] = "'%s'" % words[token_positions[randidx]]
+        try:
+            randidx = randrange(len(token_positions))
+            words[token_positions[randidx]] = "'%s'" % words[token_positions[randidx]]
+        except:
+            # all stopwords
+            pass
         irc.reply(' '.join(words))
 
     def chef(self, irc, msg, args):
