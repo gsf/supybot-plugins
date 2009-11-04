@@ -133,7 +133,7 @@ class Translators(callbacks.Privmsg):
         for arg in args:
             for s in arg.split():
                 words.append(s)
-                if s.strip(r'`!()-{}[]<>"\':;.,?').lower() not in stopwords:
+                if s.strip(r'`!()-{}[]<>"\':;.,?').lower() not in STOPWORDS:
                     token_positions.append(i)
                 i += 1
         randidx = randrange(len(token_positions))
