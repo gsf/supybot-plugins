@@ -613,7 +613,7 @@ class Assorted(callbacks.Privmsg):
         irc.reply(' `"""`        ', prefixNick=False)
 
     def stab(self, irc, msg, args):
-        irc.reply("---|===*" + join(args) + "*===>", prefixNick=False)
+        irc.reply("---|===*" + ' '.join(args) + "*===>", prefixNick=False)
         
     def halfbaked(self, irc, msg, args):
         """
