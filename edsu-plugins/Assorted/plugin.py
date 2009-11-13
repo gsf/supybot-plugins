@@ -612,6 +612,16 @@ class Assorted(callbacks.Privmsg):
         irc.reply('  _|_   `"""` ', prefixNick=False)
         irc.reply(' `"""`        ', prefixNick=False)
 
+    def pong(self, irc, msg, args):
+        irc.reply("|˙         |", prefixNick=False)
+        irc.reply("|    ‧     |", prefixNick=False)
+        irc.reply("|         .|", prefixNick=False)
+        irc.reply("|    .     |", prefixNick=False)
+        irc.reply("|.         |", prefixNick=False)
+        irc.reply("|    ‧     |", prefixNick=False)
+        irc.reply("|          |‧", prefixNick=False)
+        irc.reply("I win!", prefixNick=False)
+      
     def stab(self, irc, msg, args):
         irc.reply("---|===*" + ' '.join(args) + "*===>", prefixNick=False)
         
