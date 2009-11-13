@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import feedparser
 import os
 import re
