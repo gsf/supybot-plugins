@@ -942,7 +942,8 @@ class Assorted(callbacks.Privmsg):
             'hosts': {'2009': '3',
                       '2010': '9'},
             'talks': {'2008': '2', 
-                      '2009': '7'},
+                      '2009': '7',
+                      '2010': '13'},
             'logo': {'2008': '6'}
         }
         try:
@@ -965,6 +966,17 @@ class Assorted(callbacks.Privmsg):
         votes.sort(cmp=lambda x,y: int(y['score'])-int(x['score']))
         tallies = [(vote['title'], vote['score']) for vote in votes]
         return tallies, vote_url
+
+    def talks2010(self, irc, msg, args):
+        """ 
+        Gets tally of talk votes for 2010 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("talks", "2010")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2010: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
     def talks2009(self, irc, msg, args):
         """ 
