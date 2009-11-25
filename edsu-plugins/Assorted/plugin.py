@@ -495,6 +495,10 @@ class Assorted(callbacks.Privmsg):
         irc.reply(isfriday, prefixNick=True)
         return
 
+    def isit420(self, irc, msg, args):
+        irc.reply("uhhhhh, what?")
+        return
+
     def arewethereyet(self, irc, msg, args):
         irc.reply("nope", prefixNick=True)
         return
