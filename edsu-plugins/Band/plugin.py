@@ -108,7 +108,7 @@ class Band(callbacks.Privmsg):
                     band_str = u' ; '.join(bands)
                     irc.reply(band_str.encode('utf8', 'ignore'), prefixNick=True)
                 else:
-                    irc.reply("No bands found matching '%s'" % search_str, prefixNick=True)
+                    irc.reply("No bands found matching '%s'" % search_str.encode('utf8', 'ignore'), prefixNick=True)
         else:
             band = json['bands'][randint(0, len(json['bands'])-1)]
             irc.reply(band, prefixNick=True)
