@@ -104,9 +104,14 @@ class Band(callbacks.Privmsg):
             elif args[0] == 'search':
                 search_str = u' '.join(args[1:]).strip()
                 self.log.debug(u"search: %s" % search_str)
+                debugs = []
                 for band in json['bands']:
                     if band.lower().find(search_str.lower()):
-                        self.log.debug("band: %s" % band)
+                        debugs.append(band)
+                        try:
+                            self.log.debug(u' ; '.join(debugs))
+                        except:
+                            self.log.error("problem with %s" % band)
                 bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
                 if bands:
                     irc.reply(u' ; '.join(bands), prefixNick=True)
