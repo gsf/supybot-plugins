@@ -109,7 +109,8 @@ class Band(callbacks.Privmsg):
                         self.log.debug("hit: %s" % band)
                 bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
                 if bands:
-                    irc.reply(' ; '.join(bands), prefixNick=True)
+                    band_str = u' ; '.join(bands)
+                    irc.reply(band_str.encode('utf8', 'ignore'), prefixNick=True)
                 else:
                     irc.reply("No bands found matching '%s'" % search_str, prefixNick=True)
         else:
