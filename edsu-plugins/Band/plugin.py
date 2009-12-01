@@ -80,7 +80,7 @@ class Band(callbacks.Privmsg):
         jsonfile.close()
         if len(args) > 1:
             if args[0] == 'add':
-                new_band = ' '.join(args[1:]).strip()
+                new_band = u' '.join(args[1:]).strip()
                 json['bands'].append(new_band)
                 try:
                     jsonfile = open(f, 'w')
@@ -91,7 +91,7 @@ class Band(callbacks.Privmsg):
                 else:
                     irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
             elif args[0] == 'remove':
-                band = ' '.join(args[1:]).strip()
+                band = u' '.join(args[1:]).strip()
                 json['bands'].remove(band)
                 try:
                     jsonfile = open(f, 'w')
@@ -103,7 +103,11 @@ class Band(callbacks.Privmsg):
                     irc.reply("Band '%s' removed from list" % band, prefixNick=True)
             elif args[0] == 'search':
                 search_str = u' '.join(args[1:]).strip()
-                bands = [unicode(band) for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
+                print "search: %s" % search_str
+                for band in json['bands']:
+                    if band.lower().find(search_str.lower()):
+                        print "band: %s" % band
+                bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
                 if bands:
                     irc.reply(u' ; '.join(bands), prefixNick=True)
                 else:
