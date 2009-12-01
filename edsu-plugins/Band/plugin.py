@@ -103,6 +103,10 @@ class Band(callbacks.Privmsg):
                     irc.reply("Band '%s' removed from list" % band, prefixNick=True)
             elif args[0] == 'search':
                 search_str = u' '.join([arg.decode('utf8') for arg in args[1:]]).strip()
+                self.log.debug("searchstr: %s" % search_str)
+                for band in json['bands']:
+                    if band.lower().find(search_str.lower()) != -1:
+                        self.log.debug("hit: %s" % band)
                 bands = [band for band in json['bands'] if band.lower().find(search_str.lower()) != -1]
                 if bands:
                     irc.reply(' ; '.join(bands), prefixNick=True)
