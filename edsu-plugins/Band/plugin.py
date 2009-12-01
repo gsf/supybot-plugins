@@ -102,7 +102,7 @@ class Band(callbacks.Privmsg):
                 else:
                     irc.reply("Band '%s' removed from list" % band, prefixNick=True)
             elif args[0] == 'search':
-                self.log.debug(u"%s" % args[1:])
+                self.log.debug(unicode(args[1]))
                 search_str = u' '.join(args[1:]).strip()
                 self.log.debug(u"search: %s" % search_str)
                 debugs = []
