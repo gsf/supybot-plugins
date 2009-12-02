@@ -228,7 +228,7 @@ class Translators(callbacks.Privmsg):
             'Z' : u'ŹẐŻŽȤẒẔƵ'
         }
 
-        source = ' '.join(args).upper()
+        source = u' '.join([arg.decode('utf8') for arg in args]).upper()
         result = []
         for letter in source:
             try:
