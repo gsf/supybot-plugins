@@ -237,7 +237,7 @@ class Translators(callbacks.Privmsg):
                 possibles = [letter]
             result.append(possibles[randrange(len(possibles))])
         response = u' '.join(result)
-        irc.reply(response.encode('utf-8', 'ignore'), prefixNick=False)
+        irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
     
     def foxnews(self, irc, msg, args, text):
         """ <text>
@@ -258,7 +258,8 @@ class Translators(callbacks.Privmsg):
         """ <text>
         UNICODE SNOWMAN ALL UP IN YA TEXT BRAW
         """
-        irc.reply(u'☃'.join(list(text), prefixNick=False))
+        response = u'☃'.join(list(text))
+        irc.reply(response.encode('utf8', 'ignore'), prefixNick=False))
         
     snowman = wrap(snowman, ['text'])
 
