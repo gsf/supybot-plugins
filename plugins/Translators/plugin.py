@@ -254,14 +254,13 @@ class Translators(callbacks.Privmsg):
         
     foxnews = wrap(foxnews, ['text'])
 
-    def snowman(self, irc, msg, args, text):
+    def snowman(self, irc, msg, args):
         """ <text>
         UNICODE SNOWMAN ALL UP IN YA TEXT BRAW
         """
+        text = u' '.join([arg.decode('utf8') for arg in args])
         response = u'☃'.join(list(text))
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
         
-    snowman = wrap(snowman, ['text'])
-
 Class = Translators
 
