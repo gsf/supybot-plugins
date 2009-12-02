@@ -253,6 +253,14 @@ class Translators(callbacks.Privmsg):
         irc.reply('%s that %s' % (variant, text), prefixNick=False)
         
     foxnews = wrap(foxnews, ['text'])
-    
+
+    def snowman(self, irc, msg, args, text):
+        """ <text>
+        UNICODE SNOWMAN ALL UP IN YA TEXT BRAW
+        """
+        irc.reply('☃'.join(list(text), prefixNick=False)
+        
+    snowman = wrap(snowman, ['text'])
+
 Class = Translators
 
