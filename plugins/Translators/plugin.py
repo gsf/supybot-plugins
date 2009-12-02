@@ -259,7 +259,7 @@ class Translators(callbacks.Privmsg):
         UNICODE SNOWMAN ALL UP IN YA TEXT BRAW
         """
         response = u'☃'.join(list(text))
-        irc.reply(response.encode('utf8', 'ignore'), prefixNick=False))
+        irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
         
     snowman = wrap(snowman, ['text'])
 
