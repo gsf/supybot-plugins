@@ -19,59 +19,22 @@ from lxml.html import iterlinks, fromstring
 logger = logging.getLogger('supybot')
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 
-def editurl(artist, title):
-    baseurl = 'http://lyricwiki.org/index.php?action=edit&'
-    params = dict(title=':'.join((artist, title)))
-    return baseurl + urlencode(params)
-
-def artisturl(artist):
-    baseurl = 'http://lyricwiki.org/api.php?func=getArtist&fmt=xml&'
-    params = dict(artist=artist)
-    return baseurl + urlencode(params)
-
-def songurl(artist, title):
-    baseurl = 'http://lyricwiki.org/api.php?func=getSong&fmt=xml&'
-    params = dict(artist=artist, song=title)
-    return baseurl + urlencode(params)
-
-def tinyurl(url):
-    try:
-        url = 'http://tinyurl.com/api-create.php?url=%s' % url
-        logger.info('fetching: ' + url)
-        tiny = web.getUrl(url, headers=HEADERS)
-        return tiny
-    except:
-        return 'http://lyricwiki.org'
-
 def getsoup(url):
     logger.info("fetching " + url)
     html = web.getUrl(url, headers=HEADERS)
     parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("beautifulsoup"))
     return parser.parse(html.decode('utf-8', 'ignore'), encoding='utf-8')
 
-def getsong(artist, title):
-    try:
-        url = songurl(artist, title)
-        soup = getsoup(url)
-        song = {}
-        for k in 'artist','song','lyrics','url':
-            song[k] = soup.find(k).string
-        return song
-    except Exception, e:
-        logger.info('Exception fetching lyrics for %s by %s: %s' % (title, artist, e.message))
-    return
-
 def randtitle(artist):
+    songs = []
     try:
-        url = artisturl(artist)
-        soup = getsoup(url)
-        songs = soup.findAll('item')
-        if len(songs):
-            song = songs[randint(0, len(songs) - 1)]
-            return song.string
+        songs = songlist(artist)
     except Exception, e:
-        logger.info('Exception looking for songs by %s: %s' % (artist, e.message))
-    return
+        logger.error(utils.exnToString(e))
+        irc.reply("Arrgh! Something went horribly wrong")
+        return
+    if len(songs):
+        return songs[randint(0, len(songs) - 1)]
 
 def formatlyrics(song, startline=None):
     lines = re.split(r'[\n\r]+', song['lyrics'])
@@ -162,7 +125,6 @@ class Sing(callbacks.Plugin):
         song = lyricsty(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
-            create = tinyurl(editurl(artist, title))
             irc.reply('Lyricsty has no lyrics for %s by %s' % (title, artist))
         else:
             lyrics = formatlyrics(song, line)
@@ -176,44 +138,15 @@ class Sing(callbacks.Plugin):
         fetches song list from lyricsty.com"""
 
         args = map(lambda x: x.strip(), re.split(':', input))
+
         try:
             artist, searchstring = args
         except:
             artist, searchstring = args[0], None
 
-        artist = artist.lower()
-        artist_norm = lyricsty_normalize(artist)
-        artist_init = artist_norm[0]
-        url = 'http://lyricsty.com/lyrics/%s/%s' % (artist_init, artist_norm)
-        
         songs = []
-        href_match = re.compile('/lyrics/%s/%s' % (artist_init, artist_norm))
-
         try:
-            logger.info("Fetching " + url)
-            html = web.getUrl(url, headers=HEADERS)
-        except:
-            irc.reply("Lyricsty doesn't know about " + artist)
-            return
-
-        try:
-            doc = fromstring(html)
-            songtable = doc.cssselect('table.bandsongs')[0]
-            
-            for tup in songtable.iterlinks():
-                elem = tup[0]
-                try:
-                    href = elem.attrib['href']
-                    if not re.match(href_match, href):
-                        continue
-                except:
-                    continue
-                song = elem.text_content()
-                if searchstring:
-                    if not re.search(searchstring, song, re.I):
-                        continue
-                song = re.sub(' lyrics$', '', song)
-                songs.append(song)
+            songs = songlist(artist, searchstring)
         except Exception, e:
             logger.error(utils.exnToString(e))
             irc.reply("Arrgh! Something went horribly wrong")
@@ -226,6 +159,43 @@ class Sing(callbacks.Plugin):
             irc.reply(resp)
 
     songs = wrap(songs, ['text'])
+
+def songlist(artist, searchstring=None):
+
+    artist = artist.lower()
+    artist_norm = lyricsty_normalize(artist)
+    artist_init = artist_norm[0]
+    url = 'http://lyricsty.com/lyrics/%s/%s' % (artist_init, artist_norm)
+    
+    href_match = re.compile('/lyrics/%s/%s' % (artist_init, artist_norm))
+
+    doc = None
+    try:
+        logger.info("Fetching " + url)
+        html = web.getUrl(url, headers=HEADERS)
+        doc = fromstring(html)
+    except Exception, e:
+        logger.error(utils.exnToString(e))
+        return []
+
+    songtable = doc.cssselect('table.bandsongs')[0]
+    
+    songs = []
+    for tup in songtable.iterlinks():
+        elem = tup[0]
+        try:
+            href = elem.attrib['href']
+            if not re.match(href_match, href):
+                continue
+        except:
+            continue
+        song = elem.text_content()
+        if searchstring:
+            if not re.search(searchstring, song, re.I):
+                continue
+        song = re.sub(' lyrics$', '', song)
+        songs.append(song)
+    return songs
 
 Class = Sing
 
