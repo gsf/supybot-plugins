@@ -6,7 +6,7 @@ from socket import setdefaulttimeout
 
 class LCSH(callbacks.Privmsg):
 
-    def search(self, irc, msg, args):
+    def lcsh(self, irc, msg, args):
         """lcsh search for headings
         """
         heading = ' '.join(args)
