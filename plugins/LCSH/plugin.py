@@ -20,8 +20,8 @@ class LCSH(callbacks.Privmsg):
 
     def _do_search(self, heading):
         setdefaulttimeout(60)
-        url = 'http://id.loc.gov/authorities/search?' + 
-              urlencode({'q': heading, 'format': 'json'})
+        url = 'http://id.loc.gov/authorities/search?' + \
+               urlencode({'q': heading, 'format': 'json'})
         return simplejson.loads(urlopen(url).read())
 
 Class = LCSH
