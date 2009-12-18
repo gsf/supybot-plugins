@@ -10,6 +10,7 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
+import supybot.utils.web as web
 
 import re
 from lxml.html.soupparser import fromstring
@@ -35,24 +36,23 @@ class Astro(callbacks.Plugin):
         #  '0.05000')           => distance in AU
         pattern = re.compile('\s*([\(\)\w ]+?  )\s*([\d\.]+)\s*(\d{4} [a-z\.]+\s*[\d\.]+)\s*([\d\.]+)', re.I)
 
-        try:
-            html = web.getUrl(url, headers=HEADERS)
-            tree = fromstring(html)
-            pre = tree.xpath('//pre')[0]
-            lines = pre.split('\n')[3:]
-            lines = [l for l in lines if len(l)]
-            phas = [re.match(pattern, l).groups() for l in lines]
-            phas.sort(lambda a,b: cmp(a[1], b[1]))
-            (name, jd, date, au) = phas[0]                
-            date = date.replace('.', ' ')
-            # the %j is just a placeholder
-            date = dateparse.strptime(date, "%Y %b %d %j")
-            miles = float(au) * au2miles
-            resp = "Object %s will pass within %f miles " + \
-                " of earth on %s" % (name, miles, date.strftime("%c"))
-            irc.reply(resp)
-        except:
-            irc.reply("Huh, that didn't work")
+#        try:
+        html = web.getUrl(url, headers=HEADERS)
+        tree = fromstring(html)
+        pre = tree.xpath('//pre')[0]
+        lines = pre.text.split('\n')[3:]
+        lines = [l for l in lines if len(l)]
+        phas = [re.match(pattern, l).groups() for l in lines]
+        phas.sort(lambda a,b: cmp(a[1], b[1]))
+        (name, jd, date, au) = phas[0]                
+        date = date.replace('.', ' ')
+        # the %j is just a placeholder
+        date = datetime.strptime(date, "%Y %b %d %j")
+        miles = float(au) * au2miles
+        resp = "Object '%s' will pass within %s miles of earth on %s"
+        irc.reply(resp % (name.strip(), miles, date.strftime("%c")))
+#        except:
+#            irc.reply("Huh, that didn't work")
         
 
 Class = Astro
