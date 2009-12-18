@@ -24,7 +24,7 @@ class Astro(callbacks.Plugin):
     This should describe *how* to use this plugin."""
     threaded = True
 
-    def pha(self, irc, msg, args):
+    def asteroid(self, irc, msg, args):
         au2miles = 92955887.6
         url = 'http://www.cfa.harvard.edu/iau/lists/PHACloseApp.html'
         
@@ -36,7 +36,6 @@ class Astro(callbacks.Plugin):
         #  '0.05000')           => distance in AU
         pattern = re.compile('\s*([\(\)\w ]+?  )\s*([\d\.]+)\s*(\d{4} [a-z\.]+\s*[\d\.]+)\s*([\d\.]+)', re.I)
 
-#        try:
         html = web.getUrl(url, headers=HEADERS)
         tree = fromstring(html)
         pre = tree.xpath('//pre')[0]
@@ -51,9 +50,6 @@ class Astro(callbacks.Plugin):
         miles = float(au) * au2miles
         resp = "Object '%s' will pass within %s miles of earth on %s"
         irc.reply(resp % (name.strip(), miles, date.strftime("%c")))
-#        except:
-#            irc.reply("Huh, that didn't work")
-        
 
 Class = Astro
 
