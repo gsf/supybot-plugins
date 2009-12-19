@@ -26,7 +26,8 @@ class Astro(callbacks.Plugin):
     threaded = True
 
     def asteroid(self, irc, msg, args):
-        """Fetch the next Potentially Hazardous Asteroid as
+        """
+        Fetch the next Potentially Hazardous Asteroid as
         reported by the Near Earth Object Program
         (http://www.cfa.harvard.edu/iau/lists/PHACloseApp.html)
         """
