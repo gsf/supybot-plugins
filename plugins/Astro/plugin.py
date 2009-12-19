@@ -69,7 +69,7 @@ class Astro(callbacks.Plugin):
         miles = float(au) * 92955887.6
 
         resp = "Object '%s' will pass within %s miles of earth on %s"
-        irc.reply(resp % (name.strip(), miles, date.strftime("%c")))
+        irc.reply(resp % (name.strip(), miles, date.strftime("%A, %B %d, %Y")))
 
 Class = Astro
 
