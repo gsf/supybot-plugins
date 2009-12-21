@@ -101,6 +101,39 @@ Studying Zen, learning the way, is originally for the sake of birth and death, n
 What do I mean by other things? Arousing the mind and stirring thoughts right now; having contrivance and artificiality; having grasping and rejecting; having practice and realization; having purity and defilement; having sacred and profane; having Buddhas and sentient beings; writing verses and songs, composing poems and odes; discoursing on Zen and the way; discoursing on right and wrong; discoursing on past and present.
 These various activities are not relevant to the issue of birth and death; they are all "other things." Chien-ju
 No ego, no pain.
+The journey of a thousand miles must begin with a single step.
+The world is like a mirror you see? smile and your friends smile back.
+Your Treasure House is in yourself, it contains all you need.
+He who asks a question is a fool for a minute; he who does not remains a fool forever.
+The tongue like a sharp knife... Kills without drawing blood.
+All that we are is the result of what we have thought. The mind is everything. What we think we become.
+A jug fills drop by drop.
+We cannot see our reflection in running water. It is only in still water that we can see.
+One moon shows in every pool in every pool the one moon.
+Student says " I am very discouraged. What should I do?" Master says, "encourage others."
+A flower falls even though we love it and a weed grows even though we do not love it.
+When the pupil is ready to learn, a teacher will appear.
+It takes a wise man to learn from his mistakes, but an even wiser man to learn from others.
+If you understand, things are just as they are; if you do not understand, things are just as they are.
+When the character of a man is not clear to you, look at his friends.
+Water and words... Easy to pour impossible to recover.
+Teachers open the door... You enter by yourself.
+A wise man makes his own decisions, an ignorant man follows the public opinion.
+The rich man plans for tomorrow... The poor man for today.
+To know the road ahead, ask those coming back.
+The path of the enlightened one leaves no track- it is like the path of birds in the sky.
+Before enlightenment: Chop wood, carry water. After enlightment: Chop wood, carry water.
+Give a man a fish and you feed him for a day. Teach a man to fish and you feed him for a lifetime.
+At birth we come At death we go... Bearing nothing.
+One beam alone... No matter how stout... Cannot support a house.
+No road to happiness or sorrow... Find them in yourself.
+You will not be punished for your anger; you will be punished by your anger.
+What is the path? the Zen Master Nan-sen was asked. Everyday life is the path, he answered.
+Do not speak - unless it improves on silence.
+If you light a lamp for somebody, it will also brighten your own path.
+In criticizing, the teacher is hoping to teach. That's all.
+Although gold dust is precious, when it gets in your eyes, it obstructs your vision.
+We are shaped by our thoughts; we become what we think. When the mind is pure, joy follows like a shadow that never leaves.
     """
 
     def zen(self, irc, msg, args):
