@@ -942,7 +942,8 @@ class Assorted(callbacks.Privmsg):
             'keynotes': {'2009': '4',
                          '2010': '11'},
             'necode4lib': {'2008': '5'},
-            'tshirts': {'2009': '8'},
+            'tshirts': {'2009': '8',
+	    	        '2010': '14'},
             'hosts': {'2009': '3',
                       '2010': '9'},
             'talks': {'2008': '2', 
@@ -1002,6 +1003,17 @@ class Assorted(callbacks.Privmsg):
             tallies, vote_url = self._diebold_tallies("tshirts", "2009")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for t-shirt votes in 2009: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+    def tshirts2010(self, irc, msg, args):
+        """ 
+        Gets tally of t-shirt votes for 2010 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("tshirts", "2010")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for t-shirt votes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
