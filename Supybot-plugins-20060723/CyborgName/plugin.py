@@ -55,7 +55,8 @@ class CyborgName(callbacks.Plugin):
         if not name:
             name = msg.nick
         name = utils.web.urlquote(name)
-        url = 'http://www.cyborgname.com/cyborger.cgi?acronym=' + name
+        url = 'http://cyborg.namedecoder.com/index.php?acronym=' + name \
+            + '&design=edox&design_click-edox.x=0&design_click-edox.y=0&design_click-edox=edox'
         html = utils.web.getUrl(url)
         m = self._cyborgRe.search(html)
         if m:
