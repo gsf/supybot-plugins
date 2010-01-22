@@ -898,7 +898,7 @@ class Assorted(callbacks.Privmsg):
                 beers.append((li.a['href'], li.a.string))
         beer = beers[randint(0, len(beers))]
         if len(args) > 0:
-            nick = args[0]
+            nick = ' '.join(args)
         else:
             nick = msg.nick
         irc.reply("fills a pint glass with %s, and sends it sliding down the bar to %s (%s)" % (beer[1], nick, beer[0]), action=True)
