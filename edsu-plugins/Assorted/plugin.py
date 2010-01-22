@@ -918,7 +918,7 @@ class Assorted(callbacks.Privmsg):
           pass
       order = menu[randint(0, len(menu))]
       if len(args) > 0:
-        nick = args[0]
+        nick = ' '.join(args)
       else:
         nick = msg.nick
       irc.reply("pours a shot of %s and sends it sliding down the bar to %s (http://whisky.com/%s)" % (order[1], nick, order[0]))
