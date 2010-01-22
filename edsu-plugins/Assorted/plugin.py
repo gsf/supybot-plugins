@@ -903,6 +903,28 @@ class Assorted(callbacks.Privmsg):
             nick = msg.nick
         irc.reply("fills a pint glass with %s, and sends it sliding down the bar to %s (%s)" % (beer[1], nick, beer[0]), action=True)
 
+    def whisky(self, irc, msg, args):
+      """
+      pours a shot of whisky for you from http://whisky.com/
+      """
+      raw_html = urlopen('http://whisky.com/select.html').read()
+      raw_html = raw_html.replace('<option brands/>','<option>').replace('<option value=>','<option>')
+      soup = BeautifulSoup(raw_html)
+      menu = []
+      for option in soup.findAll('option'):
+        try:
+          menu.append((option['value'], option.string.replace('_',' ')))
+        except KeyError:
+          pass
+      order = menu[randint(0, len(menu))]
+      if len(args) > 0:
+        nick = args[0]
+      else:
+        nick = msg.nick
+      irc.reply("pours a shot of %s and sends it sliding down the bar to %s (http://whisky.com/%s)" % (order[1], nick, order[0]))
+
+    whiskey = whisky  
+    
     def anon(self, irc, msg, args):
         """
         Spits out random nonsense from 'anon,' that loveable idiot of a troll
