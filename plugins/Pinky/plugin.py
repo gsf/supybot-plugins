@@ -35,6 +35,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 from random import randint
+import re
 import time
 
 responses = [
@@ -119,9 +120,12 @@ class Pinky(callbacks.PluginRegexp):
     regexps = ['pinkySnarfer']
     
     def pinkySnarfer(self,irc,msg,match):
-        r'[Aa]re you (think|ponder)ing what [Ii]\'m \1ing\?'
+        r'(?:([Pp]inky)[:,]\s*)?[Aa]re you (think|ponder)ing what [Ii]\'m \2ing\?'
         time.sleep(1)
         response = responses[randint(0,len(responses))]
+        print match.groups()
+        if match.groups()[0] is None:
+          response = response.replace('Brain',msg.nick)
         irc.reply(response,prefixNick=False)
         
 Class = Pinky
