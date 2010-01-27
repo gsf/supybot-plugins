@@ -117,17 +117,25 @@ responses = [
 ]
 
 class Pinky(callbacks.PluginRegexp):
-    regexps = ['pinkySnarfer']
+    regexps = ['pinkySnarfer','brainSnarfer']
     
     def pinkySnarfer(self,irc,msg,match):
-        r'(?:([Pp]inky)[:,]\s*)?[Aa]re you (think|ponder)ing what [Ii]\'m \2ing\?'
-        time.sleep(1)
-        response = responses[randint(0,len(responses))]
-        print match.groups()
-        if match.groups()[0] is None:
-          response = response.replace('Brain',msg.nick)
-        irc.reply(response,prefixNick=False)
-        
+      r'(?:([Pp]inky)[:,]\s*)?[Aa]re you (think|ponder)ing what [Ii]\'m \2ing\?'
+      time.sleep(1)
+      response = responses[randint(0,len(responses))]
+      if match.groups()[0] is None:
+        response = response.replace('Brain',msg.nick)
+      irc.reply(response,prefixNick=False)
+    
+    def brainSnarfer(self,irc,msg,match):
+      r'(.+)?[Ww]hat (are we going|do you want) to do (tonight|tomorrow night)(.*)\?'
+      time.sleep(1)
+      if re.compile('Brain').search(match.group(0)):
+        name = 'Pinky'
+      else:
+        name = msg.nick
+      irc.reply('Why, the same thing we do every night, ' + name + ' - try to take over the world!')
+      
 Class = Pinky
 
 
