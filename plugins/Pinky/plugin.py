@@ -134,7 +134,7 @@ class Pinky(callbacks.PluginRegexp):
         name = 'Pinky'
       else:
         name = msg.nick
-      irc.reply('Why, the same thing we do every night, ' + name + ' - try to take over the world!')
+      irc.reply('Why, the same thing we do every night, ' + name + ' - try to take over the world!',prefixNick=False)
       
 Class = Pinky
 
