@@ -15,10 +15,12 @@ import rdflib
 
 class FOAF(callbacks.Privmsg):
   
+    DATAFILE = '/var/www/rc98.net/zoia.rdf'
+    
     def __init__(self, irc):
       self.g = Graph()
 #      self.g.parse('http://rc98.net/zoia.rdf')
-      self.g.parse(self.registryValue('cache'), format="xml")
+      self.g.parse(self.DATAFILE, format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -66,7 +68,7 @@ class FOAF(callbacks.Privmsg):
       return len(result) > 0
       
     def _save_graph(self):
-      self.g.serialize(self.registryValue('cache'))
+      self.g.serialize(self.DATAFILE)
       
     def _list(self, entities):
       result = []
@@ -262,7 +264,7 @@ class FOAF(callbacks.Privmsg):
 #    def reloadfoaf(self, irc, msg, args):
 #      g = Graph()
 #      g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
-#      g.serialize(self.registryValue('cache'))
+#      g.serialize(self.DATAFILE)
 #      irc.reply('File copied')
       
 
