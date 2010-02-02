@@ -15,4 +15,7 @@ def configure(advanced):
         output('Parses zoia\'s FOAF file to determine if zoia knows you, or if you know zoia')
 
 FOAF = conf.registerPlugin('FOAF')
+
+conf.registerGlobalValue(FOAF, 'cache',
+    registry.String('/var/www/rc98.net/zoia.rdf', """Location of the FOAF URI cache file."""))
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:

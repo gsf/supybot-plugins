@@ -17,8 +17,8 @@ class FOAF(callbacks.Privmsg):
   
     def __init__(self, irc):
       self.g = Graph()
-      self.g.parse('http://rc98.net/zoia.rdf')
-#      self.g.parse('/var/www/rc98.net/zoia.rdf', format="xml")
+#      self.g.parse('http://rc98.net/zoia.rdf')
+      self.g.parse(self.registryValue('cache'), format="xml")
       self.uri = rdflib.URIRef('http://www.code4lib.org/id/zoia')
       self.FOAF = Namespace('http://xmlns.com/foaf/0.1/')
       super(callbacks.Plugin,self).__init__(irc)
@@ -28,7 +28,7 @@ class FOAF(callbacks.Privmsg):
           PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
           SELECT ?uri WHERE 
           {<http://www.code4lib.org/id/zoia> foaf:knows ?uri . ?uri foaf:nick ?nick .}
-          """, initBindings={'?nick': nick} )
+          """, initBindings={'nick': nick} )
       if len(result) > 0:
         userURI = list(result)[0][0]
         return(userURI)
@@ -66,7 +66,7 @@ class FOAF(callbacks.Privmsg):
       return len(result) > 0
       
     def _save_graph(self):
-      self.g.serialize('/var/www/rc98.net/zoia.rdf')
+      self.g.serialize(self.registryValue('cache'))
       
     def _list(self, entities):
       result = []
@@ -100,7 +100,7 @@ class FOAF(callbacks.Privmsg):
       for uri in uris:
         query = query + ('<%s> ?predicate ?obj . ' % str(uri))
       
-      result = commonGraph.query('SELECT ?obj WHERE { %s }' % query, initBindings={'?predicate':self.FOAF[predicate]})
+      result = commonGraph.query('SELECT ?obj WHERE { %s }' % query, initBindings={'predicate':self.FOAF[predicate]})
       entities = []
       for entity in result:
         entities.append(entity[0])
@@ -238,7 +238,7 @@ class FOAF(callbacks.Privmsg):
                 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
                 select ?place 
                 where { ?nick foaf:based_near ?loc . ?loc foaf:name ?place . }
-              """, initBindings={'?nick': userURI} )
+              """, initBindings={'nick': userURI} )
             irc.reply('%s is based near %s' % (nick, result.selected[0]))
         except:
             irc.reply("I don't know where %s is based" % nick)
@@ -262,7 +262,7 @@ class FOAF(callbacks.Privmsg):
 #    def reloadfoaf(self, irc, msg, args):
 #      g = Graph()
 #      g.parse('http://michael.is.outoffoc.us/michael/zoia.rdf')
-#      g.serialize('/var/www/rc98.net/zoia.rdf')
+#      g.serialize(self.registryValue('cache'))
 #      irc.reply('File copied')
       
 
