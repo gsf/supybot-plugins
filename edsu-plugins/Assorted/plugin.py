@@ -1286,6 +1286,19 @@ class Assorted(callbacks.Privmsg):
       irc.reply("%s %s." % (subject, predicate), prefixNick=False)
       
     who = wrap(who, ['inChannel', 'text'])
+
+    def snow(self, irc, msg, args, who):
+        flake = """
+           o      
+      o    :    o 
+        '.\'/.'   
+        :->@<-:   
+        .'/.\'.   
+      o    :    o 
+           o    
+        """
+        irc.reply(flake)
+
     
     def compliment(self, irc, msg, args, who):
         """[<who>]
