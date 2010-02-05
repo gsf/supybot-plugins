@@ -1255,7 +1255,8 @@ class Assorted(callbacks.Privmsg):
       o    :    o 
            o    
         """
-        irc.reply(flake)
+        for line in flake.split("\n"):
+          irc.reply(line)
 
     def _random_nick(self, irc, msg, args, channel):
   		# Modified from Channel.nicks
