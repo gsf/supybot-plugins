@@ -1245,6 +1245,18 @@ class Assorted(callbacks.Privmsg):
             txt = "d'oh something is b0rk3n: %s" % e
         irc.reply(txt.encode('utf-8'))
 
+    def snow(self, irc, msg, args):
+        flake = """
+           o      
+      o    :    o 
+        '.\'/.'   
+        :->@<-:   
+        .'/.\'.   
+      o    :    o 
+           o    
+        """
+        irc.reply(flake)
+
     def _random_nick(self, irc, msg, args, channel):
   		# Modified from Channel.nicks
   		#
@@ -1286,18 +1298,6 @@ class Assorted(callbacks.Privmsg):
       irc.reply("%s %s." % (subject, predicate), prefixNick=False)
       
     who = wrap(who, ['inChannel', 'text'])
-
-    def snow(self, irc, msg, args, who):
-        flake = """
-           o      
-      o    :    o 
-        '.\'/.'   
-        :->@<-:   
-        .'/.\'.   
-      o    :    o 
-           o    
-        """
-        irc.reply(flake)
 
     
     def compliment(self, irc, msg, args, who):
