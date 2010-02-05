@@ -921,7 +921,7 @@ class Assorted(callbacks.Privmsg):
         nick = ' '.join(args)
       else:
         nick = msg.nick
-      irc.reply("pours a shot of %s and sends it sliding down the bar to %s (http://whisky.com/%s)" % (order[1], nick, order[0]))
+      irc.reply("pours a shot of %s and sends it sliding down the bar to %s (http://whisky.com/%s)" % (order[1], nick, order[0]), action=True)
 
     whiskey = whisky  
     
