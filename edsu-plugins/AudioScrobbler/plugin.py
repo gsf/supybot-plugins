@@ -293,6 +293,31 @@ class AudioScrobbler(callbacks.Privmsg):
                 int(float(artist.attrib['count']))))
         irc.reply(' ; '.join(tags).encode('utf8','ignore'))
 
+    def common(self,irc,msg,args):
+      artists = ' '.join(args).split(':')
+      tags = {}
+      for artist in artists:
+        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % quote(artist.strip())
+        try:
+            response = urlopen(url)
+        except:
+            irc.reply("No tags found for %s" % ' '.join(args))
+            return
+        tree = ET.parse(response)
+        root = tree.getroot()
+        for tag in root.findall('.//tag'):
+          name = tag.find(".//name").text
+          if tags.has_key(name):
+            tags[name] += 1
+          else:
+            tags[name] = 1
+
+      common_tags = []
+      for tag in tags:
+        if tags[tag] > 1:
+          common_tags.append(tag)
+      irc.reply(' ; '.join(common_tags).encode('utf8','ignore'))
+
 def shuffle(l):
    randomly_tagged_list = [(random(), x) for x in l]
    randomly_tagged_list.sort()
