@@ -293,7 +293,7 @@ class AudioScrobbler(callbacks.Privmsg):
                 int(float(artist.attrib['count']))))
         irc.reply(' ; '.join(tags).encode('utf8','ignore'))
 
-    def common(self,irc,msg,args):
+    def commontags(self,irc,msg,args):
       artists = ' '.join(args).split(':')
       tags = {}
       for artist in artists:
@@ -314,7 +314,7 @@ class AudioScrobbler(callbacks.Privmsg):
 
       common_tags = []
       for tag in tags:
-        if tags[tag] > 1:
+        if tags[tag] == len(artists):
           common_tags.append(tag)
       irc.reply(' ; '.join(common_tags).encode('utf8','ignore'))
 
