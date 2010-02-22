@@ -276,7 +276,7 @@ class Translators(callbacks.Privmsg):
             danewords.append(w)
         response = ' '.join(danewords)
         response += 'sen'
-        irc.reply(response)
+        irc.reply(response.encode('utf-8', 'ignore'))
         
 Class = Translators
 
