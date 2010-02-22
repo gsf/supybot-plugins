@@ -9,6 +9,7 @@ from random import randint
 import re
 import simplejson
 import supybot.utils.web as web
+import urllib2
 from urllib import urlencode, quote
 from BeautifulSoup import BeautifulStoneSoup as BSS
 
@@ -95,6 +96,24 @@ class Twitter(callbacks.Plugin):
         irc.reply(resp.encode('utf8','ignore').replace('\n',' ').strip(' '))
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
+    
+    def tweet(self, irc, msg, args, user, text):
+#      tweet_text = '<%s> %s' % (user.name, text)
+      tweet_text = text
+      if len(tweet_text) <= 140:
+        auth_handler = urllib2.HTTPBasicAuthHandler()
+        auth_handler.add_password("Twitter API", "http://api.twitter.com", "bot4lib", "zoiaftw")
+        http = urllib2.build_opener(auth_handler)
+        
+        url = "http://api.twitter.com/1/statuses/update.json"
+        data = urlencode({ 'status' : tweet_text })
+        handle = http.open(url,data)
+        resp = handle.read()
+        irc.reply('The operation succeeded.')
+      else:
+        irc.reply('Tweet too long!')
+      
+    tweet = wrap(tweet, ['user','text'])
     
     def trend(self, irc, msg, args, query):
       """[<query>]
