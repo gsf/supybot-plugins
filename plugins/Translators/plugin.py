@@ -262,6 +262,21 @@ class Translators(callbacks.Privmsg):
         snowords = [u'☃' + u'☃'.join(list(word)) for word in words]
         response = u' '.join(snowords)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
+
+    def dane(self, irc, msg, args):
+        """<first> <last>
+        Danify your name
+        """
+        variants = { 'a': u'å', 'e': u'è', 'i': u'Ḯ', 'o': u'ø', 'u': u'ü' }
+        words = [arg.decode('utf8') for arg in args]
+        danewords = []
+        for w in words:
+            for k, v in variants.items():
+                w = w.replace(k, v)
+            danewords.append(w)
+        response = ' '.join(danewords)
+        response += 'sen'
+        irc.reply(response)
         
 Class = Translators
 
