@@ -98,6 +98,9 @@ class Twitter(callbacks.Plugin):
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
     
     def tweet(self, irc, msg, args, user, text):
+      """<text>
+      
+      Post to the @bot4lib Twitter account"""
 #      tweet_text = '<%s> %s' % (user.name, text)
       tweet_text = text
       if len(tweet_text) <= 140:
