@@ -97,12 +97,25 @@ class Twitter(callbacks.Plugin):
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
     
+    def _shorten_urls(self, s):
+      result = s
+      urlreg = re.compile('[a-z]+://[^\s\[({\]})]+')
+      for longUrl in urlreg.findall(s):
+        if len(longUrl) > 22:
+          params = { 'longUrl' : longUrl, 'login' : 'zoia', 'apiKey' : 'R_e0079bf72e9c5f53bb48ef0fe706a57c',
+            'version' : '2.0.1', 'format' : 'json' }
+          url = 'http://api.bit.ly/shorten?' + urlencode(params)
+          response = self._fetch_json(url)
+          shortUrl = response['results'][longUrl]['shortUrl']
+          result = result.replace(longUrl,shortUrl)
+      return(result)
+      
     def tweet(self, irc, msg, args, user, text):
       """<text>
       
       Post to the @bot4lib Twitter account"""
 #      tweet_text = '<%s> %s' % (user.name, text)
-      tweet_text = text
+      tweet_text = self._shorten_urls(text)
       if len(tweet_text) <= 140:
         auth_handler = urllib2.HTTPBasicAuthHandler()
         auth_handler.add_password("Twitter API", "http://api.twitter.com", "bot4lib", "zoiaftw")
