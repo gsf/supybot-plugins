@@ -263,7 +263,7 @@ class Translators(callbacks.Privmsg):
         response = u' '.join(snowords)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
 
-    def dane(self, irc, msg, args):
+    def danify(self, irc, msg, args):
         """<first> <last>
         Danify your name
         """
@@ -272,8 +272,8 @@ class Translators(callbacks.Privmsg):
         danewords = []
         for w in words:
             for k, v in variants.items():
-                w = w.replace(k, v)
-            danewords.append(w)
+                w = w.lower().replace(k, v)
+            danewords.append(w.capitalize())
         response = ' '.join(danewords)
         response += 'sen'
         irc.reply(response.encode('utf-8', 'ignore'))
