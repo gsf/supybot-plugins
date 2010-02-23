@@ -13,13 +13,34 @@ import urllib2
 from urllib import urlencode, quote
 from BeautifulSoup import BeautifulStoneSoup as BSS
 
-HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; DBPedia Plugin; http://code4lib.org/irc)')
+HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
 
 class Twitter(callbacks.Plugin):
     """Add the help for "@plugin help Twitter" here
     This should describe *how* to use this plugin."""
     threaded = True
 
+    def _shorten_urls(self, s):
+      result = s
+      urlreg = re.compile('[a-z]+://[^\s\[({\]})]+')
+      for longUrl in urlreg.findall(s):
+        if len(longUrl) > 22:
+          params = { 'longUrl' : longUrl, 'login' : 'zoia', 'apiKey' : 'R_e0079bf72e9c5f53bb48ef0fe706a57c',
+            'version' : '2.0.1', 'format' : 'json' }
+          url = 'http://api.bit.ly/shorten?' + urlencode(params)
+          response = self._fetch_json(url)
+          shortUrl = response['results'][longUrl]['shortUrl']
+          result = result.replace(longUrl,shortUrl)
+      return(result)
+      
+    def _fetch_json(self, url):
+        doc = web.getUrl(url, headers=HEADERS)
+        try:
+            json = simplejson.loads(doc)
+        except ValueError:
+            return None
+        return json
+        
     def trends(self, irc, msg, args, timeframe):
         """@trends [current|daily|weekly]
 
@@ -48,14 +69,6 @@ class Twitter(callbacks.Plugin):
 
     trends = wrap(trends, [optional('text')])
 
-    def _fetch_json(self, url):
-        doc = web.getUrl(url, headers=HEADERS)
-        try:
-            json = simplejson.loads(doc)
-        except ValueError:
-            return None
-        return json
-        
     def twit(self, irc, msg, args, opts, query):
         """
         @twit [--from user][query]
@@ -97,40 +110,6 @@ class Twitter(callbacks.Plugin):
 
     twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
     
-    def _shorten_urls(self, s):
-      result = s
-      urlreg = re.compile('[a-z]+://[^\s\[({\]})]+')
-      for longUrl in urlreg.findall(s):
-        if len(longUrl) > 22:
-          params = { 'longUrl' : longUrl, 'login' : 'zoia', 'apiKey' : 'R_e0079bf72e9c5f53bb48ef0fe706a57c',
-            'version' : '2.0.1', 'format' : 'json' }
-          url = 'http://api.bit.ly/shorten?' + urlencode(params)
-          response = self._fetch_json(url)
-          shortUrl = response['results'][longUrl]['shortUrl']
-          result = result.replace(longUrl,shortUrl)
-      return(result)
-      
-    def tweet(self, irc, msg, args, user, text):
-      """<text>
-      
-      Post to the @bot4lib Twitter account"""
-#      tweet_text = '<%s> %s' % (user.name, text)
-      tweet_text = self._shorten_urls(text)
-      if len(tweet_text) <= 140:
-        auth_handler = urllib2.HTTPBasicAuthHandler()
-        auth_handler.add_password("Twitter API", "http://api.twitter.com", "bot4lib", "zoiaftw")
-        http = urllib2.build_opener(auth_handler)
-        
-        url = "http://api.twitter.com/1/statuses/update.json"
-        data = urlencode({ 'status' : tweet_text })
-        handle = http.open(url,data)
-        resp = handle.read()
-        irc.reply('The operation succeeded.')
-      else:
-        irc.reply('Tweet too long!')
-      
-    tweet = wrap(tweet, ['user','text'])
-    
     def trend(self, irc, msg, args, query):
       """[<query>]
       
@@ -158,6 +137,51 @@ class Twitter(callbacks.Plugin):
       
     trend = wrap(trend, [optional('text')])
 
+    def _twitter_api(self, path, params, post = False):
+      auth_handler = urllib2.HTTPBasicAuthHandler()
+      auth_handler.add_password("Twitter API", "http://api.twitter.com", "bot4lib", "zoiaftw")
+      http = urllib2.build_opener(auth_handler)
+      url = "http://api.twitter.com/1/%s.json" % path
+      data = urlencode(params)
+
+      print '?'.join((url,data))
+      if post:
+        handle = http.open(url,data)
+      else:
+        handle = http.open('?'.join((url,data)))
+      resp = handle.read()
+      return(simplejson.loads(resp))
+      
+    def tweet(self, irc, msg, args, user, text):
+      """<text>
+
+      Post to the @bot4lib Twitter account"""
+#      tweet_text = '<%s> %s' % (user.name, text)
+      tweet_text = self._shorten_urls(text)
+      if len(tweet_text) <= 140:
+        self._twitter_api('statuses/update', { 'status' : tweet_text })
+        url = "http://api.twitter.com/1/statuses/update.json"
+        irc.reply('The operation succeeded.')
+      else:
+        irc.reply('Tweet too long!')
+
+    tweet = wrap(tweet, ['user','text'])
+
+    last_mention = None
+    def mentions(self, irc, msg, args):
+      params = {}
+      if self.last_mention != None:
+        params['since_id'] = self.last_mention
+      tweets = self._twitter_api('statuses/mentions', params)
+      responses = []
+      if tweets:
+        self.last_mention = tweets[0]['id']
+        for tweet in tweets:
+          responses.append('@%s: %s' % (tweet['user']['screen_name'],tweet['text']))
+        irc.reply(' ; '.join(responses), prefixNick=False)
+      else:
+        irc.reply('No new mentions')
+      
 Class = Twitter
 
 
