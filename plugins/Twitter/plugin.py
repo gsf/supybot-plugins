@@ -159,7 +159,7 @@ class Twitter(callbacks.Plugin):
 #      tweet_text = '<%s> %s' % (user.name, text)
       tweet_text = self._shorten_urls(text)
       if len(tweet_text) <= 140:
-        self._twitter_api('statuses/update', { 'status' : tweet_text })
+        self._twitter_api('statuses/update', { 'status' : tweet_text }, post=True)
         url = "http://api.twitter.com/1/statuses/update.json"
         irc.reply('The operation succeeded.')
       else:
