@@ -82,6 +82,12 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply("let me remind you people, " + ' '.join(args), prefixNick=True)
 
+    def rsinger(self, irc, msg, args):
+        """
+        Ross gives you some advice.
+        """
+        irc.reply("PLATFORM " * len(args), prefixNick=True)
+
     def kgs(self, irc, msg, args):
         """
         bad kgs imitation
