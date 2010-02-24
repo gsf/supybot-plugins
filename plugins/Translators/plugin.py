@@ -70,6 +70,13 @@ class Translators(callbacks.Privmsg):
         prefix = "My friends, " if randint(0,2) else "My fellow prisoners, "
         irc.reply(prefix + ' '.join(args), prefixNick=True)
 
+    def homelessorcode4libber(self, irc, msg, args):
+        """
+        Determines whether someone is homeless or a code4libber
+        """
+	what = ['homeless', 'code4libber', 'werewolf']
+        irc.reply('%s: %s'% (' '.join(args), what[randint(0,2)]), prefixNick=True)
+
     def dick(self, irc, msg, args):
         """
         Disclaims your desire to be a dick
