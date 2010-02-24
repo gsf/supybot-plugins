@@ -163,7 +163,7 @@ class Twitter(callbacks.Plugin):
         url = "http://api.twitter.com/1/statuses/update.json"
         irc.reply('The operation succeeded.')
       else:
-        irc.reply('Tweet too long!')
+        irc.reply('Tweet is %s characters too long!' % (len(tweet_text) - 140))
 
     tweet = wrap(tweet, ['user','text'])
 
