@@ -75,7 +75,7 @@ class Translators(callbacks.Privmsg):
         Determines whether someone is homeless or a code4libber
         """
 	what = ['homeless', 'code4libber', 'WEREWOLF!']
-        irc.reply('%s: %s'% (' '.join(args), what[randint(0,2)]), prefixNick=True)
+        irc.reply('%s = %s'% (' '.join(args), what[randint(0,2)]), prefixNick=False)
 
     def dick(self, irc, msg, args):
         """
