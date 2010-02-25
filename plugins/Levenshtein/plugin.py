@@ -87,7 +87,7 @@ class Levenshtein(callbacks.Privmsg):
             irc.reply("usage: levenshtein <string> <string>", prefixNick=True)
             return
         distance = levenshtein_distance(args[0], args[1])
-        answer = "The Levenshtein distance between %s and %s is %s." % \
+        answer = 'The Levenshtein distance between "%s" and "%s" is %s.' % \
             (args[0], args[1], distance)
 
         irc.reply(answer, prefixNick=True)
@@ -101,8 +101,7 @@ class Levenshtein(callbacks.Privmsg):
             irc.reply("usage: damlev <string> <string>", prefixNick=True)
             return
         distance = dameraulevenshtein(args[0], args[1])
-        answer = "The Damerau-Levenshtein distance between %s and %s is %s." % \
-            (args[0], args[1], distance)
+        answer = 'The Damerau-Levenshtein distance between "%s" and "%s" is %s.' % (args[0], args[1], distance)
 
         irc.reply(answer, prefixNick=True)
 
