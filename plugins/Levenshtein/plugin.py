@@ -28,7 +28,7 @@ class Levenshtein(callbacks.Privmsg):
         soup = BeautifulSoup(response)
         answer = soup.form.nextSibling.nextSibling.contents
 
-        irc.reply(answer, prefixNick=True)
+        irc.reply(answer[0], prefixNick=True)
 
 Class = Levenshtein
 
