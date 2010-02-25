@@ -67,7 +67,7 @@ class TrueTrue(callbacks.PluginRegexp):
         r"upchucks"
         time.sleep(2)
         aisle = randint(1,10)
-        irc.reply(("clean up on aisle %i" % aisle), prefixNick=False)
+        irc.reply(("robcaSSon! clean up on aisle %i" % aisle), prefixNick=False)
 
     def yawnSnarfer(self,irc,msg,match):
         r"yawns"
