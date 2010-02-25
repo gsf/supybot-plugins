@@ -43,7 +43,7 @@ class Levenshtein(callbacks.Privmsg):
         answer = "The levenshtein distance between %s and %s is %s." % \
             (args[0], args[1], distance)
 
-        irc.reply(answer[0], prefixNick=True)
+        irc.reply(answer, prefixNick=True)
 
 Class = Levenshtein
 
