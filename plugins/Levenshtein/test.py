@@ -4,5 +4,5 @@ class LevenshteinTestCase(PluginTestCase):
     plugins = ('Levenshtein',)
     def testLevenshtein(self):
         self.assertNotError('levenshtein "cathy marshall" "paul jones"')
-        self.assertError('levenshtein')
+        self.assertHelp('levenshtein')
 
