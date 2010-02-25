@@ -26,7 +26,7 @@ class Levenshtein(callbacks.Privmsg):
         request = urllib2.Request(url, data)
         response = urllib2.urlopen(request).read()
         soup = BeautifulSoup(response)
-        answer = soup.form.nextSibling.contents
+        answer = soup.form.nextSibling.nextSibling.contents
 
         irc.reply(answer, prefixNick=True)
 
