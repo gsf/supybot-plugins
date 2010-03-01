@@ -32,6 +32,7 @@ import csv
 
 import supybot.conf as conf
 import supybot.utils as utils
+from supybot.utils.file import AtomicFile as transactionalFile
 from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
@@ -205,7 +206,7 @@ class SqliteKarmaDB(object):
 
     def dump(self, channel, filename):
         filename = conf.supybot.directories.data.dirize(filename)
-        fd = utils.transactionalFile(filename)
+        fd = transactionalFile(filename)
         out = csv.writer(fd)
         db = self._getDb(channel)
         cursor = db.cursor()
