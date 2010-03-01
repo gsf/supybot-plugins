@@ -257,7 +257,7 @@ class Karma(callbacks.Plugin):
 
     def _doKarma(self, irc, channel, thing):
         assert thing[-2:] in ('++', '--', '+-', '-+')
-        assert thing[:-2] not in ('<', )
+        assert thing[:-2] not in ('<', '-', '<!')
         thing_end = thing[-2:]
         thing = thing[:-2].strip('\'"')
         if thing:
