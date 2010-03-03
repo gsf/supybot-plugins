@@ -62,7 +62,6 @@ class Yelp(callbacks.Plugin):
       p = params.copy()
       p['ywsid'] = YWSID
       url = 'http://api.yelp.com/business_review_search?' + urlencode(p)
-      print url
       doc = web.getUrl(url, headers=HEADERS)
       try:
           json = simplejson.loads(doc)
