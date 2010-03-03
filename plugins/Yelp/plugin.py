@@ -40,6 +40,20 @@ from urllib import quote, urlencode
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
 YWSID = "DxY8mcK-qiWxg953HoXVJg"
 
+def _key_compare(a,b,key,boost = 1):
+  if a[key] > b[key]:
+    return 1 * boost
+  elif a[key] == b[key]:
+    return 0
+  else:
+    return -1 * boost
+  
+def _distance_compare(a,b):
+  return _key_compare(a,b,'distance')
+  
+def _rating_compare(a,b):
+  return _key_compare(a,b,'avg_rating',boost=-1)
+    
 class Yelp(callbacks.Plugin):
     """Add the help for "@plugin help Yelp" here
     This should describe *how* to use this plugin."""
@@ -57,23 +71,37 @@ class Yelp(callbacks.Plugin):
       return json
 
     def yelp(self, irc, msg, args):
-      """<query> <location> - Search Yelp"""
-      result = self._yelp_api({'term' : args[0], 'location' : args[1]})
-      if result == None:
-        irc.reply('No results found')
+      """<query> <location> [--sort relevance|rating|distance]
+      Search Yelp
+      """
+      if len(args) < 2:
+        raise callbacks.ArgumentError(None)
       else:
-        responses = []
-        for business in result['businesses']:
-          half = business['avg_rating'] - int(business['avg_rating'])
-          stars = unichr(0x2605) * int(business['avg_rating'])
-          if half > 0:
-            stars = stars + unichr(0x00BD)
-          response = '%s (%s, %s [%.1fmi], %s, <%s>)' % (business['name'],business['address1'],business['city'],business['distance'],stars,business['url'])
-          responses.append(response)
-        irc.reply(' ; '.join(responses).encode('utf8','ignore'))
+        result = self._yelp_api({'term' : args[0], 'location' : args[1]})
+        if result == None:
+          irc.reply('No results found')
+        else:
+          businesses = result['businesses']
+          try:
+            if args[2] == '--sort':
+              if args[3].lower().startswith('dist'):
+                businesses.sort(_distance_compare)
+              elif args[3].lower().startswith('rat'):
+                businesses.sort(_rating_compare)
+              elif args[3].lower().startswith('rel') == False:
+                raise callbacks.ArgumentError('Unknown sort method: %s' % args[3])
+          except IndexError:
+            pass
           
-#    yelp = wrap(yelp,['string','text'])
-
+          responses = []
+          for business in businesses:
+            half = business['avg_rating'] - int(business['avg_rating'])
+            stars = unichr(0x2605) * int(business['avg_rating'])
+            if half > 0:
+              stars = stars + unichr(0x00BD)
+            response = '%s (%s, %s [%.1fmi], %s, <%s>)' % (business['name'],business['address1'],business['city'],business['distance'],stars,business['url'])
+            responses.append(response)
+          irc.reply(' ; '.join(responses).encode('utf8','ignore'))
 
 Class = Yelp
 
