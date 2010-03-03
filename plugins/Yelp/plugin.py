@@ -78,11 +78,11 @@ class Yelp(callbacks.Plugin):
       else:
         result = self._yelp_api({'term' : args[0], 'location' : args[1]})
         if result == None:
-          irc.reply('No results found for %s near %s', (args[0],args[1]))
+          irc.reply('No results found for %s near %s' % (args[0],args[1]))
         else:
           businesses = result['businesses']
           if len(businesses) == 0:
-            irc.reply('No results found for %s near %s', (args[0],args[1]))
+            irc.reply('No results found for %s near %s' % (args[0],args[1]))
           try:
             if args[2] == '--sort':
               if args[3].lower().startswith('dist'):
