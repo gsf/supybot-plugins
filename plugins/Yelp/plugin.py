@@ -83,26 +83,27 @@ class Yelp(callbacks.Plugin):
           businesses = result['businesses']
           if len(businesses) == 0:
             irc.reply('No results found for %s near %s' % (args[0],args[1]))
-          try:
-            if args[2] == '--sort':
-              if args[3].lower().startswith('dist'):
-                businesses.sort(_distance_compare)
-              elif args[3].lower().startswith('rat'):
-                businesses.sort(_rating_compare)
-              elif args[3].lower().startswith('rel') == False:
-                raise callbacks.ArgumentError('Unknown sort method: %s' % args[3])
-          except IndexError:
-            pass
+          else:
+            try:
+              if args[2] == '--sort':
+                if args[3].lower().startswith('dist'):
+                  businesses.sort(_distance_compare)
+                elif args[3].lower().startswith('rat'):
+                  businesses.sort(_rating_compare)
+                elif args[3].lower().startswith('rel') == False:
+                  raise callbacks.ArgumentError('Unknown sort method: %s' % args[3])
+            except IndexError:
+              pass
           
-          responses = []
-          for business in businesses:
-            half = business['avg_rating'] - int(business['avg_rating'])
-            stars = unichr(0x2605) * int(business['avg_rating'])
-            if half > 0:
-              stars = stars + unichr(0x00BD)
-            response = '%s (%s, %s [%.1fmi], %s, <%s>)' % (business['name'],business['address1'],business['city'],business['distance'],stars,business['url'])
-            responses.append(response)
-          irc.reply(' ; '.join(responses).encode('utf8','ignore'))
+            responses = []
+            for business in businesses:
+              half = business['avg_rating'] - int(business['avg_rating'])
+              stars = unichr(0x2605) * int(business['avg_rating'])
+              if half > 0:
+                stars = stars + unichr(0x00BD)
+              response = '%s (%s, %s [%.1fmi], %s, <%s>)' % (business['name'],business['address1'],business['city'],business['distance'],stars,business['url'])
+              responses.append(response)
+            irc.reply(' ; '.join(responses).encode('utf8','ignore'))
 
 Class = Yelp
 
