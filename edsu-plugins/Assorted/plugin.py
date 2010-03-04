@@ -1260,7 +1260,7 @@ class Assorted(callbacks.Privmsg):
             if line: 
                 irc.reply(line, prefixNick=False)
 
-    def pony(self, irc, msg, args):
+    def pony(self, irc, msg, args, input):
         """
         zOMG PONieZ!!
         """
@@ -1270,9 +1270,12 @@ class Assorted(callbacks.Privmsg):
   ,;;' ( '\
       / '\_) 
         """
+        irc.reply("%s has won a pony!" % input)
         for line in pony.split("\n"):
             if line: 
                 irc.reply(line, prefixNick=False)
+
+    pony = wrap(pony, ['text'])
 
     def _random_nick(self, irc, msg, args, channel):
   		# Modified from Channel.nicks
