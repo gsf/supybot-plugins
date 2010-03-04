@@ -1264,10 +1264,10 @@ class Assorted(callbacks.Privmsg):
         """
         zOMG PONieZ!!
         """
-        pony = """
-      ,//)
-    ,;;' \
-  ,;;' ( '\
+        pony = """ 
+      ,//) 
+    ,;;' \ 
+  ,;;' ( '\ 
       / '\_) 
         """
         irc.reply("%s has won a pony!" % input)
