@@ -1257,8 +1257,22 @@ class Assorted(callbacks.Privmsg):
            o    
         """
         for line in flake.split("\n"):
-            if line:
-                irc.reply(line)
+            if line: 
+                irc.reply(line, prefixNick=False)
+
+    def pony(self, irc, msg, args):
+        """
+        zOMG PONieZ!!
+        """
+        pony = """
+      ,//)
+    ,;;' \
+  ,;;' ( '\
+      / '\_) 
+        """
+        for line in pony.split("\n"):
+            if line: 
+                irc.reply(line, prefixNick=False)
 
     def _random_nick(self, irc, msg, args, channel):
   		# Modified from Channel.nicks
