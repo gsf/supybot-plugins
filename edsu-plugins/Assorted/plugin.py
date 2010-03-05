@@ -113,9 +113,9 @@ class Assorted(callbacks.Privmsg):
       msg = ["%s [%i]" % (result[0], result[1]) for result in results]
       irc.reply('; '.join(msg))
 
-    def hosts2011(self,irc,msg,args):
+    def hosts2012(self,irc,msg,args):
       """ 
-      Shows votes for the 2011 code4libcon. Courtesy of 
+      Shows votes for the next code4libcon. Courtesy of 
       http://www.floydpinkerton.net/fun/citynames.html
       """
       places = [
@@ -968,7 +968,8 @@ class Assorted(callbacks.Privmsg):
             'tshirts': {'2009': '8',
 	    	        '2010': '14'},
             'hosts': {'2009': '3',
-                      '2010': '9'},
+                      '2010': '9'
+                      '2011': '15'},
             'talks': {'2008': '2', 
                       '2009': '7',
                       '2010': '13'},
@@ -1094,6 +1095,17 @@ class Assorted(callbacks.Privmsg):
             tallies, vote_url = self._diebold_tallies("hosts", "2010")
         except PollNotFoundException, pnfe:
             irc.reply("Poll not found for hosts in 2010: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+    def hosts2011(self, irc, msg, args):
+        """ 
+        Gets tally of host votes for 2011 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("hosts", "2011")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for hosts in 2011: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
 
