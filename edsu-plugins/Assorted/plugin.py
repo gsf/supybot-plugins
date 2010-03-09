@@ -1360,6 +1360,8 @@ class Assorted(callbacks.Privmsg):
     isitwhiskeytime = isitwhiskytime
     
     def stanford(self, irc, msg, args, channel):
+      """[<channel>]
+      Assign users to groups for a fun recreation of the Stanford Prison Experiment!"""
       nicks = list(irc.state.channels[channel].users)
       prisoners = []
       guards = []
