@@ -1301,7 +1301,7 @@ class Assorted(callbacks.Privmsg):
           irc.error('You don\'t have access to that information.')
       L = list(irc.state.channels[channel].users)
       return(L[randint(0, len(L)-1)])
-          
+
     def someone(self, irc, msg, args, channel):
         """[<channel>]
 
@@ -1358,5 +1358,19 @@ class Assorted(callbacks.Privmsg):
       irc.reply(affirmatives[randint(0, len(affirmatives)-1)], prefixNick=True)
       
     isitwhiskeytime = isitwhiskytime
+    
+    def stanford(self, irc, msg, args, channel):
+      nicks = list(irc.state.channels[channel].users)
+      prisoners = []
+      guards = []
+      for nick in nicks:
+        if randint(0,1) == 0:
+          prisoners.append(nick)
+        else:
+          guards.append(nick)
+      irc.reply('PRISONERS: ' + ', '.join(prisoners), prefixNick=False)
+      irc.reply('GUARDS: ' + ', '.join(guards), prefixNick=False)
+      
+    stanford = wrap(stanford, ['inChannel'])
     
 Class = Assorted
