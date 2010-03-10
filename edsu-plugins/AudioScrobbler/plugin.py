@@ -110,7 +110,7 @@ class AudioScrobbler(callbacks.Privmsg):
                     tunes.append("%s: %s" % (user,songs[0]))
                     l.release()
 
-        l = lock()
+        l = Lock()
         for user in self.users:
             t = Thread(target=fetch_tune, args=(l, user))
             t.daemon = True
