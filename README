@@ -6,8 +6,7 @@ These directories contain plugins for supybot from three places:
   Summers wrote for his supybot.  
 * The ones in "plugins" were written locally, and consist of minor 
   variations on the built-in plugins, which can be viewed at
-  http://fruct.us/built-in_supybot-plugins/ (don't forget the 
-  trailing slash there).
+  http://rc98.net/built-in_supybot_plugins/.
 
 Anyone with write privileges to this repository should feel free to
 edit any plugin, and any plugin from the built-in that you wish to
