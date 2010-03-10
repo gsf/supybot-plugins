@@ -13,7 +13,7 @@ import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
-
+from mulitprocessing import Process, Lock
 
 class AudioScrobbler(callbacks.Privmsg):
 
@@ -101,12 +101,19 @@ class AudioScrobbler(callbacks.Privmsg):
             show_all = False
 
         tunes = [] 
-        for user in self.users:
+        def fetch_tune(l, user):
             nick = self.nickmap.get(user, user)
             if show_all or nick in irc.state.channels[channel].users:
                 songs = self.get_songs(user)
                 if len(songs) > 0:
+                    l.aquire()
                     tunes.append("%s: %s" % (user,songs[0]))
+                    l.release()
+
+        l = lock()
+        for user in self.users:
+            Process(target=fetch_tune, args=(l, user)).start()
+
         irc.reply('; '.join(tunes))
 
     blockparty = wrap(blockparty, [optional('text')])
