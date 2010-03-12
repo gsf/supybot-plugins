@@ -108,13 +108,13 @@ class TrueTrue(callbacks.PluginRegexp):
       
     def sobSnarfer(self, irc, msg, match):
         r'\bsobs\b'
-        if randint(1,5) != 1: return
+        if randint(1,5) > 2: return
         time.sleep(0.5)
         irc.reply('snorts', action=True, prefixNick=False)
 
     def snortSnarfer(self, irc, msg, match):
         r'\bsnorts\b' 
-        if randint(1,5) != 1: return
+        if randint(1,5) > 2: return
         time.sleep(0.5)
         irc.reply('sobs', action=True, prefixNick=False)
       
