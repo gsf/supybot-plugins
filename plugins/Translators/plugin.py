@@ -11,6 +11,7 @@ import supybot.utils.web as web
 import BeautifulSoup as BS
 from urllib import urlencode
 from os.path import join, dirname, abspath
+import _pairtree
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 STOPWORDS = open(join(dirname(abspath(__file__)), 'stopwords.txt')).read().split()
@@ -290,6 +291,14 @@ class Translators(callbacks.Privmsg):
         response = ' '.join(danewords)
         response += 'sen'
         irc.reply(response.encode('utf-8', 'ignore'))
+
+    def pairtree(self, irc, msg, args, id):
+        """<id>
+        Generate a pairtree based on the given ID.
+        """
+        irc.reply('/'.join(_pairtree.id_to_path(id)))
         
+    pairtree = wrap(pairtree,['text'])
+    
 Class = Translators
 
