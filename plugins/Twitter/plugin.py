@@ -12,7 +12,7 @@ import simplejson
 import supybot.utils.web as web
 import urllib2
 from urllib import urlencode, quote
-from urlparse import parse_qs
+from cgi import parse_qs
 from BeautifulSoup import BeautifulStoneSoup as BSS
 import lxml.html
 
