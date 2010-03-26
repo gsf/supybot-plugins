@@ -7,11 +7,14 @@ import supybot.callbacks as callbacks
 
 from random import randint
 import re
+import sys
 import simplejson
 import supybot.utils.web as web
 import urllib2
 from urllib import urlencode, quote
+from urlparse import parse_qs
 from BeautifulSoup import BeautifulStoneSoup as BSS
+import lxml.html
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
 
@@ -181,6 +184,29 @@ class Twitter(callbacks.Plugin):
         irc.reply(' ; '.join(responses), prefixNick=False)
       else:
         irc.reply('No new mentions')
+
+    def twanalyze(self, irc, msg, args, user):
+        """@twanalyze user
+
+        See the http://twanalsyt.com personality test result
+        for any twitter user
+        """
+        url = 'http://twanalyst.com/%s' % quote(user)
+        doc = web.getUrl(url, headers=HEADERS)
+        html = lxml.html.fromstring(doc)
+        try:
+            link = html.xpath('//a[contains(@href, "twitter.com/?status")]')[0]
+            href = link.attrib['href']
+            parsed = parse_qs(href)
+            status = parsed['http://twitter.com/?status'][0]
+            m = re.match('My Twitter personality: (.+?) My style: (.+?) ([A-Z]+)', status)
+            resp = "Personality: %s, Style: %s, Ranking: %s" % m.groups()
+            irc.reply(resp)
+        except Exception, e:
+            print >>sys.stderr, e
+            irc.reply('blerg! scraping FAIL')
+
+    twanalyze = wrap(twanalyze, ['text'])
       
 Class = Twitter
 
