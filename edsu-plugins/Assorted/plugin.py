@@ -1180,14 +1180,16 @@ class Assorted(callbacks.Privmsg):
     reminder = wrap(reminder, [optional('nickInChannel'), 'int', optional('text')])
 
     def cowbell(self, irc, msg, args):
-        """
+        """<text>
         adds more cowbell!
         """
         cowbell = " *cowbell* "
         if len(args) > 1:
             s = cowbell.join(args)
-        else:
+        elif len(args) == 1:
             s = re.compile(r' ').sub(cowbell, args[0])
+        else:
+            s = cowbell
         irc.reply(s, prefixNick=True)
 
     def slowclap(self, irc, msg, args):
