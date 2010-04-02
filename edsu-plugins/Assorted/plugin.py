@@ -839,9 +839,9 @@ class Assorted(callbacks.Privmsg):
         if not s:
             return
         if splitter:
-            items = [x.strip() for x in re.split(splitter, s)]
+            items = [x.strip() for x in re.split(splitter, s) if len(x)]
         else:
-            items = [x.strip() for x in re.split('\s+', s)]
+            items = [x.strip() for x in re.split('\s+', s) if len(x)]
         irc.reply(' or '.join(items), prefixNick=False)
          
     orsome = wrap(orsome, [optional('regexpMatcher'), 'text'])
