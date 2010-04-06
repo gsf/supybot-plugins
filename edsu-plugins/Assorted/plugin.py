@@ -285,7 +285,7 @@ class Assorted(callbacks.Privmsg):
 
     def developer(self,irc,msg,args):
         """generate a fantasy developer"""
-        attrs = ['Communication', 'BigPicture', 'DetailOriented', 'KungFu', 'GetsStuffDone', 'FlakeFactor']
+        attrs = ['Communication', 'BigPicture', 'DetailOriented', 'KungFu', 'GetsStuffDone', 'FlakeFactor', 'JavaAvoidance']
         dev = ', '.join(["%s:%d" % (attr, self.dnd_attr()) for attr in attrs])
         irc.reply(dev)
 
