@@ -78,7 +78,7 @@ def lyricsty(artist, title):
             (artist_init.lower(), artist_norm.lower(), title_norm.lower())
 
         soup = getsoup(url)
-        lyricsdiv = soup.find('div', {'class': 'song'})
+        lyricsdiv = soup.find('div', {'class': 'dn'})
         lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
         song = {
             'artist': artist, 
