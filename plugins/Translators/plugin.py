@@ -300,8 +300,9 @@ class Translators(callbacks.Privmsg):
             'it appears that',
             'on the other hand,',
             'i guess you could say',]
-        response = choice(intros) + " " + args[0] + " ... /O_O/ "
-        response += ' '.join(args[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
+        words = split(' '.join(args))
+        response = choice(intros) + " " + words[0] + " ... /O_O/ "
+        response += ' '.join(words[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
         irc.reply(response.encode('utf-8', 'ignore'))
 
     def pairtree(self, irc, msg, args, id):
