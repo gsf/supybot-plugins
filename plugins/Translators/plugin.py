@@ -291,6 +291,13 @@ class Translators(callbacks.Privmsg):
         response = ' '.join(danewords)
         response += 'sen'
         irc.reply(response.encode('utf-8', 'ignore'))
+    
+    def horatio(self, irc, msg, args):
+        """ <text>
+        make it sound like you're Horatio Caine from CSI, complete w/ The Who and sunglasses"""
+        response = "looks like " + args[0] + " ... /O_O/ "
+        response += ' '.join(args[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
+        irc.reply(response.encode('utf-8', 'ignore'))
 
     def pairtree(self, irc, msg, args, id):
         """<id>
