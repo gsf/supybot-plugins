@@ -6,7 +6,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import re
-from random import randint, randrange
+from random import randint, randrange, choice
 import supybot.utils.web as web
 import BeautifulSoup as BS
 from urllib import urlencode
@@ -295,7 +295,12 @@ class Translators(callbacks.Privmsg):
     def horatio(self, irc, msg, args):
         """ <text>
         make it sound like you're Horatio Caine from CSI, complete w/ The Who and sunglasses"""
-        response = "looks like " + args[0] + " ... /O_O/ "
+        intros = ['looks like',
+            'sounds like',
+            'it appears that',
+            'on the other hand,',
+            'i guess you could say',]
+        response = choice(intros) + " " + args[0] + " ... /O_O/ "
         response += ' '.join(args[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
         irc.reply(response.encode('utf-8', 'ignore'))
 
