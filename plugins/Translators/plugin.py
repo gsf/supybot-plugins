@@ -300,7 +300,7 @@ class Translators(callbacks.Privmsg):
             'it appears that',
             'on the other hand,',
             'i guess you could say',]
-        words = split(' '.join(args))
+        words = (' '.join(args)).split()
         response = choice(intros) + " " + words[0] + " ... /O_O/ "
         response += ' '.join(words[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
         irc.reply(response.encode('utf-8', 'ignore'))
