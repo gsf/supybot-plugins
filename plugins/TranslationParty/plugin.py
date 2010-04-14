@@ -84,7 +84,7 @@ class TranslationParty(callbacks.Plugin):
         if show_all:
             irc.reply(" -> ".join(result).encode('utf8'))
         else:
-            irc.reply(result[-1].encode('utf8'))
+            irc.reply(" -> ".join((result[0],result[-1])).encode('utf8'))
         
     translationparty = wrap(translationparty, [getopts({'lang':'something','all':''}), 'text'])
         
