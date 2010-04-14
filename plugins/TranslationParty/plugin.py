@@ -64,16 +64,16 @@ class TranslationParty(callbacks.Plugin):
         return(stack)
         
     def translationparty(self, irc, msg, args, opts, text):
-        """[--lang <iso-code>] [--all] <text>
+        """[--lang <iso-code>] [--show <none|one|all>] <text>
         Try to find equilibrium in back-and-forth translations of <text>. Language defaults to 'ja' (Japanese)."""
         lang = 'ja'
-        show_all = False
+        show = 'none'
         
         for (opt,arg) in opts:
             if opt == 'lang':
                 lang = arg
-            if opt == 'all':
-                show_all = True
+            if opt == 'show':
+                show = arg
         
         result = self._party('en', lang, text)
         if len(result) < 50:
@@ -81,12 +81,14 @@ class TranslationParty(callbacks.Plugin):
         else:
             irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
 
-        if show_all:
+        if show == 'all':
             irc.reply(" -> ".join(result).encode('utf8'))
-        else:
+        elif show == 'one':
             irc.reply(" -> ".join((result[0],result[-1])).encode('utf8'))
+        else:
+            irc.reply(result[-1].encode('utf8'))
         
-    translationparty = wrap(translationparty, [getopts({'lang':'something','all':''}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all"))}), 'text'])
         
 Class = TranslationParty
 
