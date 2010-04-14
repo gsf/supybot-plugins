@@ -52,31 +52,34 @@ class TranslationParty(callbacks.Plugin):
         translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
         return translation
     
-    def _party(self, from_lang, to_lang, text):
+    def _party(self, from_lang, to_lang, text, max_translations = 50):
         stack = [text]
         stack.append(self._translate(from_lang, to_lang, stack[-1]))
         stack.append(self._translate(to_lang, from_lang, stack[-1]))
         stack.append(self._translate(from_lang, to_lang, stack[-1]))
         stack.append(self._translate(to_lang, from_lang, stack[-1]))
-        while (len(stack) < 50) and ((stack[-2] != stack[-4]) and (stack[-1] != stack[-3])):
+        while (len(stack) < max_translations) and ((stack[-2] != stack[-4]) and (stack[-1] != stack[-3])):
             stack.append(self._translate(from_lang, to_lang, stack[-1]))
             stack.append(self._translate(to_lang, from_lang, stack[-1]))
         return(stack)
         
     def translationparty(self, irc, msg, args, opts, text):
-        """[--lang <iso-code>] [--show <none|one|all>] <text>
-        Try to find equilibrium in back-and-forth translations of <text>. Language defaults to 'ja' (Japanese)."""
+        """[--lang <iso-code>] [--show <none|one|all>] [--max <int>] <text>
+        Try to find equilibrium in back-and-forth translations of <text>. (Defaults: --lang ja --show none --max 50)"""
         lang = 'ja'
         show = 'none'
+        max_translations = 50
         
         for (opt,arg) in opts:
             if opt == 'lang':
                 lang = arg
+            if opt == 'max':
+                max_translations = arg
             if opt == 'show':
                 show = arg
         
-        result = self._party('en', lang, text)
-        if len(result) < 50:
+        result = self._party('en', lang, text, max_translations)
+        if len(result) < max_translations:
             irc.reply("Equilibrium found!")
         else:
             irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
@@ -88,7 +91,7 @@ class TranslationParty(callbacks.Plugin):
         else:
             irc.reply(result[-1].encode('utf8'))
         
-    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all"))}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int'}), 'text'])
         
 Class = TranslationParty
 
