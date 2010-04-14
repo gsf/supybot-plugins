@@ -38,6 +38,7 @@ from random import randrange
 import simplejson
 from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
+from BeautifulSoup import BeautifulStoneSoup
 
 class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
@@ -48,7 +49,8 @@ class TranslationParty(callbacks.Plugin):
             'key' : 'notsupplied', 'v' : '1.0', 'nocache' : randrange(0,sys.maxint) }
         url = 'http://www.google.com/uds/Gtranslate?' + urlencode(params)
         response = simplejson.loads(urlopen(url).read())
-        return response['responseData']['translatedText']
+        translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
+        return translation
     
     def _party(self, from_lang, to_lang, text):
         stack = [text]
@@ -80,7 +82,7 @@ class TranslationParty(callbacks.Plugin):
             irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
 
         if show_all:
-            irc.reply("; ".join(result).encode('utf8'))
+            irc.reply(" -> ".join(result).encode('utf8'))
         else:
             irc.reply(result[-1].encode('utf8'))
         
