@@ -40,6 +40,14 @@ from urllib import quote, urlencode
 from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from BeautifulSoup import BeautifulStoneSoup
 
+class TranslationError(Exception):
+    def __init__(self, code, value):
+        self.code = code
+        self.value = value
+    
+    def __str__(self):
+        return "%d: %s" % (self.code, self.value)
+        
 class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
     This should describe *how* to use this plugin."""
@@ -49,8 +57,11 @@ class TranslationParty(callbacks.Plugin):
             'key' : 'notsupplied', 'v' : '1.0', 'nocache' : randrange(0,sys.maxint) }
         url = 'http://www.google.com/uds/Gtranslate?' + urlencode(params)
         response = simplejson.loads(urlopen(url).read())
-        translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
-        return translation
+        if response['responseStatus'] == 200:
+            translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
+            return translation
+        else:
+            raise TranslationError(response['responseStatus'], response['responseDetails'])
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
         stack = [text]
@@ -78,19 +89,22 @@ class TranslationParty(callbacks.Plugin):
             if opt == 'show':
                 show = arg
         
-        result = self._party('en', lang, text, max_translations)
-        if len(result) < max_translations:
-            irc.reply("Equilibrium found!")
-        else:
-            irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
+        try:
+            result = self._party('en', lang, text, max_translations)
+            if len(result) < max_translations:
+                irc.reply("Equilibrium found!")
+            else:
+                irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
 
-        if show == 'all':
-            irc.reply(" -> ".join(result).encode('utf8'))
-        elif show == 'one':
-            irc.reply(" -> ".join((result[0],result[-1])).encode('utf8'))
-        else:
-            irc.reply(result[-1].encode('utf8'))
-        
+            if show == 'all':
+                irc.reply(" -> ".join(result).encode('utf8'))
+            elif show == 'one':
+                irc.reply(" -> ".join((result[0],result[-1])).encode('utf8'))
+            else:
+                irc.reply(result[-1].encode('utf8'))
+        except TranslationError, e:
+            irc.reply(e)
+            
     translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int'}), 'text'])
         
 Class = TranslationParty
