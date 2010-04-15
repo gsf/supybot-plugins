@@ -109,7 +109,7 @@ class TranslationParty(callbacks.Plugin):
         except TranslationError, e:
             irc.reply(e)
             
-    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int'}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
         
 Class = TranslationParty
 
