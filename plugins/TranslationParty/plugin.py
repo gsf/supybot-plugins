@@ -75,26 +75,30 @@ class TranslationParty(callbacks.Plugin):
         return(stack)
         
     def translationparty(self, irc, msg, args, opts, text):
-        """[--lang <iso-code>] [--show <none|one|all>] [--max <int>] <text>
+        """[--lang <iso-code>] [--show <none|one|all>] [--max <int>] [--quiet] <text>
         Try to find equilibrium in back-and-forth translations of <text>. (Defaults: --lang ja --show none --max 50)"""
         lang = 'ja'
         show = 'none'
         max_translations = 50
+        announce = True
         
         for (opt,arg) in opts:
             if opt == 'lang':
                 lang = arg
             if opt == 'max':
                 max_translations = arg
+            if opt == 'quiet':
+                announce = False
             if opt == 'show':
                 show = arg
         
         try:
             result = self._party('en', lang, text, max_translations)
-            if len(result) < max_translations:
-                irc.reply("Equilibrium found!")
-            else:
-                irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
+            if announce:
+                if len(result) < max_translations:
+                    irc.reply("Equilibrium found!")
+                else:
+                    irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
 
             if show == 'all':
                 irc.reply(" -> ".join(result).encode('utf8'))
