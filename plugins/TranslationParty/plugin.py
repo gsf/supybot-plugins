@@ -28,6 +28,7 @@
 
 ###
 
+import supybot.conf as conf
 import supybot.utils as utils
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -56,6 +57,15 @@ class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
     This should describe *how* to use this plugin."""
     
+    def _getDelay(self):
+        try:
+            delay = self.registryValue('delay')
+        except registry.NonExistentRegistryEntry:
+            delay = 0.5
+            conf.registerGlobalValue(TranslationParty, 'delay',
+                registry.Float(delay, """Determines pause between translations."""))
+        return delay
+        
     def _translate(self, from_lang, to_lang, text):
         params = { 'langpair' : '|'.join((from_lang,to_lang)), 'q' : text.encode('utf8'), 
             'key' : 'notsupplied', 'v' : '1.0', 'nocache' : randrange(0,sys.maxint) }
@@ -68,12 +78,7 @@ class TranslationParty(callbacks.Plugin):
             raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
-        try:
-            delay = self.registryValue('delay')
-        except registry.NonExistentRegistryEntry:
-            delay = 0.5
-            self.setRegistryValue('delay',delay)
-            
+        delay = self._getDelay()
         stack = [text]
         def iterate():
             stack.append(self._translate(from_lang,to_lang,stack[-1]))
