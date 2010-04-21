@@ -41,9 +41,10 @@ from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from BeautifulSoup import BeautifulStoneSoup
 
 class TranslationError(Exception):
-    def __init__(self, code, value):
+    def __init__(self, code, value, stack):
         self.code = code
         self.value = value
+        self.stack = stack
     
     def __str__(self):
         return "%d: %s" % (self.code, self.value)
@@ -61,19 +62,23 @@ class TranslationParty(callbacks.Plugin):
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
             return translation
         else:
-            raise TranslationError(response['responseStatus'], response['responseDetails'])
+            raise TranslationError(response['responseStatus'], response['responseDetails'], None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
-        stack = [text]
-        stack.append(self._translate(from_lang, to_lang, stack[-1]))
-        stack.append(self._translate(to_lang, from_lang, stack[-1]))
-        stack.append(self._translate(from_lang, to_lang, stack[-1]))
-        stack.append(self._translate(to_lang, from_lang, stack[-1]))
-        while (len(stack) < max_translations) and ((stack[-2] != stack[-4]) and (stack[-1] != stack[-3])):
+        try:
+            stack = [text]
             stack.append(self._translate(from_lang, to_lang, stack[-1]))
             stack.append(self._translate(to_lang, from_lang, stack[-1]))
-        return(stack)
-        
+            stack.append(self._translate(from_lang, to_lang, stack[-1]))
+            stack.append(self._translate(to_lang, from_lang, stack[-1]))
+            while (len(stack) < max_translations) and ((stack[-2] != stack[-4]) and (stack[-1] != stack[-3])):
+                stack.append(self._translate(from_lang, to_lang, stack[-1]))
+                stack.append(self._translate(to_lang, from_lang, stack[-1]))
+            return(stack)
+        except TranslationError, e:
+            e.stack = stack
+            raise e
+            
     def translationparty(self, irc, msg, args, opts, text):
         """[--lang <iso-code>] [--show <none|one|all>] [--max <int>] [--quiet] <text>
         Try to find equilibrium in back-and-forth translations of <text>. (Defaults: --lang ja --show none --max 50)"""
@@ -81,8 +86,11 @@ class TranslationParty(callbacks.Plugin):
         show = 'none'
         max_translations = 50
         announce = True
+        debug = False
         
         for (opt,arg) in opts:
+            if opt == 'debug':
+                debug = True
             if opt == 'lang':
                 lang = arg
             if opt == 'max':
@@ -108,8 +116,10 @@ class TranslationParty(callbacks.Plugin):
                 irc.reply(result[-1].encode('utf8'))
         except TranslationError, e:
             irc.reply(e)
+            if debug:
+                irc.reply(" -> ".join(e.stack).encode('utf8'))
             
-    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'debug':'','lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
         
 Class = TranslationParty
 
