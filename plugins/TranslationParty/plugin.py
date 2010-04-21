@@ -41,9 +41,10 @@ from urllib2 import urlopen, urlparse, Request, build_opener, HTTPError
 from BeautifulSoup import BeautifulStoneSoup
 
 class TranslationError(Exception):
-    def __init__(self, code, value, stack):
+    def __init__(self, code, value, url, stack):
         self.code = code
         self.value = value
+        self.url = url
         self.stack = stack
     
     def __str__(self):
@@ -62,7 +63,7 @@ class TranslationParty(callbacks.Plugin):
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
             return translation
         else:
-            raise TranslationError(response['responseStatus'], response['responseDetails'], None)
+            raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
         try:
@@ -117,7 +118,8 @@ class TranslationParty(callbacks.Plugin):
         except TranslationError, e:
             irc.reply(e)
             if debug:
-                irc.reply(" -> ".join(e.stack).encode('utf8'))
+                irc.reply("Stack: %s" % (" -> ".join(e.stack).encode('utf8')))
+                irc.reply("Last URL: %s" % (e.url))
             
     translationparty = wrap(translationparty, [getopts({'debug':'','lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
         
