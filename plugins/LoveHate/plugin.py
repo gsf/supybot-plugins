@@ -167,9 +167,9 @@ class LoveHate(callbacks.Plugin):
     whohates = wrap(whohates, ['channeldb','text'])
     
     def _caresabout(self, irc, msg, args, channel, user, emotion):
-        if user == None:
+        if user is None:
             user = msg.nick
-        results = self._find_stuff_out(channel, lambda r: r.by == msg.nick, emotion, lambda r: r.text)
+        results = self._find_stuff_out(channel, lambda r: r.by == user, emotion, lambda r: r.text)
         replied = False
         for key in ('love','hate'):
             if len(results[key]) > 0:
@@ -178,14 +178,14 @@ class LoveHate(callbacks.Plugin):
                     things = ', '.join(results[key][0:-1]) + ' and ' + results[key][-1]
                 else:
                     things = ' and '.join(results[key])
-                irc.reply(' '.join((msg.nick, verb, things)), prefixNick=False)
+                irc.reply(' '.join((user, verb, things)), prefixNick=False)
                 replied = True
 
         if not replied:
             if emotion == None:
-                irc.reply("%s doesn't seem to care about anything." % (msg.nick))
+                irc.reply("%s doesn't seem to care about anything." % (user))
             else:
-                irc.reply("%s doesn't seem to %s anything." % (msg.nick, emotion))
+                irc.reply("%s doesn't seem to %s anything." % (user, emotion))
             
     def caresabout(self, irc, msg, args, channel, user):
         """[<channel>] [<user>]
