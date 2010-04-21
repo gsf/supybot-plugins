@@ -69,7 +69,7 @@ class TranslationParty(callbacks.Plugin):
     def _party(self, from_lang, to_lang, text, max_translations = 50):
         try:
             delay = self.registryValue('delay')
-        except NonExistentRegistryEntry:
+        except registry.NonExistentRegistryEntry:
             delay = 0.5
             self.setRegistryValue('delay',delay)
             
