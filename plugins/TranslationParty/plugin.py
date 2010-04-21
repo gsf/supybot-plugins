@@ -67,7 +67,12 @@ class TranslationParty(callbacks.Plugin):
             raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
-        delay = self.registryValue('delay')
+        try:
+            delay = self.registryValue('delay')
+        except NonExistentRegistryEntry:
+            delay = 0.5
+            self.setRegistryValue('delay',delay)
+            
         stack = [text]
         def iterate():
             stack.append(self._translate(from_lang,to_lang,stack[-1]))
