@@ -1376,5 +1376,9 @@ class Assorted(callbacks.Privmsg):
       irc.reply('GUARDS: ' + ', '.join(guards), prefixNick=False)
       
     stanford = wrap(stanford, ['inChannel'])
+
+    def httpget(self, irc, msg, args, url):
+        irc.reply(urlopen(url).read())
+    httpget = wrap(httpget, ['url'])
     
 Class = Assorted
