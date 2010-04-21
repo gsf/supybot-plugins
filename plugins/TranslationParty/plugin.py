@@ -62,7 +62,7 @@ class TranslationParty(callbacks.Plugin):
             delay = self.registryValue('delay')
         except registry.NonExistentRegistryEntry:
             delay = 0.5
-            conf.registerGlobalValue(TranslationParty, 'delay',
+            conf.registerGlobalValue(conf.registerPlugin('TranslationParty'), 'delay',
                 registry.Float(delay, """Determines pause between translations."""))
         return delay
         
