@@ -34,6 +34,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import sys
+import time
 from random import randrange
 import simplejson
 from urllib import quote, urlencode
@@ -66,15 +67,19 @@ class TranslationParty(callbacks.Plugin):
             raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
+        delay = self.registryValue('delay')
+        stack = [text]
+        def iterate():
+            stack.append(self._translate(from_lang,to_lang,stack[-1]))
+            time.sleep(delay)
+            stack.append(self._translate(to_lang,from_lang,stack[-1]))
+            time.sleep(delay)
+            
         try:
-            stack = [text]
-            stack.append(self._translate(from_lang, to_lang, stack[-1]))
-            stack.append(self._translate(to_lang, from_lang, stack[-1]))
-            stack.append(self._translate(from_lang, to_lang, stack[-1]))
-            stack.append(self._translate(to_lang, from_lang, stack[-1]))
+            iterate()
+            iterate()
             while (len(stack) < max_translations) and ((stack[-2] != stack[-4]) and (stack[-1] != stack[-3])):
-                stack.append(self._translate(from_lang, to_lang, stack[-1]))
-                stack.append(self._translate(to_lang, from_lang, stack[-1]))
+                iterate()
             return(stack)
         except TranslationError, e:
             e.stack = stack

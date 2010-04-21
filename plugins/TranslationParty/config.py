@@ -45,5 +45,7 @@ TranslationParty = conf.registerPlugin('TranslationParty')
 # conf.registerGlobalValue(TranslationParty, 'someConfigVariableName',
 #     registry.Boolean(False, """Help for someConfigVariableName."""))
 
+conf.registerGlobalValue(TranslationParty, 'delay',
+    registry.Float(0.5, """Determines pause between translations."""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
