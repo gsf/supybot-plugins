@@ -36,7 +36,10 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.dbi as dbi
 
+from random import randrange
 import time
+
+PRIVATE_COMMANDS = ['get','remove']
 
 class LoveHate(callbacks.Plugin):
     class DB(plugins.DbiChannelDB):
@@ -125,7 +128,7 @@ class LoveHate(callbacks.Plugin):
         return results
     
     def _whocares(self, irc, msg, args, channel, emotion, thing):
-        results = self._find_stuff_out(channel, lambda r: r.text.lower() == thing.lower(), emotion, lambda r: plugins.getUserName(r.by))
+        results = self._find_stuff_out(channel, lambda r: r.text.lower() == thing.lower(), emotion, lambda r: r.by)
         replied = False
         for key in ('love','hate'):
             if len(results[key]) > 0:
@@ -201,6 +204,47 @@ class LoveHate(callbacks.Plugin):
         Find out what <user> hates"""
         self._caresabout(irc, msg, args, channel, user, 'hate')
     hates = wrap(hates, ['channeldb',optional('nick')])
+
+    def random(self, irc, msg, args, channel, emotion):
+        """[love|hate]
+        Get some random love (or hate)"""
+        if emotion == None:
+            predicates = [lambda r: True]
+        else:
+            predicates = [lambda r: r.emotion == emotion]
+        records = self._select(channel, predicates)
+        L = list(records)
+        record = L[randrange(0,len(L))]
+        irc.reply('%s %ss %s' % (record.by, record.emotion, record.text))
+    random = wrap(random, ['channeldb',optional(("literal", ("love","hate")))])
+    
+    def get(self, irc, msg, args, channel, id):
+        if id == None:
+            records = self.db.select(channel, lambda r: True)
+            responses = []
+            for record in records:
+                responses.append('%s: %s %s %s' % (record.id, record.by, record.emotion, record.text))
+            irc.reply(' ; '.join(responses))
+        else:
+            record = self.db.get(channel, id)
+            irc.reply('%s: %s %s %s' % (record.id, record.by, record.emotion, record.text))
+    get = wrap(get, [('checkCapability','admin'), 'channeldb', optional('id')])
+    
+    def remove(self, irc, msg, args, channel, id):
+        if id == None:
+            irc.replyFailure('No id specified')
+        try:
+            self.db.remove(channel, id)
+            irc.replySuccess()
+        except:
+            irc.replyFailure()
+    remove = wrap(remove, [('checkCapability','admin'), 'channeldb', 'id'])
+        
+    def listCommands(self, pluginCommands=[]):
+        L = self.__parent.listCommands(pluginCommands)
+        for cmd in PRIVATE_COMMANDS:
+            L.remove(cmd)
+        return L
         
 Class = LoveHate
 
