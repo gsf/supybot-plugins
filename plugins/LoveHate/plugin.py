@@ -77,38 +77,38 @@ class LoveHate(callbacks.Plugin):
         except StopIteration:
             return None
         
-    def _lovehate(self, irc, msg, args, user, channel, emotion, thing):
+    def _lovehate(self, irc, msg, args, channel, emotion, thing):
         at = time.time()
         if thing is not None:
-            previous = self._feels(channel, user.id, thing)
+            previous = self._feels(channel, msg.nick, thing)
             if previous == None:
-                id = self.db.add(channel, emotion, at, user.id, thing)
-                irc.replySuccess('%s %ss %s.' % (user.name, emotion, thing))
+                id = self.db.add(channel, emotion, at, msg.nick, thing)
+                irc.replySuccess('%s %ss %s.' % (msg.nick, emotion, thing))
             else:
-                irc.reply('But %s already %ss %s!' % (user.name, previous, thing))
+                irc.reply('But %s already %ss %s!' % (msg.nick, previous, thing))
 
-    def love(self, irc, msg, args, user, channel, thing):
+    def love(self, irc, msg, args, channel, thing):
         """<thing>
         Declare your love for <thing>"""
-        self._lovehate(irc, msg, args, user, channel, 'love', thing)
-    love = wrap(love, ['user', 'channeldb', 'text'])
+        self._lovehate(irc, msg, args, channel, 'love', thing)
+    love = wrap(love, ['channeldb', 'text'])
 
-    def hate(self, irc, msg, args, user, channel, thing):
+    def hate(self, irc, msg, args, channel, thing):
         """<thing>
         Declare your hate for <thing>"""
-        self._lovehate(irc, msg, args, user, channel, 'hate', thing)
-    hate = wrap(hate, ['user', 'channeldb', 'text'])
+        self._lovehate(irc, msg, args, channel, 'hate', thing)
+    hate = wrap(hate, ['channeldb', 'text'])
 
-    def dontcare(self, irc, msg, args, user, channel, thing):
+    def dontcare(self, irc, msg, args, channel, thing):
         """<thing>
         Declare that you no longer care one way or the other about <thing>"""
         try:
-            record = self._select(channel, [lambda r: r.by == user.id and r.text.lower() == thing.lower()]).next()
+            record = self._select(channel, [lambda r: r.by == msg.nick and r.text.lower() == thing.lower()]).next()
             self.db.remove(channel, record.id)
-            irc.replySuccess('%s no longer %ss %s.' % (user.name, record.emotion, thing))
+            irc.replySuccess('%s no longer %ss %s.' % (msg.nick, record.emotion, thing))
         except StopIteration:
-            irc.reply("I have no record of %s's loving or hating %s" % (user.name, thing))
-    dontcare = wrap(dontcare, ['user', 'channeldb', 'text'])
+            irc.reply("I have no record of %s's loving or hating %s" % (msg.nick, thing))
+    dontcare = wrap(dontcare, ['channeldb', 'text'])
 
     def _find_stuff_out(self, channel, predicate, emotion, extractor = lambda r: r):
         predicates = [predicate]
@@ -164,46 +164,43 @@ class LoveHate(callbacks.Plugin):
     whohates = wrap(whohates, ['channeldb','text'])
     
     def _caresabout(self, irc, msg, args, channel, user, emotion):
-        try:
-            if type(user).__name__ == 'str':
-                user = ircdb.users.getUser(ircdb.users.getUserId(user))
-            results = self._find_stuff_out(channel, lambda r: r.by == user.id, emotion, lambda r: r.text)
-            replied = False
-            for key in ('love','hate'):
-                if len(results[key]) > 0:
-                    verb = key + 's'
-                    if len(results[key]) > 1:
-                        things = ', '.join(results[key][0:-1]) + ' and ' + results[key][-1]
-                    else:
-                        things = ' and '.join(results[key])
-                    irc.reply(' '.join((user.name, verb, things)), prefixNick=False)
-                    replied = True
-
-            if not replied:
-                if emotion == None:
-                    irc.reply("%s doesn't seem to care about anything." % (user.name))
+        if user == None:
+            user = msg.nick
+        results = self._find_stuff_out(channel, lambda r: r.by == msg.nick, emotion, lambda r: r.text)
+        replied = False
+        for key in ('love','hate'):
+            if len(results[key]) > 0:
+                verb = key + 's'
+                if len(results[key]) > 1:
+                    things = ', '.join(results[key][0:-1]) + ' and ' + results[key][-1]
                 else:
-                    irc.reply("%s doesn't seem to %s anything." % (user.name, emotion))
-        except KeyError:
-            irc.reply("I don't know a user named '%s'." % user)
+                    things = ' and '.join(results[key])
+                irc.reply(' '.join((msg.nick, verb, things)), prefixNick=False)
+                replied = True
+
+        if not replied:
+            if emotion == None:
+                irc.reply("%s doesn't seem to care about anything." % (msg.nick))
+            else:
+                irc.reply("%s doesn't seem to %s anything." % (msg.nick, emotion))
             
     def caresabout(self, irc, msg, args, channel, user):
         """[<channel>] [<user>]
         Find out what <user> cares about"""
         self._caresabout(irc, msg, args, channel, user, None)
-    caresabout = wrap(caresabout, ['channeldb',first('nick','user')])
+    caresabout = wrap(caresabout, ['channeldb',optional('nick')])
 
     def loves(self, irc, msg, args, channel, user):
         """[<channel>] [<user>]
         Find out what <user> loves"""
         self._caresabout(irc, msg, args, channel, user, 'love')
-    loves = wrap(loves, ['channeldb',first('nick','user')])
+    loves = wrap(loves, ['channeldb',optional('nick')])
 
     def hates(self, irc, msg, args, channel, user):
         """[<channel>] [<user>]
         Find out what <user> hates"""
         self._caresabout(irc, msg, args, channel, user, 'hate')
-    hates = wrap(hates, ['channeldb',first('nick','user')])
+    hates = wrap(hates, ['channeldb',optional('nick')])
         
 Class = LoveHate
 
