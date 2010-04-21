@@ -57,15 +57,6 @@ class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
     This should describe *how* to use this plugin."""
     
-    def _getDelay(self):
-        try:
-            delay = self.registryValue('delay')
-        except registry.NonExistentRegistryEntry:
-            delay = 0.5
-            conf.registerGlobalValue(conf.registerPlugin('TranslationParty'), 'delay',
-                registry.Float(delay, """Determines pause between translations."""))
-        return delay
-        
     def _translate(self, from_lang, to_lang, text):
         params = { 'langpair' : '|'.join((from_lang,to_lang)), 'q' : text.encode('utf8'), 
             'key' : 'notsupplied', 'v' : '1.0', 'nocache' : randrange(0,sys.maxint) }
@@ -78,7 +69,7 @@ class TranslationParty(callbacks.Plugin):
             raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
     
     def _party(self, from_lang, to_lang, text, max_translations = 50):
-        delay = self._getDelay()
+        delay = self.registryValue('delay')
         stack = [text]
         def iterate():
             stack.append(self._translate(from_lang,to_lang,stack[-1]))
