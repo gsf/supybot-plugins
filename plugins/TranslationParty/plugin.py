@@ -67,7 +67,7 @@ class TranslationParty(callbacks.Plugin):
             log.debug('Response: %s' % (doc))
             response = simplejson.loads(doc)
             return response
-        except web.Error, e
+        except web.Error, e:
             log.warning('Error: %s',str(e))
             if retries > 0:
                 log.warning('Retries left: %d' % (retries))
