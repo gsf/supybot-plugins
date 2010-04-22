@@ -126,6 +126,8 @@ class TranslationParty(callbacks.Plugin):
             raise e
 
     def languages(self, irc, msg, args, query):
+        """[<stem>]
+        List languages known to TranslationParty that begin with <stem>"""
         if query == None:
             query = ''
         else:
