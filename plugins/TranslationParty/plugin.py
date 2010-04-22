@@ -59,20 +59,28 @@ class TranslationError(Exception):
 class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
     This should describe *how* to use this plugin."""
-    
-    def _translate(self, from_lang, to_lang, text):
-        params = { 'langpair' : '|'.join((from_lang,to_lang)), 'q' : text.encode('utf8'), 'v' : '1.0' }
-        url = 'http://ajax.googleapis.com/ajax/services/language/translate?' + urlencode(params)
-        log.debug('Retrieving: %s' % (url))
-        doc = web.getUrl(url, headers=HEADERS)
-        log.debug('Response: %s' % (doc))
-        response = simplejson.loads(doc)
-        if response['responseStatus'] == 404:
-            log.warning('Waiting 1/2 second and retrying...')
-            time.sleep(0.5)
+
+    def _getJsonResponse(self,url,retries = 2):
+        try:
+            log.debug('Retrieving: %s' % (url))
             doc = web.getUrl(url, headers=HEADERS)
             log.debug('Response: %s' % (doc))
             response = simplejson.loads(doc)
+            return response
+        except web.Error, e
+            log.warning('Error: %s',str(e))
+            if retries > 0:
+                log.warning('Retries left: %d' % (retries))
+                return self._getJsonResponse(url,retries=retries-1)
+                
+    def _translate(self, from_lang, to_lang, text):
+        params = { 'langpair' : '|'.join((from_lang,to_lang)), 'q' : text.encode('utf8'), 'v' : '1.0' }
+        url = 'http://ajax.googleapis.com/ajax/services/language/translate?' + urlencode(params)
+        response = self._getJsonResponse(url)
+        if response['responseStatus'] == 404:
+            log.warning('Waiting 1/2 second and retrying...')
+            time.sleep(0.5)
+            response = self._getJsonResponse(url)
             
         if response['responseStatus'] == 200:
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
