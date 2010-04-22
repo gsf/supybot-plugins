@@ -43,18 +43,22 @@ from random import randrange
 import simplejson
 from urllib import urlencode
 from BeautifulSoup import BeautifulStoneSoup
+from languages import Languages, validateLanguage
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; http://code4lib.org/irc)', referer = 'http://irc.code4lib.org/')
 
 class TranslationError(Exception):
-    def __init__(self, code, value, url, stack):
+    def __init__(self, code=None, value=None, url=None, stack=None):
         self.code = code
         self.value = value
         self.url = url
         self.stack = stack
     
     def __str__(self):
-        return "%d: %s" % (self.code, self.value)
+        if self.code == None:
+            return self.value
+        else:
+            return "%d: %s" % (self.code, self.value)
         
 class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
@@ -86,7 +90,7 @@ class TranslationParty(callbacks.Plugin):
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
             return translation
         else:
-            raise TranslationError(response['responseStatus'], response['responseDetails'], url, None)
+            raise TranslationError(response['responseStatus'], response['responseDetails'], url)
     
     def _party(self, langs, text, max_translations = 50):
         delay = self.registryValue('delay')
@@ -120,24 +124,31 @@ class TranslationParty(callbacks.Plugin):
         except TranslationError, e:
             e.stack = stack
             raise e
+
+    def languages(self, irc, msg, args, query):
+        if query == None:
+            query = ''
+        else:
+            query = query.upper()
             
+        result = map(lambda x: x.title(), sorted(filter(lambda x: x.startswith(query), Languages)))
+        irc.reply(', '.join(result).encode('utf-8'))
+    languages = wrap(languages, [optional('somethingWithoutSpaces')])
+    
     def translationparty(self, irc, msg, args, opts, text):
-        """[--lang <iso-code>[,...]] [--show <none|one|all>] [--max <int>] [--quiet] <text>
+        """[--lang <language>[,...]] [--show <none|one|all>] [--max <int>] [--quiet] <text>
         Try to find equilibrium in back-and-forth translations of <text>. (Defaults: --lang ja --show none --max 50)"""
-        langs = ['ja']
+        input_langs = ['ja']
         show = 'none'
         max_translations = 50
         announce = True
-        debug = False
         
         if len(text) > 1000:
             irc.reply('The text to be translated cannot exceed 1000 characters. Your request contains %d characters' % (len(text)))
         else:
             for (opt,arg) in opts:
-                if opt == 'debug':
-                    debug = True
                 if opt == 'lang':
-                    langs = arg.split(',')
+                    input_langs = arg.split(',')
                 if opt == 'max':
                     max_translations = arg
                 if opt == 'quiet':
@@ -145,9 +156,16 @@ class TranslationParty(callbacks.Plugin):
                 if opt == 'show':
                     show = arg
         
-            langs.insert(0,'en')
             try:
+                langs = ['en']
+                for l in input_langs:
+                    iso_code = validateLanguage(l)
+                    if iso_code == None:
+                        raise TranslationError(value="Unknown language: %s" % (l))
+                    langs.append(iso_code)
+
                 result = self._party(langs, text, max_translations)
+
                 if announce:
                     if len(result) < max_translations:
                         irc.reply("Equilibrium found!")
@@ -163,12 +181,14 @@ class TranslationParty(callbacks.Plugin):
                     irc.reply(texts[-1].encode('utf8'))
             except TranslationError, e:
                 irc.reply(e)
-                if debug:
+                log.error(str(e))
+                if e.stack is not None:
                     texts = map(lambda x: '[%s] %s' % (x['lang'],x['text']),e.stack)
-                    irc.reply("Stack: %s" % (" -> ".join(texts).encode('utf8')))
-                    irc.reply("Last URL: %s" % (e.url))
+                    log.debug("Stack: %s" % (" -> ".join(texts).encode('utf8')))
+                if e.url is not None:
+                    log.debug("Last URL: %s" % (e.url))
             
-    translationparty = wrap(translationparty, [getopts({'debug':'','lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
         
 Class = TranslationParty
 
