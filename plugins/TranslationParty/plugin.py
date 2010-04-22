@@ -67,6 +67,12 @@ class TranslationParty(callbacks.Plugin):
         doc = web.getUrl(url, headers=HEADERS)
         log.debug('Response: %s' % (doc))
         response = simplejson.loads(doc)
+        if response['responseStatus'] == 404:
+            log.warning('Waiting 1/2 second and retrying...')
+            time.sleep(0.5)
+            doc = web.getUrl(url, headers=HEADERS)
+            log.debug('Response: %s' % (doc))
+            
         if response['responseStatus'] == 200:
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
             return translation
@@ -115,40 +121,43 @@ class TranslationParty(callbacks.Plugin):
         announce = True
         debug = False
         
-        for (opt,arg) in opts:
-            if opt == 'debug':
-                debug = True
-            if opt == 'lang':
-                langs = arg.split(',')
-            if opt == 'max':
-                max_translations = arg
-            if opt == 'quiet':
-                announce = False
-            if opt == 'show':
-                show = arg
+        if len(text) > 1000:
+            irc.reply('The text to be translated cannot exceed 1000 characters. Your request contains %d characters' % (len(text)))
+        else:
+            for (opt,arg) in opts:
+                if opt == 'debug':
+                    debug = True
+                if opt == 'lang':
+                    langs = arg.split(',')
+                if opt == 'max':
+                    max_translations = arg
+                if opt == 'quiet':
+                    announce = False
+                if opt == 'show':
+                    show = arg
         
-        langs.insert(0,'en')
-        try:
-            result = self._party(langs, text, max_translations)
-            if announce:
-                if len(result) < max_translations:
-                    irc.reply("Equilibrium found!")
-                else:
-                    irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
+            langs.insert(0,'en')
+            try:
+                result = self._party(langs, text, max_translations)
+                if announce:
+                    if len(result) < max_translations:
+                        irc.reply("Equilibrium found!")
+                    else:
+                        irc.reply("It is doubtful that this phrase will ever reach equilibrium.")
 
-            texts = map(lambda x: x['text'],result)
-            if show == 'all':
-                irc.reply(" -> ".join(texts).encode('utf8'))
-            elif show == 'one':
-                irc.reply(" -> ".join((texts[0],texts[-1])).encode('utf8'))
-            else:
-                irc.reply(texts[-1].encode('utf8'))
-        except TranslationError, e:
-            irc.reply(e)
-            if debug:
-                texts = map(lambda x: '[%s] %s' % (x['lang'],x['text']),e.stack)
-                irc.reply("Stack: %s" % (" -> ".join(texts).encode('utf8')))
-                irc.reply("Last URL: %s" % (e.url))
+                texts = map(lambda x: x['text'],result)
+                if show == 'all':
+                    irc.reply(" -> ".join(texts).encode('utf8'))
+                elif show == 'one':
+                    irc.reply(" -> ".join((texts[0],texts[-1])).encode('utf8'))
+                else:
+                    irc.reply(texts[-1].encode('utf8'))
+            except TranslationError, e:
+                irc.reply(e)
+                if debug:
+                    texts = map(lambda x: '[%s] %s' % (x['lang'],x['text']),e.stack)
+                    irc.reply("Stack: %s" % (" -> ".join(texts).encode('utf8')))
+                    irc.reply("Last URL: %s" % (e.url))
             
     translationparty = wrap(translationparty, [getopts({'debug':'','lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
         
