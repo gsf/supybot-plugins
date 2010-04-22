@@ -72,6 +72,7 @@ class TranslationParty(callbacks.Plugin):
             time.sleep(0.5)
             doc = web.getUrl(url, headers=HEADERS)
             log.debug('Response: %s' % (doc))
+            response = simplejson.loads(doc)
             
         if response['responseStatus'] == 200:
             translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
