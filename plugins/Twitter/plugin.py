@@ -74,27 +74,39 @@ class Twitter(callbacks.Plugin):
 
     def twit(self, irc, msg, args, opts, query):
         """
-        @twit [--from user][query]
+        @twit [--from user] [--id tweet_id] [query]
 
         Return the last three tweets matching a given string 
         and/or user. if no query specified returns a random tweet from 
-        the public timeline if no
+        the public timeline if no options given.
         """
 
         screen_name = None
+        tweet_id = None
+        
         for (opt, arg) in opts:
             if opt == 'from':
                 screen_name = arg
-
+            if opt == 'id':
+                tweet_id = arg
+                
+        
+        def recode(text):
+            return BSS(text.encode('utf8','ignore'), convertEntities=BSS.HTML_ENTITIES)
+            
         resp = 'Gettin nothin from teh twitter.'
-        if query:
+        if tweet_id:
+            url = 'http://api.twitter.com/1/statuses/show/%s.json' % (tweet_id)
+            tweet = self._fetch_json(url)
+            resp = "<%s> %s" % (tweet['user']['screen_name'], recode(tweet['text']))
+        elif query:
             if screen_name:
                 query = "from:%s %s" % (screen_name, query)
             url = 'http://search.twitter.com/search.json?' 
             json = self._fetch_json(url + urlencode({ 'q': query, 'rpp': 3 }))
             try:
                 tweets = json['results']
-                extracted = ["%s: %s" % (x['from_user'], x['text']) for x in tweets]
+                extracted = ["<%s> %s" % (x['from_user'], recode(x['text'])) for x in tweets]
                 resp = ' ;; '.join(extracted)
             except:
                 pass
@@ -107,11 +119,10 @@ class Twitter(callbacks.Plugin):
             tweets = self._fetch_json(url)
             if tweets:
                 tweet = tweets[0] #randint(0, len(tweets)-1)]
-                resp = "%s: %s" % (tweet['user']['screen_name'], tweet['text'])
-        resp = BSS(resp, convertEntities=BSS.HTML_ENTITIES)
-        irc.reply(resp.encode('utf8','ignore').replace('\n',' ').strip(' '))
+                resp = "%s: %s" % (tweet['user']['screen_name'], recode(tweet['text']))
+        irc.reply(resp.replace('\n',' ').strip(' '))
 
-    twit = wrap(twit, [getopts({'from':'something'}), optional('text')])
+    twit = wrap(twit, [getopts({'from':'something','id':'something'}), optional('text')])
     
     def trend(self, irc, msg, args, query):
       """[<query>]
