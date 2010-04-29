@@ -197,5 +197,31 @@ class Yum(callbacks.Plugin):
         irc.reply(resp, prefixNick=True)
 
     beerme = wrap(beerme, [optional('text')])
+    
+    
+    
+    def wtfshouldimakefordinner(self, irc, msg, args):
+        """WHAT THE FUCK SHOULD I MAKE FOR DINNER?"""
+        url = 'http://www.whatthefuckshouldimakefordinner.com/'
+        if len(args) <= 1:
+            if len(args) == 1:
+                if args[0] = 'vegetarian':
+                    url += 'veg.php'
+            ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+            opener = build_opener()
+            opener.addheaders = [('User-Agent', ua)]
+            html = opener.open(url)
+            html_str = html.read()
+            soup = BeautifulSoup(html_str)
+            results = soup.findAll('dt')
+            out = results[0].dl.string + ' ' + results[1].a.string + ': '
+            out = out.upper()
+            out = re.sub(r'<[^>]*?>', '', out)
+            out = re.sub(r'\n', ' ', out)
+            out += results[1].a['href']
+            irc.reply(out.encode('utf-8'), prefixNick=True)
+        else:
+            irc.reply("usage: wtfshouldimakefordinner [vegetarian]", prefixNick=True)
+        
             
 Class = Yum
