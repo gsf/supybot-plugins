@@ -175,7 +175,7 @@ class LoveHate(callbacks.Plugin):
             if len(results[key]) > 0:
                 verb = key + 's'
                 if len(results[key]) > 1:
-                    things = '; '.join(results[key][0:-1]) + ' and ' + results[key][-1]
+                    things = '; '.join(results[key][0:-1]) + '; and ' + results[key][-1]
                 else:
                     things = ' and '.join(results[key])
                 irc.reply(' '.join((user, verb, things)), prefixNick=False)
