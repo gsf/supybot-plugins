@@ -11,7 +11,7 @@ class TrueTrue(callbacks.PluginRegexp):
                ] 
 
     def hollaBackSnarfer(self,irc,msg,match):
-        r"zoia\!"
+        r"^zoia\!$"
         irc.reply('%s!' % (msg.nick), prefixNick=False)
         
     def cassonSnarfer(self,irc,msg,match):
