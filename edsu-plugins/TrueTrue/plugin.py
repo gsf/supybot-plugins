@@ -6,10 +6,14 @@ class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
                'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'knockSnarfer',
                'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer', 'callMeSomething',
-               'snortSnarfer', 'sobSnarfer', 'lolSnarfer'
+               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer'
                #'billSnarfer', 'hehSnarfer'
                ] 
 
+    def hollaBackSnarfer(self,irc,msg,match):
+        r"zoia!"
+        irc.reply('%s!',(msg.nick), prefixNick=False)
+        
     def cassonSnarfer(self,irc,msg,match):
         r"true, true"
         time.sleep(2)
@@ -120,6 +124,7 @@ class TrueTrue(callbacks.PluginRegexp):
       
     def lolSnarfer(self, irc, msg, match):
         r'\blol[sz]?\b' 
+        if randint(1,5) > 2: return
         time.sleep(0.5)
         irc.reply('lulz', action=True, prefixNick=False)
             
