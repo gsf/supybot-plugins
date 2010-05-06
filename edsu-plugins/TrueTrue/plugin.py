@@ -6,13 +6,18 @@ class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
                'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'knockSnarfer',
                'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer', 'callMeSomething',
-               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer'
+               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer',
+               'youRangSnarfer',
                #'billSnarfer', 'hehSnarfer'
                ] 
 
     def hollaBackSnarfer(self,irc,msg,match):
         r"^zoia\!$"
         irc.reply('%s!' % (msg.nick), prefixNick=False)
+
+    def youRangSnarfer(self,irc,msg,match):
+        r"^zoia\?$"
+        irc.reply('%s?' % (msg.nick), prefixNick=False)
         
     def cassonSnarfer(self,irc,msg,match):
         r"true, true"
