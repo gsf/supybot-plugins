@@ -889,10 +889,13 @@ class Assorted(callbacks.Privmsg):
 
     def bartender(self, irc, msg, args):
         """
-        pours a beer from http://web.mit.edu/~tcarlile/www/beer/beerlist.html
+        pours a beer from an archived copy of
+        http://web.mit.edu/~tcarlile/www/beer/beerlist.html
         for you
         """
-        soup = self._url2soup('http://web.mit.edu/~tcarlile/www/beer/beerlist.html')
+        f = join(dirname(abspath(__file__)), 'beerlist.html')
+        data = open(f).read()
+        soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
         beers = []
         for li in soup.findAll('li'):
             if li.a:
