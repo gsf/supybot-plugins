@@ -5,6 +5,7 @@ import os
 import re
 import simplejson
 import time
+from os.path import join, abspath, dirname
 from BeautifulSoup import BeautifulSoup, StopParsing
 from cgi import parse_qs
 from datetime import date, datetime
