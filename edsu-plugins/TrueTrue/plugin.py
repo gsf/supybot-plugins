@@ -12,12 +12,13 @@ class TrueTrue(callbacks.PluginRegexp):
                ] 
 
     def hollaBackSnarfer(self,irc,msg,match):
-        r"^zoia\!$"
-        irc.reply('%s!' % (msg.nick), prefixNick=False)
+        r"^zoia([!.?])+$"
+        irc.reply('%s%s' % (msg.nick,match.group(1)), prefixNick=False)
 
-    def youRangSnarfer(self,irc,msg,match):
-        r"^zoia\?$"
-        irc.reply('%s?' % (msg.nick), prefixNick=False)
+# Redundant now
+#    def youRangSnarfer(self,irc,msg,match):
+#        r"^zoia\?$"
+#        irc.reply('%s?' % (msg.nick), prefixNick=False)
         
     def cassonSnarfer(self,irc,msg,match):
         r"true, true"
