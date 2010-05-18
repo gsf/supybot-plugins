@@ -12,7 +12,7 @@ class TrueTrue(callbacks.PluginRegexp):
                ] 
 
     def hollaBackSnarfer(self,irc,msg,match):
-        r"^zoia([!.?])+$"
+        r"^zoia([!.?]+)$"
         irc.reply('%s%s' % (msg.nick,match.group(1)), prefixNick=False)
 
 # Redundant now
