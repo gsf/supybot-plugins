@@ -48,7 +48,7 @@ class Blame(plugins.ChannelIdDatabasePlugin):
         return s
 
     def addValidator(self, irc, text):
-        if '$who' not in text:
+        if '$who' not in text.lower():
             irc.error('Blames must contain $who.', Raise=True)
 
     def blame(self, irc, msg, args, channel, id, text):
