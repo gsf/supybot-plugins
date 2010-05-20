@@ -79,7 +79,8 @@ class Blame(plugins.ChannelIdDatabasePlugin):
         text = self._replaceFirstPerson(blame.text, msg.nick)
         reason = self._replaceFirstPerson(reason, msg.nick)
         target = self._replaceFirstPerson(target, msg.nick)
-        text = text.replace('$who', target)
+        
+        text = text.replace('$who', target).replace('$WHO',target.upper())
         if reason:
             text += ' for ' + reason
         if self.registryValue('showIds', channel):
