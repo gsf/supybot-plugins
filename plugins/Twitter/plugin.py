@@ -87,7 +87,7 @@ class Twitter(callbacks.Plugin):
             'name: %s' % userdata['name'],
             'description: %s' % userdata['description'],
             'location: %s' % userdata['location'],
-            'followers: %s' % userdata['followers'],
+            'followers: %s' % userdata['followers_count'],
             'following: %s' % userdata['friends_count'],
         ])
         irc.reply(resp.encode('utf-8', prefixNick=False))
