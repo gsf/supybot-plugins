@@ -72,6 +72,25 @@ class Twitter(callbacks.Plugin):
 
     trends = wrap(trends, [optional('text')])
 
+    def tweep(self, irc, msg, args, user):
+        """
+        @tweep [user]
+
+        Get stats on a twitter user
+        """
+        url = 'http://api.twitter.com/1/users/show/%s.json'
+        userdata = self._fetch_json(url)
+        resp = '; '.join([
+            'name: %s' % userdata['name'],
+            'description: %s' % userdata['description'],
+            'location: %s' % userdata['location'],
+            'followers: %s' % userdata['followers'],
+            'following: %s' % userdata['friends_count'],
+        ])
+        irc.reply(resp.encode('utf-8', prefixNick=False))
+
+    tweep = wrap(tweep, ['text'])
+
     def twit(self, irc, msg, args, opts, query):
         """
         @twit [--from user] [--id tweet_id] [query]
