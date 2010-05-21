@@ -90,7 +90,7 @@ class Twitter(callbacks.Plugin):
             'followers: %s' % userdata['followers_count'],
             'following: %s' % userdata['friends_count'],
         ])
-        irc.reply(resp.encode('utf-8', prefixNick=False))
+        irc.reply(resp.encode('utf-8'), prefixNick=False)
 
     tweep = wrap(tweep, ['text'])
 
