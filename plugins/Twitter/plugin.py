@@ -78,8 +78,11 @@ class Twitter(callbacks.Plugin):
 
         Get stats on a twitter user
         """
-        url = 'http://api.twitter.com/1/users/show/%s.json'
+        url = 'http://api.twitter.com/1/users/show/%s.json' % user
         userdata = self._fetch_json(url)
+        if not userdata:
+            irc.reply("Twitter don't know 'nuthin about %s" % user)
+            return
         resp = '; '.join([
             'name: %s' % userdata['name'],
             'description: %s' % userdata['description'],
