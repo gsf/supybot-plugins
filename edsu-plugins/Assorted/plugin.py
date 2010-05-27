@@ -1388,8 +1388,27 @@ class Assorted(callbacks.Privmsg):
       
     stanford = wrap(stanford, ['inChannel'])
 
-    def httpget(self, irc, msg, args, url):
-        irc.reply(urlopen(url).read())
-    httpget = wrap(httpget, ['url'])
+    def shake(self, irc, msg, args, who):
+        """[<who>]
+        
+        Deliver a Shakespearean insult (from http://www.pangloss.com/seidel/Shaker/index.html)"""
+        text = None
+        while text == None:
+            try:
+                soup = self._url2soup('http://www.pangloss.com/seidel/Shaker/index.html?')
+            except HTTPError, e:
+                irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+            except StopParsing, e:
+                irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+            text = soup.find('font').string.replace("\n"," ").strip()
+            attribution = soup.find('b')
+            if attribution != None:
+                text += " [%s]" % attribution.string
+            
+        if who is None:
+          irc.reply(text, prefixNick=True)
+        else:
+          irc.reply(who + ": " + text, prefixNick=False)
+    shake = wrap(shake, [optional('text')])
     
 Class = Assorted
