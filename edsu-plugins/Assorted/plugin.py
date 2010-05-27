@@ -593,7 +593,7 @@ class Assorted(callbacks.Privmsg):
         resp = [lmb(x) for x in haiku.contents]
         irc.reply(' / '.join([x for x in resp if x]), prefixNick=False)
 
-    def rsinger(self, irc, msg, args):
+    def poledance(self, irc, msg, args):
         irc.reply("   |", prefixNick=False)
         irc.reply(" o/|", prefixNick=False)
         irc.reply("/| |", prefixNick=False)
