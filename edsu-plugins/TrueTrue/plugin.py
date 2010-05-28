@@ -3,13 +3,18 @@ from random import randint
 import time
 
 class TrueTrue(callbacks.PluginRegexp):
-    regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer',
+    regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer', 
                'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'knockSnarfer',
                'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer', 'callMeSomething',
-               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer'#,
-#               'youRangSnarfer',
-               #'billSnarfer', 'hehSnarfer'
+               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer',
+               'hornsSnarfer',
+               # 'youRangSnarfer', 'billSnarfer', 'hehSnarfer'
                ] 
+
+    def hornsSnarfer(self, irc, msg, match):
+        r"\m/"
+        time.sleep(2)
+        irc.reply("bangs its head!", action=True, prefixNick=False)
 
     def hollaBackSnarfer(self,irc,msg,match):
         r"^zoia([!.?]+)$"
@@ -119,19 +124,19 @@ class TrueTrue(callbacks.PluginRegexp):
     def sobSnarfer(self, irc, msg, match):
         r'\bsobs\b'
         if randint(1,5) > 2: return
-        time.sleep(0.5)
+        time.sleep(2)
         irc.reply('snorts', action=True, prefixNick=False)
 
     def snortSnarfer(self, irc, msg, match):
         r'\bsnorts\b' 
         if randint(1,5) > 2: return
-        time.sleep(0.5)
+        time.sleep(2)
         irc.reply('sobs', action=True, prefixNick=False)
       
     def lolSnarfer(self, irc, msg, match):
         r'\blol[sz]?\b' 
         if randint(1,5) > 2: return
-        time.sleep(0.5)
+        time.sleep(2)
         irc.reply('lulz', action=True, prefixNick=False)
             
 Class = TrueTrue
