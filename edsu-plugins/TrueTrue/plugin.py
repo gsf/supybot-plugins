@@ -12,7 +12,7 @@ class TrueTrue(callbacks.PluginRegexp):
                ] 
 
     def hornsSnarfer(self, irc, msg, match):
-        r"\m/"
+        r"\\m/"
         time.sleep(2)
         irc.reply("bangs its head!", action=True, prefixNick=False)
 
