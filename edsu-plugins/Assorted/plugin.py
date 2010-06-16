@@ -1297,7 +1297,7 @@ class Assorted(callbacks.Privmsg):
         """
         if who:
             who = who + "'s"
-        else
+        else:
             who = 'yours'
 
         for line in pony.split("\n"):
