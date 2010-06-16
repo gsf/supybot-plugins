@@ -1289,12 +1289,10 @@ class Assorted(callbacks.Privmsg):
         """
         zOMG PONieZ!!
         """
-        pony = """ 
-      ,//) 
+        pony = """      ,//) 
     ,;;' \ 
   ,;;' ( '\ 
-      / '\_) 
-        """
+      / '\_)"""
         if who:
             who = who + "'s"
         else:
