@@ -1416,6 +1416,9 @@ class Assorted(callbacks.Privmsg):
     shake = wrap(shake, [optional('text')])
 
     def professor(self, irc, msg, args, first, last):
+        """<first_name> <last_name>
+        
+        Generate your Professor Poopypants name"""
         f1 = {'A': 'poopsie', 'B': 'lumpy', 'C': 'buttercup', 'D': 'gidget', 'E': 'crusty', 'F': 'greasy', 'G': 'fluffy', 'H': 'cheeseball', 'I': 'chim-chim', 'J': 'stinky', 'K': 'flunky', 'L': 'boobie', 'M': 'pinky', 'N': 'zippy', 'O': 'goober', 'P': 'doofus', 'Q': 'slimy', 'R': 'loopy', 'S': 'snotty', 'T': 'tulefel', 'U': 'dorkey', 'V': 'squeezit', 'W': 'oprah', 'X': 'skipper', 'Y': 'dinky', 'Z': 'zsa-zsa'}
         l1 = {'A': 'apple', 'B': 'toilet', 'C': 'giggle', 'D': 'burger', 'E': 'girdle', 'F': 'barf', 'G': 'lizard', 'H': 'waffle', 'I': 'cootie', 'J': 'monkey', 'K': 'potty', 'L': 'liver', 'M': 'banana', 'N': 'rhino', 'O': 'bubble', 'P': 'hamster', 'Q': 'toad', 'R': 'gizzard', 'S': 'pizza', 'T': 'gerbil', 'U': 'chicken', 'V': 'pickle', 'W': 'chuckle', 'X': 'tofu', 'Y': 'gorilla', 'Z': 'stinker'}
         l2 = {'A': 'head', 'B': 'mouth', 'C': 'face', 'D': 'nose', 'E': 'tush', 'F': 'breath', 'G': 'pants', 'H': 'shorts', 'I': 'lips', 'J': 'honker', 'K': 'b utt', 'L': 'brain', 'M': 'tushie', 'N': 'chunks', 'O': 'hiney', 'P': 'biscuits', 'Q': 'toes', 'R': 'buns', 'S': 'fanny', 'T': 'sniffer', 'U': 'sprinkles', 'V': 'kisser', 'W': 'squirt', 'X': 'humperdinck', 'Y': 'brains', 'Z': 'juice'}
