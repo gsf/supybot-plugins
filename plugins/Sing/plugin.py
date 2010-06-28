@@ -64,6 +64,31 @@ def formatlyrics(song, startline=None):
     lines = lines[startline:endline]
     return ' / '.join([l for l in lines if re.search('\S', l)])
 
+def dilyrics_normalize(s):
+    s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
+    s = re.sub('\s+', '-', s)
+    return s
+    
+def dilyrics(artist, title):
+    try:
+        title_norm = dilyrics_normalize(title)
+        artist_norm = dilyrics_normalize(artist)
+        artist_init = artist_norm[0]
+        url = 'http://www.dilyrics.com/%s-%s-lyrics.html' % \
+            (artist_norm.lower(), title_norm.lower())
+
+        soup = getsoup(url)
+        lyricsdiv = soup.find('div', {'class': 'EchoTopic'})
+        lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
+        song = {
+            'artist': artist, 
+            'song': title, 
+            'lyrics': lyrics
+            }
+        return song
+    except Exception, e:
+        logger.info('Exception fetching lyrics from %s: %s' % (url, e.message))
+
 def lyricsty_normalize(s):
     s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
     s = re.sub('\s+', '_', s)
@@ -123,9 +148,13 @@ class Sing(callbacks.Plugin):
             return
 
         song = lyricsty(artist, title)
+        if not song:
+            song = dilyrics(artist, title)
 
         if not song or song['lyrics'] == 'Not found':
-            irc.reply('Lyricsty has no lyrics for %s by %s' % (title, artist))
+            irc.reply("""No lyrics found for %s by %s at 
+                http://lyricsty.com or http://dilyrics.com""" \
+                % (title, artist))
         else:
             lyrics = formatlyrics(song, line)
             lyrics = lyrics.encode('ascii', 'ignore')
