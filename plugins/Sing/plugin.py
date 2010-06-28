@@ -79,7 +79,7 @@ def dilyrics(artist, title):
         logger.info("Fetching %s" % url)
 
         soup = getsoup(url)
-        lyricsdiv = soup.find('div', {'class': 'EchoTopic'})
+        lyricsdiv = soup.find('div', {'id': 'EchoTopic'})
         lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
         song = {
             'artist': artist, 
