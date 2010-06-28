@@ -83,8 +83,13 @@ class TrueTrue(callbacks.PluginRegexp):
     def upchuckSnarfer(self,irc,msg,match):
         r"upchucks"
         time.sleep(2)
+        if randint(0,1) == 0:
+            who = 'robcaSSon'
+        else:
+            nicks = list(irc.state.channels[msg.args[0]].users)
+            who = nicks[randint(0,len(nicks)-1)]
         aisle = randint(1,10)
-        irc.reply(("robcaSSon: clean up on aisle %i" % aisle), prefixNick=False)
+        irc.reply(("%s: clean up on aisle %i" % (who, aisle)), prefixNick=False)
 
     def yawnSnarfer(self,irc,msg,match):
         r"yawns"
