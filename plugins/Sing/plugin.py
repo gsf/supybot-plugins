@@ -76,6 +76,7 @@ def dilyrics(artist, title):
         artist_init = artist_norm[0]
         url = 'http://www.dilyrics.com/%s-%s-lyrics.html' % \
             (artist_norm.lower(), title_norm.lower())
+        logger.info("Fetching %s" % url)
 
         soup = getsoup(url)
         lyricsdiv = soup.find('div', {'class': 'EchoTopic'})
