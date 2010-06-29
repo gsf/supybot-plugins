@@ -80,7 +80,7 @@ def dilyrics(artist, title):
         logger.info("Fetching %s" % url)
         html = web.getUrl(url, headers=HEADERS)
         doc = fromstring(html)
-        lyricdiv = doc.xpath('//div[@id="EchoTopic"]')[0]
+        lyricsdiv = doc.xpath('//div[@id="EchoTopic"]')[0]
         lyrics = '\n'.join([x.strip() for x in lyricsdiv.itertext()])
         song = {
             'artist': artist, 
