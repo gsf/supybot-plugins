@@ -81,7 +81,7 @@ def dilyrics(artist, title):
         html = web.getUrl(url, headers=HEADERS)
         doc = fromstring(html)
         lyricdiv = doc.xpath('//div[@id="EchoTopic"]')[0]
-        lyrics = lyricdiv.text_contents()
+        lyrics = lyricdiv.text_content()
         song = {
             'artist': artist, 
             'song': title, 
