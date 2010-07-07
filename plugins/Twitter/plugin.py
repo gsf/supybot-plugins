@@ -34,7 +34,7 @@ class Twitter(callbacks.Plugin):
       try:
         self.registryValue('waitPeriod')
       except:
-        conf.registerGlobalValue(Twitter, 'waitPeriod', 
+        conf.registerGlobalValue(conf.registerPlugin('Twitter'), 'waitPeriod', 
             registry.PositiveInteger(300, """Indicates how many seconds the bot will
             wait between retrieving tweets"""))
         
