@@ -4,6 +4,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
+import calendar
 from random import randint
 import re
 import sys
@@ -36,20 +37,23 @@ class Twitter(callbacks.Plugin):
       if now - self.last_request > wait:
         self.last_request = now
         irc = callbacks.SimpleProxy(irc, msg)
-        responses = self._get_mentions()
+        responses = self._get_mentions(maxAge=7200)
         if len(responses) > 0:
-          irc.reply(' ; '.join(responses), prefixNick=False)
+          irc.reply(' ; '.join(responses), to='#code4lib', prefixNick=False)
 
-    def _get_mentions(self):
+    def _get_mentions(self, maxAge = None):
       params = {}
       if self.last_mention != None:
         params['since_id'] = self.last_mention
       tweets = self._twitter_api('statuses/mentions', params)
       responses = []
       if tweets:
+        now = time.time()
         self.last_mention = tweets[0]['id']
         for tweet in tweets:
-          responses.append('<%s> %s' % (tweet['user']['screen_name'],tweet['text']))
+          age = now - calendar.timegm(time.strptime(tweet['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
+          if (maxAge is None) or (age <= maxAge):
+            responses.append('<%s> %s' % (tweet['user']['screen_name'],tweet['text']))
         responses.reverse()
       return responses
         
