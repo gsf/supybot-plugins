@@ -29,6 +29,12 @@ class Twitter(callbacks.Plugin):
       self.__parent.__init__(irc)
       self.last_mention = None
       self.last_request = 0
+      try:
+        self.registryValue('waitPeriod')
+      except:
+        conf.registerGlobalValue(Twitter, 'waitPeriod', 
+            registry.PositiveInteger(300, """Indicates how many seconds the bot will
+            wait between retrieving tweets"""))
         
     def __call__(self, irc, msg):
       self.__parent.__call__(irc, msg)
