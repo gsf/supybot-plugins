@@ -39,8 +39,6 @@ class Twitter(callbacks.Plugin):
         responses = self._get_mentions()
         if len(responses) > 0:
           irc.reply(' ; '.join(responses), prefixNick=False)
-      else:
-        print "%2.2f seconds left until Twitter refresh" % (wait - (now - self.last_request))
 
     def _get_mentions(self):
       params = {}
