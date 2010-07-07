@@ -16,5 +16,8 @@ Twitter = conf.registerPlugin('Twitter')
 # conf.registerGlobalValue(Twitter, 'someConfigVariableName',
 #     registry.Boolean(False, """Help for someConfigVariableName."""))
 
+conf.registerGlobalValue(Twitter, 'waitPeriod', 
+    registry.PositiveInteger(300, """Indicates how many seconds the bot will
+    wait between retrieving tweets"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

@@ -10,6 +10,7 @@ import re
 import sys
 import simplejson
 import supybot.utils.web as web
+import time
 import urllib2
 from urllib import urlencode, quote
 from cgi import parse_qs
@@ -23,6 +24,38 @@ class Twitter(callbacks.Plugin):
     This should describe *how* to use this plugin."""
     threaded = True
 
+    def __init__(self, irc):
+      self.__parent = super(Twitter, self)
+      self.__parent.__init__(irc)
+      self.last_mention = None
+      self.last_request = 0
+        
+    def __call__(self, irc, msg):
+      self.__parent.__call__(irc, msg)
+      now = time.time()
+      wait = self.registryValue('waitPeriod')
+      if now - self.last_request > wait:
+        self.last_request = now
+        irc = callbacks.SimpleProxy(irc, msg)
+        responses = self._get_mentions()
+        if len(responses) > 0:
+          irc.reply(' ; '.join(responses), prefixNick=False)
+      else:
+        print "%2.2f seconds left until Twitter refresh" % (wait - (now - self.last_request))
+
+    def _get_mentions(self):
+      params = {}
+      if self.last_mention != None:
+        params['since_id'] = self.last_mention
+      tweets = self._twitter_api('statuses/mentions', params)
+      responses = []
+      if tweets:
+        self.last_mention = tweets[0]['id']
+        for tweet in tweets:
+          responses.append('<%s> %s' % (tweet['user']['screen_name'],tweet['text']))
+        responses.reverse()
+      return responses
+        
     def _shorten_urls(self, s):
       result = s
       urlreg = re.compile('[a-z]+://[^\s\[({\]})]+')
@@ -180,7 +213,6 @@ class Twitter(callbacks.Plugin):
       url = "http://api.twitter.com/1/%s.json" % path
       data = urlencode(params)
 
-      print '?'.join((url,data))
       if post:
         handle = http.open(url,data)
       else:
@@ -203,17 +235,9 @@ class Twitter(callbacks.Plugin):
 
     tweet = wrap(tweet, ['user','text'])
 
-    last_mention = None
     def mentions(self, irc, msg, args):
-      params = {}
-      if self.last_mention != None:
-        params['since_id'] = self.last_mention
-      tweets = self._twitter_api('statuses/mentions', params)
-      responses = []
-      if tweets:
-        self.last_mention = tweets[0]['id']
-        for tweet in tweets:
-          responses.append('@%s: %s' % (tweet['user']['screen_name'],tweet['text']))
+      responses = self._get_mentions();
+      if len(responses) > 0:
         irc.reply(' ; '.join(responses), prefixNick=False)
       else:
         irc.reply('No new mentions')
