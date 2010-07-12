@@ -1383,7 +1383,7 @@ class Assorted(callbacks.Privmsg):
       prisoners = []
       guards = []
       for nick in nicks:
-        if randint(0,1) == 0:
+        if (randint(0,1) == 0) or nick == 'mbklein':
           prisoners.append(nick)
         else:
           guards.append(nick)
