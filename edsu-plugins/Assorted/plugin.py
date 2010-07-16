@@ -1427,5 +1427,16 @@ class Assorted(callbacks.Privmsg):
         name = ('%s %s' % (fname, lname)).title()
         irc.reply(name.encode('utf-8'), prefixNick=True)
     professor = wrap(professor, ['somethingWithoutSpaces','somethingWithoutSpaces'])
-    
+
+    def chucknorris(self, irc, msg, args):
+      """Grab a random Chuck Norris fact from http://www.chucknorrisfacts.com/"""
+      soup = self._url2soup('http://www.chucknorrisfacts.com/all-chuck-norris-facts')
+      # Ugliest scrape ever. Just go with it.
+      max_page = int(dict(soup.findAll('li',{'class' : re.compile(r'\bpager-last\b')})[0].findChildren()[0].attrs)['href'].split('=')[1])
+      page = randint(0,max_page)
+      soup = self._url2soup('http://www.chucknorrisfacts.com/all-chuck-norris-facts?page=%d' % (page))
+      facts = soup.findAll('div',{'class' : 'views-field-title'})
+      fact = (''.join(facts[randint(0,len(facts)-1)].findAll('a',text=True))).strip()
+      irc.reply(fact.encode('utf-8'), prefixNick=True)
+      
 Class = Assorted
