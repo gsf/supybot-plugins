@@ -13,7 +13,7 @@ def lookup(word):
     from socket import setdefaulttimeout
     setdefaulttimeout(60)
     url = "http://www.etymonline.com/index.php?%s" \
-        % urlencode({'search':word})
+        % urlencode({'search':'or'})
 
     doc = None
     try:
