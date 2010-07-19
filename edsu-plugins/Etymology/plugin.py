@@ -13,7 +13,7 @@ def lookup(word):
     from socket import setdefaulttimeout
     setdefaulttimeout(60)
     url = "http://www.etymonline.com/index.php?%s" \
-        % urlencode({'search':'or'})
+        % urlencode({'search':word, 'searchmode':'or'})
 
     doc = None
     try:
@@ -41,7 +41,7 @@ class Etymology(callbacks.Privmsg):
         """etym <word> lookup the etymology for a word/phrase
         """
         etymology = lookup(''.join(args))
-        irc.reply(etymology)
+        irc.reply(etymology.encode('utf-8'))
 
 Class = Etymology 
 
