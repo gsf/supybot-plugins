@@ -10,7 +10,7 @@ from urllib2 import build_opener, HTTPError
 
 class Forecast(callbacks.Privmsg):
 
-    def forecast(self, irc, msg, args, zipcode):
+    def forecast(self, irc, msg, args, opts, zipcode):
         """
         <zipcode>: Returns the response from http://www.thefuckingweather.com/
         """
@@ -25,10 +25,13 @@ class Forecast(callbacks.Privmsg):
             response = soup.find('div', 'large').findAll(text=True)
             response = u' '.join([x.strip() for x in response])
             response = response.replace('&deg;', u'\u00B0')
+            print opts
+            if 'boston' in dict(opts):
+              response = response.replace('FUCKING','WICKED')
             irc.reply(response.encode('utf-8'), prefixNick=True)
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
 
-    forecast = wrap(forecast, ['text'])
+    forecast = wrap(forecast, [getopts({'boston':''}),'text'])
 
 Class = Forecast
