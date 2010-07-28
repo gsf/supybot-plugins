@@ -38,15 +38,24 @@ import supybot.callbacks as callbacks
 class Tantrum(plugins.ChannelIdDatabasePlugin):
     """Throws a tantrum"""
     
-    def tantrum(self, irc, msg, args, channel, thing):
-      """<thing>
+    def tantrum(self, irc, msg, args, channel, id, thing):
+      """[<id>] <thing>
       
       Throws a tantrum about <thing>."""
-      
-      scream = self.db.random(channel).text.replace('$thing',thing).upper()
+
+      if id is not None:
+          try:
+              tantrum = self.db.get(channel, id)
+          except KeyError:
+              irc.error(format('There is no tantrum with id #%i.', id))
+              return
+      else:
+        tantrum = self.db.random(channel)
+        
+      scream = tantrum.text.replace('$thing',thing).upper()
       irc.reply(scream, prefixNick = False)
       
-    tantrum = wrap(tantrum, ['channeldb', 'text'])
+    tantrum = wrap(tantrum, ['channeldb', optional('id'), 'text'])
 
 Class = Tantrum
 
