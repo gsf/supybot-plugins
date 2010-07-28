@@ -52,7 +52,7 @@ class Tantrum(plugins.ChannelIdDatabasePlugin):
       else:
         tantrum = self.db.random(channel)
         
-      scream = tantrum.text.replace('$thing',thing).upper()
+      scream = tantrum.text.upper().replace('$THING',thing.upper())
       irc.reply(scream, prefixNick = False)
       
     tantrum = wrap(tantrum, ['channeldb', optional('id'), 'text'])
