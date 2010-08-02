@@ -1439,4 +1439,13 @@ class Assorted(callbacks.Privmsg):
       fact = (''.join(facts[randint(0,len(facts)-1)].findAll('a',text=True))).strip()
       irc.reply(fact.encode('utf-8'), prefixNick=True)
       
+    def arch(self, irc, msg, args, thing):
+      if thing is None:
+        irc.reply('pulls string...', action=True, prefixNick=False)
+        irc.reply('THE ARCHITECT SAYS...BLAH BLAH BLAH BLAH BLAH.', prefixNick=False)
+      else:
+        irc.reply('THE ARCHITECT ' + thing.upper().encode('utf-8'), prefixNick=False)
+        
+    arch = wrap(arch, [optional('text')])
+      
 Class = Assorted
