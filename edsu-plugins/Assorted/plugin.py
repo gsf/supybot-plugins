@@ -1450,6 +1450,7 @@ class Assorted(callbacks.Privmsg):
     arch = wrap(arch, [optional('text')])
 
     def beck(self, irc, msg, args):
+      """Generate a Glenn Beck conspiracy theory. Stolen from http://politicalhumor.about.com/library/bl-glenn-beck-conspiracy.htm"""
       irc.reply(BeckGenerator().generate().encode('utf-8'), prefixNick=True)
       
 Class = Assorted
