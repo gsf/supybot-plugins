@@ -21,6 +21,7 @@ import csv
 from supybot.commands import *
 import supybot.callbacks as callbacks
 
+from beck import BeckGenerator
 
 class PollNotFoundException(Exception):
     pass
@@ -1447,5 +1448,8 @@ class Assorted(callbacks.Privmsg):
         irc.reply('THE ARCHITECT ' + thing.upper().encode('utf-8'), prefixNick=False)
         
     arch = wrap(arch, [optional('text')])
+
+    def beck(self, irc, msg, args):
+      irc.reply(BeckGenerator().generate().encode('utf-8'), prefixNick=True)
       
 Class = Assorted
