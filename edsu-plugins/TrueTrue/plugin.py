@@ -137,11 +137,6 @@ class TrueTrue(callbacks.PluginRegexp):
         if randint(1,5) > 2: return
         time.sleep(2)
         irc.reply('sobs', action=True, prefixNick=False)
-      
-    def lolSnarfer(self, irc, msg, match):
-        r'\blol[sz]?\b' 
-        if randint(1,5) > 2: return
-        time.sleep(2)
-        irc.reply('lulz', action=True, prefixNick=False)
+
             
 Class = TrueTrue
