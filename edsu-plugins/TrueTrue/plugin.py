@@ -6,7 +6,7 @@ class TrueTrue(callbacks.PluginRegexp):
     regexps = ['cassonSnarfer', 'chuckleSnarfer', 'upchuckSnarfer', 
                'coughSnarfer', 'metadataSnarfer', 'crueSnarfer', 'knockSnarfer',
                'panizziSnarfer', 'opacSnarfer', 'yawnSnarfer', 'callMeSomething',
-               'snortSnarfer', 'sobSnarfer', 'lolSnarfer', 'hollaBackSnarfer',
+               'snortSnarfer', 'sobSnarfer', 'hollaBackSnarfer',
                'hornsSnarfer',
                # 'youRangSnarfer', 'billSnarfer', 'hehSnarfer'
                ] 
