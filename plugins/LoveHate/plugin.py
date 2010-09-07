@@ -96,6 +96,8 @@ class LoveHate(callbacks.Plugin):
         self._lovehate(irc, msg, args, channel, 'love', thing)
     love = wrap(love, ['channeldb', 'text'])
 
+    sarcasticlove = love
+
     def hate(self, irc, msg, args, channel, thing):
         """<thing>
         Declare your hate for <thing>"""
