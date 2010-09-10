@@ -16,6 +16,7 @@ from urllib import urlencode, quote
 from cgi import parse_qs
 from BeautifulSoup import BeautifulStoneSoup as BSS
 import lxml.html
+import oauth2
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
 
@@ -208,18 +209,20 @@ class Twitter(callbacks.Plugin):
     trend = wrap(trend, [optional('text')])
 
     def _twitter_api(self, path, params, post = False):
-      auth_handler = urllib2.HTTPBasicAuthHandler()
-      auth_handler.add_password("Twitter API", "http://api.twitter.com", "bot4lib", "zoiaftw")
-      http = urllib2.build_opener(auth_handler)
+      consumer = oauth2.Consumer('BahWsa9ynBogaXxRoJPX5Q', '5bWdyET8iFpFUlpFuFJV02NOILoKEn5u6jt7TwXoXI')
+      token = oauth2.Token('116458525-eI3WNzzatAm4S7DjYzX5fjOCr1wGyY0NtrOdfOqk','H0I2F1cvL8Z421isUW4nARTgEC0nbDBFCmF4lLoE')
+      client = oauth2.Client(consumer,token)
+      
       url = "http://api.twitter.com/1/%s.json" % path
-      data = urlencode(params)
+      body = urlencode(params)
 
       if post:
-        handle = http.open(url,data)
+        resp,content = client.request(url,"POST",body)
       else:
-        handle = http.open('?'.join((url,data)))
-      resp = handle.read()
-      return(simplejson.loads(resp))
+        url = '?'.join((url,body))
+        resp,content = client.request(url)
+      print url
+      return(simplejson.loads(content))
       
     def tweet(self, irc, msg, args, user, text):
       """<text>
@@ -229,7 +232,6 @@ class Twitter(callbacks.Plugin):
       tweet_text = self._shorten_urls(text)
       if len(tweet_text) <= 140:
         self._twitter_api('statuses/update', { 'status' : tweet_text }, post=True)
-        url = "http://api.twitter.com/1/statuses/update.json"
         irc.reply('The operation succeeded.')
       else:
         irc.reply('Tweet is %s characters too long!' % (len(tweet_text) - 140))
