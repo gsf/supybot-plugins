@@ -16,7 +16,7 @@ from urllib import urlencode, quote
 from cgi import parse_qs
 from BeautifulSoup import BeautifulStoneSoup as BSS
 import lxml.html
-import oauth2
+from oauth import oauth
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
 
@@ -209,19 +209,29 @@ class Twitter(callbacks.Plugin):
     trend = wrap(trend, [optional('text')])
 
     def _twitter_api(self, path, params, post = False):
-      consumer = oauth2.Consumer('BahWsa9ynBogaXxRoJPX5Q', '5bWdyET8iFpFUlpFuFJV02NOILoKEn5u6jt7TwXoXI')
-      token = oauth2.Token('116458525-eI3WNzzatAm4S7DjYzX5fjOCr1wGyY0NtrOdfOqk','H0I2F1cvL8Z421isUW4nARTgEC0nbDBFCmF4lLoE')
-      client = oauth2.Client(consumer,token)
+      consumer = oauth.OAuthConsumer('BahWsa9ynBogaXxRoJPX5Q', '5bWdyET8iFpFUlpFuFJV02NOILoKEn5u6jt7TwXoXI')
+      token = oauth.OAuthToken('116458525-eI3WNzzatAm4S7DjYzX5fjOCr1wGyY0NtrOdfOqk','H0I2F1cvL8Z421isUW4nARTgEC0nbDBFCmF4lLoE')
+      client = oauth.OAuthClient(consumer,token)
       
       url = "http://api.twitter.com/1/%s.json" % path
       body = urlencode(params)
-
       if post:
-        resp,content = client.request(url,"POST",body)
+        method = 'POST'
       else:
-        url = '?'.join((url,body))
-        resp,content = client.request(url)
-      print url
+        method = 'GET'
+        
+      oauth_request = oauth.OAuthRequest.from_consumer_and_token(consumer, token=token, http_method=method, http_url=url, parameters=params)
+      oauth_request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(), consumer, token)
+
+      body = None
+      if post:
+        body = oauth_request.to_postdata()
+      else:
+        url = oauth_request.to_url()
+
+      handle = urllib2.urlopen(url, body)
+      content = handle.read()
+      
       return(simplejson.loads(content))
       
     def tweet(self, irc, msg, args, user, text):
