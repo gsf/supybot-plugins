@@ -49,8 +49,7 @@ class Lolcat(callbacks.Privmsg):
             (r"\band\b", 'an'),
             (r"\bthe\b", 'teh'),
             (r"\bdude\b", 'd00d'),
-            (r"\bwhat\b", 'wut').
-            (r"\bthe\b", 'teh'),
+            (r"\bwhat\b", 'wut'),
             (r"\bthink\b", 'fink'),
             (r"\bwork\b", 'werk'),
         )
