@@ -12,4 +12,3 @@ Anyone with write privileges to this repository should feel free to
 edit any plugin, and any plugin from the built-in that you wish to
 override should be created in the "plugins" directory.  Newly created 
 plugins should also go in "plugins".
-
