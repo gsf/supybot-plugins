@@ -97,7 +97,7 @@ class Assorted(callbacks.Privmsg):
         results = self.get_votes(120)
         irc.reply('; '.join(results).encode('utf8'))
 
-    def keynotes2011(self,irc,msg,args):
+    def keynotes2012(self,irc,msg,args):
       """votes for the 2011 code4libcon keynote 
       """
       keynotes = [
@@ -975,7 +975,8 @@ class Assorted(callbacks.Privmsg):
         base_url = 'http://vote.code4lib.org/election/results/'
         tallies = {
             'keynotes': {'2009': '4',
-                         '2010': '11'},
+                         '2010': '11',
+                         '2011': '16'},
             'necode4lib': {'2008': '5'},
             'tshirts': {'2009': '8',
 	    	        '2010': '14'},
@@ -1142,7 +1143,18 @@ class Assorted(callbacks.Privmsg):
             irc.reply("Poll not found for keynotes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
-#            irc.reply("Have you voted? %s" % vote_url)
+
+    def keynotes2011(self, irc, msg, args):
+        """ 
+        Gets tally of keynoter votes for 2011 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("keynotes", "2011")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for keynotes in 2011: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+            irc.reply("Have you voted? %s" % vote_url)
 
     def hosts2013(self, irc, msg, args):
       irc.reply("I'm sorry. That request involves dates after December 21, 2012, and is therefore not worth any of my precious remaining time.")
