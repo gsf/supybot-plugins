@@ -45,7 +45,6 @@ class AudioScrobbler(callbacks.Privmsg):
         mangrue = 'jtgorman',
         dys = 'MrDys',
         bosteen = 'BenO',
-        denials = 'dbs',
         tomkeys = 'madtom',
         )
 
