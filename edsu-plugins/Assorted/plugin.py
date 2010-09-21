@@ -1464,5 +1464,15 @@ class Assorted(callbacks.Privmsg):
     def beck(self, irc, msg, args):
       """Generate a Glenn Beck conspiracy theory. Stolen from http://politicalhumor.about.com/library/bl-glenn-beck-conspiracy.htm"""
       irc.reply(BeckGenerator().generate().encode('utf-8'), prefixNick=True)
+    
+    def redact(self, irc, msg, args):
+      """Randomly redact a piece of text."""
+      words = []
+      for arg in args:
+        arg_words = arg.split()
+        for word in arg_words:
+          words.append(word)
+      redacted = [('\xe2\x96\x88' * len(word) if randint(0,4) == 0 else word) for word in words]
+      irc.reply(' '.join(redacted))
       
 Class = Assorted
