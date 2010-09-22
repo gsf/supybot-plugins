@@ -15,7 +15,7 @@ class SocialGraph(Plugin):
               irc.reply("please supply a URL or email address!")
               return
 
-        profile = self._get_profile()
+        profile = self._get_profile(uri)
         irc.reply(', '.join(profile.keys()))
 
     otherme = wrap(otherme, [optional('text')])
