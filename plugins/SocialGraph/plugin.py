@@ -1,7 +1,7 @@
 import json
 import urllib
 
-import supybot.utils
+import supybot.commands
 import supybot.callbacks
 
 class SocialGraph(supybot.callbacks.Plugin):
@@ -18,7 +18,7 @@ class SocialGraph(supybot.callbacks.Plugin):
         profile = self._get_profile()
         irc.reply(', '.join(profile.keys()))
 
-    lookup = supybot.utils.wrap(lookup, [optional('text')])
+    lookup = supybot.commands.wrap(lookup, [optional('text')])
 
     def _profile(self, uri):
         url = "http://socialgraph.apis.google.com/otherme?" + \
