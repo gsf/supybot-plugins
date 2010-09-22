@@ -74,7 +74,8 @@ class Band(callbacks.Privmsg):
         KA-RAAAAY-ZEE band names!  Get one, add one, remove one, search!
         """
         # this method is ugly as hell, I know
-        f = join(dirname(abspath(__file__)), 'bands.json')
+        #f = join(dirname(abspath(__file__)), 'bands.json')
+        f = conf.supybot.directories.data.dirize('bands.json')
         jsonfile = open(f, 'r')
         json = simplejson.load(jsonfile)
         jsonfile.close()
