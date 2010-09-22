@@ -1465,14 +1465,33 @@ class Assorted(callbacks.Privmsg):
       """Generate a Glenn Beck conspiracy theory. Stolen from http://politicalhumor.about.com/library/bl-glenn-beck-conspiracy.htm"""
       irc.reply(BeckGenerator().generate().encode('utf-8'), prefixNick=True)
     
-    def redact(self, irc, msg, args):
-      """Randomly redact a piece of text."""
-      words = []
-      for arg in args:
-        arg_words = arg.split()
-        for word in arg_words:
-          words.append(word)
-      redacted = [('\xe2\x96\x88' * len(word) if randint(0,4) == 0 else word) for word in words]
-      irc.reply(' '.join(redacted))
+    def redact(self, irc, msg, args, opts, text):
+      """--chance [num]
       
+      Randomly redact a piece of text, blacking out 1 in <chance> non-stopwords. (Default: 1 in 4)"""
+      chance = 4
+      for (opt, arg) in opts:
+          if opt == 'chance':
+              chance = arg
+              
+      stop_words = ['a','able','about','across','after','all','almost','also','am','among','an',
+        'and','any','are','as','at','be','because','been','but','by','can','cannot',
+        'could','dear','did','do','does','either','else','ever','every','for','from',
+        'get','got','had','has','have','he','her','hers','him','his','how','however',
+        'i','if','in','into','is','it','its','just','least','let',
+        'may','me','might','most','must','my','neither','no','nor','not','of','off',
+        'often','on','only','or','other','our','said','say','says',
+        'she','should','since','so','some','than','that','the','their','them','then',
+        'there','these','they','this','tis','to','too','twas','us','wants','was','we',
+        'were','what','when','where','which','while','who','whom','why','will','with',
+        'would','yet','you','your']
+      words = []
+      for word in text.split():
+        if (randint(1,chance) == 1) and (word.lower() not in stop_words):
+          words.append(re.sub(ur'\w','█',word,re.UNICODE))
+        else:
+          words.append(word)
+      irc.reply(' '.join(words))
+    redact = wrap(redact, [getopts({'chance':'int'}), 'text'])
+    
 Class = Assorted
