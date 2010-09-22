@@ -1,0 +1,206 @@
+{
+  "http://profiles.aim.com/caedmonmik": {
+    "attributes": {
+      "url": "http://profiles.aim.com/caedmonmik", 
+      "profile": "http://profiles.aim.com/caedmonmik"
+    }
+  }, 
+  "http://friendfeed.com/mjgiarlo": {
+    "attributes": {
+      "url": "http://friendfeed.com/mjgiarlo", 
+      "profile": "http://friendfeed.com/mjgiarlo", 
+      "exists": "1", 
+      "atom": "http://friendfeed.com/mjgiarlo?format=atom"
+    }
+  }, 
+  "http://delicious.com/technosophia": {
+    "attributes": {
+      "url": "http://delicious.com/technosophia", 
+      "profile": "http://delicious.com/technosophia", 
+      "exists": "1", 
+      "rss": "http://feeds.delicious.com/rss/technosophia"
+    }
+  }, 
+  "http://youtube.com/user/technosophia": {
+    "attributes": {
+      "url": "http://youtube.com/user/technosophia", 
+      "profile": "http://youtube.com/user/technosophia", 
+      "rss": "http://youtube.com/rss/user/technosophia/videos.rss"
+    }
+  }, 
+  "http://picasaweb.google.com/michael.giarlo": {
+    "attributes": {
+      "url": "http://picasaweb.google.com/michael.giarlo", 
+      "profile": "http://picasaweb.google.com/michael.giarlo", 
+      "exists": "1", 
+      "rss": "http://picasaweb.google.com/data/feed/base/user/michael.giarlo?kind=album&alt=rss&hl=en_US&access=public"
+    }
+  }, 
+  "http://www.facebook.com/people/Michael_Giarlo/8835857": {
+    "attributes": {
+      "url": "http://www.facebook.com/people/Michael_Giarlo/8835857", 
+      "photo": "http://profile.ak.facebook.com/v228/1247/26/s8835857_8434.jpg", 
+      "profile": "http://www.facebook.com/people/Michael_Giarlo/8835857", 
+      "fn": "Michael Giarlo"
+    }
+  }, 
+  "http://code.google.com/u/michael.giarlo/": {
+    "attributes": {
+      "url": "http://code.google.com/u/michael.giarlo/", 
+      "profile": "http://code.google.com/u/michael.giarlo/", 
+      "exists": "1", 
+      "atom": "http://code.google.com/feeds/u/michael.giarlo/updates/user/basic"
+    }
+  }, 
+  "https://mjgiarlo.myopenid.com/": {
+    "attributes": {}
+  }, 
+  "http://identi.ca/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "https://launchpad.net/~mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://profiles.aim.com/leftwing42": {
+    "attributes": {
+      "url": "http://profiles.aim.com/leftwing42", 
+      "profile": "http://profiles.aim.com/leftwing42"
+    }
+  }, 
+  "http://www.flickr.com/photos/technosophia/": {
+    "attributes": {
+      "profile": "http://www.flickr.com/people/technosophia/", 
+      "exists": "1", 
+      "url": "http://www.flickr.com/photos/technosophia/", 
+      "photo": "http://farm3.static.flickr.com/2489/buddyicons/9687476@N03.jpg?1248701733", 
+      "atom": "http://api.flickr.com/services/feeds/photos_public.gne?id=9687476@N03&lang=en-us&format=atom", 
+      "rss": "http://api.flickr.com/services/feeds/photos_public.gne?id=9687476@N03&lang=en-us&format=rss_200"
+    }
+  }, 
+  "http://foursquare.com/user/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://twitter.com/mjgiarlo": {
+    "attributes": {
+      "profile": "http://twitter.com/mjgiarlo", 
+      "adr": "State College, PA, US", 
+      "exists": "1", 
+      "url": "http://twitter.com/mjgiarlo", 
+      "photo": "http://a1.twimg.com/profile_images/283597293/mike_2007_bigger.jpg", 
+      "atom": "http://twitter.com/statuses/user_timeline/mjgiarlo.atom", 
+      "fn": "Michael J. Giarlo", 
+      "rss": "http://twitter.com/statuses/user_timeline/mjgiarlo.rss"
+    }
+  }, 
+  "http://www.facebook.com/mjgiarlo": {
+    "attributes": {
+      "profile": "http://www.facebook.com/mjgiarlo", 
+      "adr": "Washington, DC", 
+      "exists": "1", 
+      "url": "http://www.facebook.com/mjgiarlo", 
+      "photo": "http://zh-hk.facebook.com/profile/pic.php?uid=AAAAAQAQhAE_GHavjkfCUATHBEBjgwAAAAcc4a8t6Ad3Xg%2C%2C", 
+      "fn": "Michael Giarlo"
+    }
+  }, 
+  "http://zotero.org/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://www.google.com/reader/shared/12320434625859929728": {
+    "attributes": {
+      "url": "http://www.google.com/reader/shared/12320434625859929728", 
+      "profile": "http://www.google.com/reader/shared/12320434625859929728", 
+      "atom": "http://www.google.com/reader/public/atom/user/12320434625859929728/state/com.google/broadcast"
+    }
+  }, 
+  "http://www.myspace.com/r00tofallevil": {
+    "attributes": {
+      "url": "http://www.myspace.com/r00tofallevil", 
+      "photo": "http://c3.ac-images.myspacecdn.com/images01/109/s_1593d88ca6c579c73493cdb10b500a1e.jpg", 
+      "profile": "http://www.myspace.com/r00tofallevil", 
+      "exists": "1", 
+      "rss": "http://blog.myspace.com/blog/rss.cfm?friendID=494104"
+    }
+  }, 
+  "http://lackoftalent.org/michael/id/": {
+    "attributes": {}
+  }, 
+  "http://www.last.fm/user/leftwing/": {
+    "attributes": {
+      "url": "http://www.last.fm/user/leftwing/", 
+      "profile": "http://www.last.fm/user/leftwing/"
+    }
+  }, 
+  "http://github.com/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://identi.ca/mjgiarlo/foaf": {
+    "attributes": {}
+  }, 
+  "http://mjg.yelp.com": {
+    "attributes": {
+      "url": "http://mjg.yelp.com", 
+      "profile": "http://mjg.yelp.com", 
+      "exists": "1", 
+      "rss": "http://www.yelp.com/syndicate/user/dfrRCpaJtwsJAQEGbo_28w/rss.xml"
+    }
+  }, 
+  "http://lackoftalent.org/michael/blog/": {
+    "attributes": {}
+  }, 
+  "https://login.launchpad.net/+id/AF7pJ4c": {
+    "attributes": {}
+  }, 
+  "http://mjgiarlo.myopenid.com/": {
+    "attributes": {}
+  }, 
+  "http://purl.org/net/leftwing": {
+    "attributes": {}
+  }, 
+  "http://www.personal.psu.edu/mjg36/blogs/": {
+    "attributes": {}
+  }, 
+  "http://purl.org/net/leftwing/blog": {
+    "attributes": {}
+  }, 
+  "http://lackoftalent.org/michael/": {
+    "attributes": {}
+  }, 
+  "http://technorati.com/people/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://www.goodreads.com/mjgiarlo": {
+    "attributes": {}
+  }, 
+  "https://launchpad.net/~mjgiarlo/+rdf": {
+    "attributes": {}
+  }, 
+  "http://launchpad.net/~mjgiarlo": {
+    "attributes": {}
+  }, 
+  "http://www.google.com/profiles/michael.giarlo": {
+    "attributes": {
+      "url": "http://www.google.com/profiles/michael.giarlo", 
+      "photo": "http://www.google.com/s2/photos/public/AIbEiAIAAABECIP8v6-ZsI6E4wEiC3ZjYXJkX3Bob3RvKigyYmE1MDcwNWNhYTgwOTcwMTk5NDRiMjBmYmIxYzk0YWQxOTQwMzYzMAGk3anQ-iKBlksZAHB8mnbWh3P1tQ", 
+      "profile": "http://www.google.com/profiles/michael.giarlo", 
+      "fn": "Michael Giarlo"
+    }
+  }, 
+  "http://www.linkedin.com/in/mjgiarlo": {
+    "attributes": {
+      "url": "http://www.linkedin.com/in/mjgiarlo", 
+      "profile": "http://www.linkedin.com/in/mjgiarlo", 
+      "exists": "1"
+    }
+  }, 
+  "http://www.google.com/profiles/michaelgiarlo": {
+    "attributes": {
+      "url": "http://www.google.com/profiles/michaelgiarlo", 
+      "photo": "http://www.google.com/s2/photos/public/AIbEiAIAAABECIP8v6-ZsI6E4wEiC3ZjYXJkX3Bob3RvKigyYmE1MDcwNWNhYTgwOTcwMTk5NDRiMjBmYmIxYzk0YWQxOTQwMzYzMAGk3anQ-iKBlksZAHB8mnbWh3P1tQ", 
+      "profile": "http://www.google.com/profiles/michaelgiarlo", 
+      "fn": "Michael Giarlo"
+    }
+  }, 
+  "http://librarything.com/profile/mjgiarlo": {
+    "attributes": {}
+  }
+}
