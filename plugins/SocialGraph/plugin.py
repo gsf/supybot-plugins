@@ -20,7 +20,7 @@ class SocialGraph(Plugin):
 
     otherme = wrap(otherme, [optional('text')])
 
-    def _profile(self, uri):
+    def _get_profile(self, uri):
         url = "http://socialgraph.apis.google.com/otherme?" + \
             urllib.urlencode({'q': uri})
         return json.loads(urllib.urlopen(url).read())
