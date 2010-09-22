@@ -1,10 +1,10 @@
 import json
 import urllib
 
-import supybot.commands
-import supybot.callbacks
+from supybot.commands import wrap, optional
+from supybot.callbacks import Plugin
 
-class SocialGraph(supybot.callbacks.Plugin):
+class SocialGraph(Plugin):
     """Flimsy support for Google's Social Graph API.
     """
 
@@ -18,7 +18,7 @@ class SocialGraph(supybot.callbacks.Plugin):
         profile = self._get_profile()
         irc.reply(', '.join(profile.keys()))
 
-    otherme = supybot.commands.wrap(otherme, [optional('text')])
+    otherme = wrap(otherme, [optional('text')])
 
     def _profile(self, uri):
         url = "http://socialgraph.apis.google.com/otherme?" + \
