@@ -1,6 +1,6 @@
-BThese directories contain plugins for supybot from three places:
+These directories contain plugins for supybot from three places:
 
-*1;2305;0c Everything in the "Supybot-plugins-20060723" directory comes from 
+* Everything in the "Supybot-plugins-20060723" directory comes from 
   http://sourceforge.net/projects/supybot/.  
 * The ones in the "edsu-plugins" directory come from plugins Ed 
   Summers wrote for his supybot.  
