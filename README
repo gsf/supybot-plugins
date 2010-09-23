@@ -1,6 +1,6 @@
-These directories contain plugins for supybot from three places:
+BThese directories contain plugins for supybot from three places:
 
-* Everything in the "Supybot-plugins-20060723" directory comes from 
+*1;2305;0c Everything in the "Supybot-plugins-20060723" directory comes from 
   http://sourceforge.net/projects/supybot/.  
 * The ones in the "edsu-plugins" directory come from plugins Ed 
   Summers wrote for his supybot.  
@@ -12,3 +12,4 @@ Anyone with write privileges to this repository should feel free to
 edit any plugin, and any plugin from the built-in that you wish to
 override should be created in the "plugins" directory.  Newly created 
 plugins should also go in "plugins".
+
