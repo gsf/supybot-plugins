@@ -19,7 +19,8 @@ class AudioScrobbler(callbacks.Privmsg):
 
     threaded = True
 
-    users_file = join(dirname(abspath(__file__)), 'users.json')
+    #users_file = join(dirname(abspath(__file__)), 'users.json')
+    users_file = conf.supybot.directories.data.dirize('AudioScrobbler.json')
     f = open(users_file)
     users = simplejson.load(f)
     f.close()
