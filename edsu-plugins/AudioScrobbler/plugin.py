@@ -9,6 +9,7 @@ from xml.etree import ElementTree as ET
 import simplejson
 
 from supybot.commands import *
+import supybot.conf as conf
 import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
