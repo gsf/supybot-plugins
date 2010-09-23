@@ -36,7 +36,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.dbi as dbi
 
-from random import randrange
+from random import choice
 import time
 
 PRIVATE_COMMANDS = ['get','remove']
@@ -216,8 +216,12 @@ class LoveHate(callbacks.Plugin):
             predicates = [lambda r: r.emotion == emotion]
         records = self._select(channel, predicates)
         L = list(records)
-        record = L[randrange(0,len(L))]
-        irc.reply('%s %ss %s' % (record.by, record.emotion, record.text))
+        try:
+            record = choice(L)
+        except IndexError:
+            irc.reply("I can't find anyone who loves or hates anything.")
+        else:
+            irc.reply('%s %ss %s' % (record.by, record.emotion, record.text))
     random = wrap(random, ['channeldb',optional(("literal", ("love","hate")))])
     
     def get(self, irc, msg, args, channel, id):
