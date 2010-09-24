@@ -165,16 +165,49 @@ class AudioScrobbler(callbacks.Plugin):
         if not username:
             username = msg.nick
         username = self.reverse_nickmap.get(username, username)
-        favs = []
         try:
-          url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
-          for row in urlopen(url):
-              favs.append(row.split(',')[2].strip("\n"))
-              if len(favs) >= 20:
-                  break
-          irc.reply(', '.join(favs).encode('utf8', 'ignore'))
+            favs = self._favs(username)
+            irc.reply(', '.join(favs).encode('utf8', 'ignore'))
         except:
-          irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+            irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+
+    def _favs(self, username):
+        url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
+        favs = []
+        for row in urlopen(url):
+            favs.append(row.split(',')[2].strip("\n"))
+            if len(favs) >= 20:
+                break
+        return favs
+
+    def taste(self, irc, msg, args, username):
+        """<user>
+        Get the top tags of a user's fav artists
+        """
+        if not username:
+            username = msg.nick
+        username = self.reverse_nickmap.get(username, username)
+
+        try:
+            favs = self._favs(username)
+        except:
+            irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+
+        fav_tags = {}
+        for fav in favs:
+            try:
+                for tag in self._tags(fav):
+                    tag = tag.split(':')[0]
+                    fav_tags.setdefault(tag, 0)
+                    fav_tags[tag] += 1
+            except:
+                self.log.info("No tags found for %s" % fav)
+        
+        sorted_fav_tags = sorted(fav_tags, key=fav_tags.get, reverse=True)[:20]
+        tastes = ["%s: %s" % (w, fav_tags[w]) for w in sorted_fav_tags]
+        irc.reply(', '.join(tastes).encode('utf8', 'ignore'))
+    
+    taste = wrap(taste, [optional('text')])
 
     def scrobblers(self,irc,msg,args):
         user_list = []
@@ -241,15 +274,17 @@ class AudioScrobbler(callbacks.Plugin):
           tracks.append("%s - %s [%s]" % (artist, title, count))
       irc.reply('; '.join(tracks).encode('utf8','ignore'))
 
-
     def tags(self,irc,msg,args):
         artist = quote(' '.join(args))
-        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % artist
         try:
-            response = urlopen(url)
+            tags = self._tags(artist)
+            irc.reply(' ; '.join(tags).encode('utf8','ignore'))
         except:
             irc.reply("No tags found for %s" % ' '.join(args))
-            return
+
+    def _tags(self, artist):
+        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % artist
+        response = urlopen(url)
             
         tree = ET.parse(response)
         root = tree.getroot()
@@ -258,7 +293,7 @@ class AudioScrobbler(callbacks.Plugin):
             name = tag.find(".//name")
             count = tag.find(".//count")
             tags.append("%s: %s%%" % (name.text, count.text))
-        irc.reply(' ; '.join(tags).encode('utf8','ignore'))
+        return tags
 
     def topten(self,irc,msg,args):
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklytrackchart.xml'
