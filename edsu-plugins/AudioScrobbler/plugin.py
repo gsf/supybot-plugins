@@ -161,20 +161,20 @@ class AudioScrobbler(callbacks.Plugin):
         """<user>
         Get user's favorite artists
         """
-        if len(args) != 1:
-          irc.reply("forgot the username")
-        else:
-          username = args[0]
-          favs = []
-          try:
-            url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % args[0]
-            for row in urlopen(url):
-                favs.append(row.split(',')[2].strip("\n"))
-                if len(favs) >= 20:
-                    break
-            irc.reply(', '.join(favs).encode('utf8', 'ignore'))
-          except:
-            irc.reply('no such user or last.fm is on the fritz')
+        username = ''.join(args)
+        if not username:
+            username = msg.nick
+        username = self.reverse_nickmap.get(username, username)
+        favs = []
+        try:
+          url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
+          for row in urlopen(url):
+              favs.append(row.split(',')[2].strip("\n"))
+              if len(favs) >= 20:
+                  break
+          irc.reply(', '.join(favs).encode('utf8', 'ignore'))
+        except:
+          irc.reply('no such user "%s" or last.fm is on the fritz' % username)
 
     def scrobblers(self,irc,msg,args):
         user_list = []
