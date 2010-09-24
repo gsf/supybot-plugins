@@ -177,8 +177,18 @@ class AudioScrobbler(callbacks.Plugin):
             irc.reply('no such user or last.fm is on the fritz')
 
     def scrobblers(self,irc,msg,args):
-        irc.reply("; ".join(
-            '%s (%s)' % (x, self.nickmap[x]) for x in self.users))
+        user_list = []
+        for user in self.users:
+            nick = self.nickmap.get(user)
+            if nick:
+                user_str = '%s (%s)' % (nick, user)
+            else:
+                user_str = '%s' % user
+            user_list.append(user_str)
+        if user_list:
+            irc.reply("; ".join(user_list))
+        else:
+            irc.reply('none found')
 
     def recommend(self,irc,msg,args):
         artist = quote(' '.join(args))
