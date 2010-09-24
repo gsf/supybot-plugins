@@ -16,39 +16,46 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 
-class AudioScrobbler(callbacks.Privmsg):
-
+class AudioScrobbler(callbacks.Plugin):
     threaded = True
 
-    #users_file = join(dirname(abspath(__file__)), 'users.json')
-    users_file = conf.supybot.directories.data.dirize('AudioScrobbler.json')
-    f = open(users_file)
-    users = simplejson.load(f)
-    f.close()
-    users.sort()
+    def __init__(self, irc):
+        self.__parent = super(AudioScrobbler, self)
+        self.__parent.__init__(irc)
+        #self.db = plugins.DB(self.name(), {'flat': self.DB})()
+        #users_file = join(dirname(abspath(__file__)), 'users.json')
+        self.users_file = conf.supybot.directories.data.dirize('AudioScrobbler.json')
+        try:
+            f = open(self.users_file)
+            self.users = simplejson.load(f)
+            f.close()
+        except IOError, e:
+            self.log.warning(str(e))
+            self.users = []
+        self.users.sort()
     
-    
-    nickmap = dict(
-#       last.fm username = 'IRC nick',
-        leftwing = 'mjgiarlo',
-        DataGazetteer = 'pmurray',
-        LTjake = 'bricas',
-        moil = 'gsf',
-        rtennant = 'royt',
-        inkdroid = 'edsu',
-        inkcow = 'rsinger',
-        roblivian = 'robcaSSon',
-        mdxi = 'sboyette',
-        bsadler = 'bess',
-        jaydatema = 'jdatema',
-        jfrumkin = 'jaf',
-        ryanwick = 'wickr',
-        ranginui = 'rangi',
-        mangrue = 'jtgorman',
-        dys = 'MrDys',
-        bosteen = 'BenO',
-        tomkeys = 'madtom',
+        self.nickmap = dict(
+          # last.fm username = 'IRC nick',
+            leftwing = 'mjgiarlo',
+            DataGazetteer = 'pmurray',
+            LTjake = 'bricas',
+            moil = 'gsf',
+            rtennant = 'royt',
+            inkdroid = 'edsu',
+            inkcow = 'rsinger',
+            roblivian = 'robcaSSon',
+            mdxi = 'sboyette',
+            bsadler = 'bess',
+            jaydatema = 'jdatema',
+            jfrumkin = 'jaf',
+            ryanwick = 'wickr',
+            ranginui = 'rangi',
+            mangrue = 'jtgorman',
+            dys = 'MrDys',
+            bosteen = 'BenO',
+            tomkeys = 'madtom',
         )
+        self.reverse_nickmap = dict((v,k) for k, v in self.nickmap.iteritems())
 
     def get_songs(self,username):
         import feedparser
@@ -77,6 +84,9 @@ class AudioScrobbler(callbacks.Privmsg):
         See what <user> last listened to
         """
         username = ''.join(args)
+        if not username:
+            username = msg.nick
+        username = self.reverse_nickmap.get(username, username)
         songs = self.get_songs(username)
         if len(songs) > 0:
             irc.reply(songs[0])
@@ -88,7 +98,14 @@ class AudioScrobbler(callbacks.Privmsg):
         See the full list of tunes user listened to.
         """
         username = ''.join(args)
-        irc.reply( ' || '.join(self.get_songs(username)) )
+        if not username:
+            username = msg.nick
+        username = self.reverse_nickmap.get(username, username)
+        songs = self.get_songs(username)
+        if len(songs) > 0:
+            irc.reply(' || '.join(self.get_songs(username)))
+        else:
+            irc.reply('i dunno any songs %s has listened to' % username)
 
     def blockparty(self,irc,msg,args,all):
         """        
@@ -107,14 +124,14 @@ class AudioScrobbler(callbacks.Privmsg):
             if show_all or nick in irc.state.channels[channel].users:
                 songs = self.get_songs(user)
                 if len(songs) > 0:
-                    tunes.append("%s: %s" % (user,songs[0]))
+                    tunes.append("%s: %s" % (nick, songs[0]))
         irc.reply('; '.join(tunes))
 
     blockparty = wrap(blockparty, [optional('text')])
 
-    def __usersave(self):
+    def _usersave(self):
         f = open(self.users_file, 'w')
-        simplejson.dump(self.users, f, indent=4)
+        simplejson.dump(self.users, f, indent=2)
         f.close()
 
     def add(self,irc,msg,args):
@@ -126,7 +143,7 @@ class AudioScrobbler(callbacks.Privmsg):
             for u in user.split(','):
                 if u not in self.users:
                     self.users.append(u)
-        self.__usersave()
+        self._usersave()
         irc.reply(','.join(args) + " just moved in across the street")
 
     def remove(self,irc,msg,args):
@@ -137,7 +154,7 @@ class AudioScrobbler(callbacks.Privmsg):
             # in case commas were used instead of spaces
             for u in user.split(','):
                 self.users.remove(u)
-        self.__usersave()
+        self._usersave()
         irc.reply(','.join(args) + " was just evicted")
 
     def favs(self,irc,msg,args):
@@ -160,7 +177,8 @@ class AudioScrobbler(callbacks.Privmsg):
             irc.reply('no such user or last.fm is on the fritz')
 
     def scrobblers(self,irc,msg,args):
-        irc.reply("; ".join(self.users))
+        irc.reply("; ".join(
+            '%s (%s)' % (x, self.nickmap[x]) for x in self.users))
 
     def recommend(self,irc,msg,args):
         artist = quote(' '.join(args))
