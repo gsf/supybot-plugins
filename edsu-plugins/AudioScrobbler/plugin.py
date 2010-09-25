@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from os.path import join, dirname, abspath
-from urllib import urlencode, quote, unquote
+from os.path import join 
+from urllib import quote
 from urllib2 import urlopen
-from sgmllib import SGMLParser
-from random import randint, random
+from random import choice
 from xml.etree import ElementTree as ET
+import feedparser
 import simplejson
+import socket
+import time
 
 from supybot.commands import *
 import supybot.conf as conf
+import supybot.dbi as dbi
 import supybot.plugins as plugins
 import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
@@ -18,153 +21,196 @@ import supybot.callbacks as callbacks
 
 class AudioScrobbler(callbacks.Plugin):
     threaded = True
+    class DB(plugins.DbiChannelDB):
+        class DB(dbi.DB):
+            class Record(dbi.Record):
+                __fields__ = [
+                    'at',
+                    'by',
+                    'nick',
+                    'username',
+                ]
+                def get_name(self):
+                    if self.nick == self.username:
+                        return self.nick
+                    return '%s (%s)' % (self.nick, self.username)
+                name = property(get_name)
+            def add(self, at, by, nick, username, **kwargs):
+                record = self.Record(at=at, by=by, nick=nick, username=username, **kwargs)
+                return super(self.__class__, self).add(record)
+            def all_records(self):
+                return self.select(lambda r: True)
+            def pick(self, **kwargs):
+                def p(r):
+                    flag = True
+                    for k in kwargs:
+                        if getattr(r, k) != kwargs[k]:
+                            flag = False
+                    return flag
+                try:
+                    record = self.select(p).next()
+                except StopIteration:
+                    record = None
+                return record
+            def username(self, nick):
+                record = self.pick(nick=nick)
+                if record:
+                    return record.username
 
     def __init__(self, irc):
         self.__parent = super(AudioScrobbler, self)
         self.__parent.__init__(irc)
-        #self.db = plugins.DB(self.name(), {'flat': self.DB})()
-        #users_file = join(dirname(abspath(__file__)), 'users.json')
-        self.users_file = conf.supybot.directories.data.dirize('AudioScrobbler.json')
-        try:
-            f = open(self.users_file)
-            self.users = simplejson.load(f)
-            f.close()
-        except IOError, e:
-            self.log.warning(str(e))
-            self.users = []
-        self.users.sort()
-    
-        self.nickmap = dict(
-          # last.fm username = 'IRC nick',
-            leftwing = 'mjgiarlo',
-            DataGazetteer = 'pmurray',
-            LTjake = 'bricas',
-            moil = 'gsf',
-            rtennant = 'royt',
-            inkdroid = 'edsu',
-            inkcow = 'rsinger',
-            roblivian = 'robcaSSon',
-            mdxi = 'sboyette',
-            bsadler = 'bess',
-            jaydatema = 'jdatema',
-            jfrumkin = 'jaf',
-            ryanwick = 'wickr',
-            ranginui = 'rangi',
-            mangrue = 'jtgorman',
-            dys = 'MrDys',
-            bosteen = 'BenO',
-            tomkeys = 'madtom',
-        )
-        self.reverse_nickmap = dict((v,k) for k, v in self.nickmap.iteritems())
+        self.db = plugins.DB(self.name(), {'flat': self.DB})()
+        #self.nickmap = dict(
+        #  # last.fm username = 'IRC nick',
+        #    leftwing = 'mjgiarlo',
+        #    DataGazetteer = 'pmurray',
+        #    LTjake = 'bricas',
+        #    moil = 'gsf',
+        #    rtennant = 'royt',
+        #    inkdroid = 'edsu',
+        #    inkcow = 'rsinger',
+        #    roblivian = 'robcaSSon',
+        #    mdxi = 'sboyette',
+        #    bsadler = 'bess',
+        #    jaydatema = 'jdatema',
+        #    jfrumkin = 'jaf',
+        #    ryanwick = 'wickr',
+        #    ranginui = 'rangi',
+        #    mangrue = 'jtgorman',
+        #    dys = 'MrDys',
+        #    bosteen = 'BenO',
+        #    tomkeys = 'madtom',
+        #)
 
-    def get_songs(self,username):
-        import feedparser
-        import socket
+    def _get_songs(self, username):
         socket.setdefaulttimeout(60)
         url = 'http://ws.audioscrobbler.com/1.0/user/%s/recenttracks.rss'
-        songs = []
         rss = feedparser.parse(url % username)
+        songs = []
         for entry in rss.entries:
             song = entry.title.replace(u" – ", u' : ')
             songs.append(song.encode('utf8', 'ignore'))
         return songs
 
-    def randtune(self,irc,msg,args):
-        """Return a random song that someone in #code4lib listened to recently 
+    def randtune(self, irc, msg, args, channel):
         """
-        for user in shuffle(self.users):
-            self.log.info(user)
-            songs = self.get_songs(user)
-            if len(songs) > 0:
-                irc.reply(songs[0])
-                return
-
-    def tunes(self,irc,msg,args):
-        """<user>
-        See what <user> last listened to
+        Return a random song from the neighborhood
         """
-        username = ''.join(args)
-        if not username:
-            username = msg.nick
-        username = self.reverse_nickmap.get(username, username)
-        songs = self.get_songs(username)
+        record = self.db.random(channel)
+        songs = self._get_songs(record.username)
         if len(songs) > 0:
             irc.reply(songs[0])
         else:
-            irc.reply("i dunno what %s last listened to" % username)
+            irc.reply("%s is screwing up the system" % record.name)
+    randtune = wrap(randtune, ['channeldb'])
 
-    def alltunes(self,irc,msg,args):
-        """<user>
-        See the full list of tunes user listened to.
+    def tunes(self, irc, msg, args, channel, username):
+        """[<username>]
+        See what <username> (or you) last played
         """
-        username = ''.join(args)
+        username = username or self.db.username(channel, msg.nick)
         if not username:
-            username = msg.nick
-        username = self.reverse_nickmap.get(username, username)
-        songs = self.get_songs(username)
+            irc.reply("No %s in the neighborhood" % nick)
+            return
+        songs = self._get_songs(username)
         if len(songs) > 0:
-            irc.reply(' || '.join(self.get_songs(username)))
+            irc.reply(songs[0])
         else:
-            irc.reply('i dunno any songs %s has listened to' % username)
+            irc.reply("I dunno what %s last listened to" % username)
+    tunes = wrap(tunes, ['channeldb', optional('text')])
 
-    def blockparty(self,irc,msg,args,all):
-        """        
-        See what people in the group are listening to
+    def alltunes(self, irc, msg, args, channel, username):
+        """[<username>]
+        See the full list of tunes <username> (or you) have played recently
         """
-        channel = msg.args[0]
-
-        if all == 'all' or not irc.isChannel(channel):
-            show_all = True
-        else:
-            show_all = False
-
-        tunes = [] 
-        for user in self.users:
-            nick = self.nickmap.get(user, user)
-            if show_all or nick in irc.state.channels[channel].users:
-                songs = self.get_songs(user)
-                if len(songs) > 0:
-                    tunes.append("%s: %s" % (nick, songs[0]))
-        irc.reply('; '.join(tunes))
-
-    blockparty = wrap(blockparty, [optional('text')])
-
-    def _usersave(self):
-        f = open(self.users_file, 'w')
-        simplejson.dump(self.users, f, indent=2)
-        f.close()
-
-    def add(self,irc,msg,args):
-        """<user>[,<user>...]
-        Add one or more users to the blockparty
-        """
-        for user in args:
-            # in case commas were used instead of spaces
-            for u in user.split(','):
-                if u not in self.users:
-                    self.users.append(u)
-        self._usersave()
-        irc.reply(','.join(args) + " just moved in across the street")
-
-    def remove(self,irc,msg,args):
-        """<user>[,<user>...]
-        Remove one or more users from the blockparty
-        """
-        for user in args:
-            # in case commas were used instead of spaces
-            for u in user.split(','):
-                self.users.remove(u)
-        self._usersave()
-        irc.reply(','.join(args) + " was just evicted")
-
-    def favs(self,irc,msg,args):
-        """<user>
-        Get user's favorite artists
-        """
-        username = ''.join(args)
+        username = username or self.db.username(channel, msg.nick)
         if not username:
-            username = msg.nick
-        username = self.reverse_nickmap.get(username, username)
+            irc.reply("No %s in the neighborhood" % nick)
+            return
+        songs = self._get_songs(username)
+        if len(songs) > 0:
+            irc.reply(' || '.join(self._get_songs(username)))
+        else:
+            irc.reply('I dunno any songs %s has listened to' % username)
+    alltunes = wrap(alltunes, ['channeldb', optional('text')])
+
+    def blockparty(self, irc, msg, args, channel, show_all):
+        """[all]
+        See what people on the street are listening to. Include "all" to show everybody.
+        """
+        show_all = bool(show_all or not irc.isChannel(channel))
+
+        irc.reply('Everybody on the block announce:', prefixNick=False)
+        records = self.db.all_records(channel)
+        for record in records:
+            if show_all or record.nick in irc.state.channels[channel].users:
+                songs = self._get_songs(record.username)
+                if len(songs) > 0:
+                    irc.reply('%s: %s' % (record.name, songs[0]), prefixNick=False)
+    blockparty = wrap(blockparty, ['channeldb', optional('boolean')])
+
+    def _add(self, irc, msg, args, channel, nick, username):
+        """<nick> <username>
+        Add somebody to the lastfm blockparty. 
+        """
+        record = self.db.pick(channel, nick=nick)
+        if record:
+            self.db.remove(channel, record.id)
+        self.db.add(channel, time.time(), msg.nick, nick, username)
+        record = self.db.pick(channel, nick=nick)
+        irc.reply('%s just moved in across the street' % record.name, 
+                prefixNick=False)
+    add = wrap(_add, ['channeldb', 'nick', 'text'])
+
+    def movein(self, irc, msg, args, channel, username):
+        """[<username>]
+        Move into the neighborhood. Your nick is used as the lastfm <username> if you don't specify one.
+        """
+        username = username or msg.nick
+        self._add(irc, msg, args, channel, msg.nick, username)
+    movein = wrap(movein, ['channeldb', optional('nick')])
+
+    def get_nick_info(self, irc, msg, args, channel, nick):
+        """[<nick>]
+        Get when <nick> moved in. Your own nick is the default.
+        """
+        nick = nick or msg.nick
+        record = self.db.pick(channel, nick=nick)
+        if record:
+            irc.reply(format('%s moved in at %t (added by %s)', 
+                record.name, record.at, record.by))
+        else:
+            irc.reply("No %s in the neighborhood" % nick)
+    get_nick_info = wrap(get_nick_info, ['channeldb', optional('nick')])
+
+    def _remove(self, irc, msg, args, channel, nick):
+        """<nick>
+        Move <nick> out of the neighborhood.
+        """
+        record = self.db.pick(channel, nick=nick)
+        if record:
+            self.db.remove(channel, record.id)
+            irc.reply("%s just got evicted" % nick)
+        else:
+            irc.reply("%s doesn't live here anymore" % nick)
+    remove = wrap(_remove, ['channeldb', 'nick'])
+
+    def moveout(self, irc, msg, args, channel):
+        """
+        Move yourself out of the neighborhood.
+        """
+        self._remove(irc, msg, args, channel, msg.nick)
+    moveout = wrap(moveout, ['channeldb'])
+
+    def favs(self, irc, msg, args, channel, username):
+        """[<username>]
+        Get <username>'s (or your own) favorite artists
+        """
+        username = username or self.db.username(channel, msg.nick)
+        if not username:
+            irc.reply("No %s in the neighborhood" % nick)
+            return
         favs = []
         try:
           url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
@@ -175,181 +221,166 @@ class AudioScrobbler(callbacks.Plugin):
           irc.reply(', '.join(favs).encode('utf8', 'ignore'))
         except:
           irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+    favs = wrap(favs, ['channeldb', optional('nick')])
 
-    def scrobblers(self,irc,msg,args):
-        user_list = []
-        for user in self.users:
-            nick = self.nickmap.get(user)
-            if nick:
-                user_str = '%s (%s)' % (nick, user)
-            else:
-                user_str = '%s' % user
-            user_list.append(user_str)
-        if user_list:
-            irc.reply("; ".join(user_list))
+    def scrobblers(self, irc, msg, args, channel):
+        """
+        Show everybody on the block
+        """
+        records = self.db.all_records(channel)
+        users = "; ".join(record.name for record in records)
+        if users:
+            irc.reply(users)
         else:
-            irc.reply('none found')
+            irc.reply('you have one quiet block')
+    scrobblers = wrap(scrobblers, ['channeldb'])
 
-    def recommend(self,irc,msg,args):
-        artist = quote(' '.join(args))
-        if artist.lower() == 'lightning%20bolt':
-          irc.reply("I recommend you listen to something else...")
-          return
-
-        self.log.info(artist.lower())
-        if (artist.lower() == 'motley%20crue'):
-            irc.reply("No.")
+    def recommend(self, irc, msg, args, channel, artist):
+        """<artist>
+        Get recommendations for an artist
+        """
+        if artist.lower() == 'lightning bolt':
+            irc.reply("I recommend you listen to something else...")
             return
-
-        url = 'http://ws.audioscrobbler.com/1.0/artist/%s/similar.xml' % artist
-        try:
-            response = urlopen(url)
-        except:
-            irc.reply("no such artist or last.fm is on the fritz")
+        if artist.lower() == 'motley crue':
+            irc.reply("No")
             return
-            
-        tree = ET.parse(response)
-        root = tree.getroot()
+        url = 'http://ws.audioscrobbler.com/1.0/artist/%s/similar.xml' % quote(artist)
+        root = self._get_root(irc, url)
+        if not root:
+            return
         names = []
         for name in root.findall('.//name'):
             names.append(name.text)
         irc.reply(', '.join(names).encode('utf8','ignore'))
+    recommend = wrap(recommend, ['channeldb', 'text'])
 
-    def weeklies(self,irc,msg,args):
-      """<user>
-      Get a weekly top 10 for a last.fm user
-      """
-      if len(args) == 0:
-        irc.reply("forgot username")
-        return
-
-      user = args[0]
-      url = 'http://ws.audioscrobbler.com/1.0/user/%s/weeklytrackchart.xml' % user
-      try:
-          response = urlopen(url)
-      except:
-          irc.reply("no such user or last.fm is on the fritz")
-          return
-          
-      tree = ET.parse(response)
-      root = tree.getroot()
-      tracks = []
-      for track in root.findall('.//track'):
-          artist = track.find('.//artist').text
-          title = track.find('.//name').text
-          count = track.find('.//playcount').text
-          tracks.append("%s - %s [%s]" % (artist, title, count))
-      irc.reply('; '.join(tracks).encode('utf8','ignore'))
-
-
-    def tags(self,irc,msg,args):
-        artist = quote(' '.join(args))
-        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % artist
-        try:
-            response = urlopen(url)
-        except:
-            irc.reply("No tags found for %s" % ' '.join(args))
+    def weeklies(self, irc, msg, args, channel, username):
+        """[<username>]
+        Get a weekly top 10 for a last.fm username (or yourself)
+        """
+        username = username or self.db.username(channel, msg.nick)
+        if not username:
+            irc.reply("No %s in the neighborhood" % nick)
             return
-            
-        tree = ET.parse(response)
-        root = tree.getroot()
+        url = 'http://ws.audioscrobbler.com/1.0/user/%s/weeklytrackchart.xml' % username
+        root = self._get_root(irc, url)
+        if not root:
+            return
+        tracks = []
+        for track in root.findall('.//track'):
+            artist = track.find('.//artist').text
+            title = track.find('.//name').text
+            count = track.find('.//playcount').text
+            tracks.append("%s - %s [%s]" % (artist, title, count))
+        irc.reply('; '.join(tracks).encode('utf8','ignore'))
+    weeklies = wrap(weeklies, ['channeldb', optional('nick')])
+
+    def tags(self, irc, msg, args, channel, artist):
+        """<artist>
+        Get tags for an artist
+        """
+        artist = quote(artist)
+        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % artist
+        root = self._get_root(irc, url)
+        if not root:
+            return
         tags = []
         for tag in root.findall('.//tag'):
             name = tag.find(".//name")
             count = tag.find(".//count")
             tags.append("%s: %s%%" % (name.text, count.text))
         irc.reply(' ; '.join(tags).encode('utf8','ignore'))
+    tags = wrap(tags, ['channeldb', 'text'])
 
-    def topten(self,irc,msg,args):
+    def toptracks(self, irc, msg, args, channel):
+        """
+        Get the last.fm weekly track chart
+        """
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklytrackchart.xml'
-        try:
-            response = urlopen(url)
-        except:
-            irc.reply("d'oh can't get the weekly track chart :(")
+        root = self._get_root(irc, url)
+        if not root:
             return
-        tree = ET.parse(response)
-        root = tree.getroot()
         tracks = []
         for track in root.findall('.//track'):
             artist = track.find('.//artist')
             name = track.find('.//name')
             tracks.append("%s:%s" % (artist.text.strip(), name.text.strip()))
         irc.reply(', '.join(tracks).encode('utf8','ignore'))
+    toptracks = wrap(toptracks, ['channeldb'])
 
-    def topten2(self,irc,msg,args):
-        artists = self.get_topbands()
-        irc.reply(', '.join(artists).encode('utf8','ignore'))
-
-    def randband(self, irc, msg, args):
-        """
-        Returns a random band from the weekly top 
-        artists chart of the code4lib last.fm group
-        """
-        artists = self.get_topbands()
-        artist = artists[randint(0, len(artists)-1)]
-        irc.reply(artist)
-
-    def get_topbands(self):
-        url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklyartistchart.xml'
+    def _get_root(self, irc, url):
         try:
             response = urlopen(url)
         except:
-            irc.reply("d'oh can't get the weekly artist chart :(")
+            irc.reply("d'oh! ain't got the right response at that there url :(")
             return
         tree = ET.parse(response)
-        root = tree.getroot()
+        return tree.getroot()
+
+    def _topbands(self, irc, msg, args, channel, random):
+        """[random]
+        Get the last.fm weekly band chart. Include "random" to choose a random one.
+        """
+        url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklyartistchart.xml'
+        root = self._get_root(irc, url)
+        if not root:
+            return
         artists = []
         for track in root.findall('.//artist'):
             name = track.find('.//name')
             artists.append(name.text.strip())
-        return artists
+        if random:
+            artist = choice(artists)
+            irc.reply(artist)
+        irc.reply(', '.join(artists).encode('utf8','ignore'))
+    topbands = wrap(_topbands, ['channeldb', optional('boolean')])
 
-    def tagged (self,irc,msg,args):
-        tag = quote(' '.join(args))
-        url = "http://ws.audioscrobbler.com/1.0/tag/%s/topartists.xml" % tag 
-        self.log.info(url)
-        try:
-            response = urlopen(url)
-        except:
-            irc.reply("no such tag or last.fm is on the fritz")
+    def randband(self, irc, msg, args, channel):
+        """
+        Returns a random band from the weekly top 
+        artists chart of the code4lib last.fm group
+        """
+        self._topbands(irc, msg, args, channel, True)
+    randband = wrap(randband, ['channeldb'])
+
+    def tagged(self, irc, msg, args, channel, tag):
+        """<tag>
+        Get all bands tagged with <tag>
+        """
+        url = "http://ws.audioscrobbler.com/1.0/tag/%s/topartists.xml" % quote(tag.strip())
+        root = self._get_root(irc, url)
+        if not root:
             return
-            
-        tree = ET.parse(response)
-        root = tree.getroot()
         tags = []
         for artist in root.findall('.//artist'):
             tags.append("%s: %s%%" % (artist.attrib['name'],
                 int(float(artist.attrib['count']))))
         irc.reply(' ; '.join(tags).encode('utf8','ignore'))
+    tagged = wrap(tagged, ['channeldb', 'text'])
 
-    def commontags(self,irc,msg,args):
-      artists = ' '.join(args).split(':')
-      tags = {}
-      for artist in artists:
-        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % quote(artist.strip())
-        try:
-            response = urlopen(url)
-        except:
-            irc.reply("No tags found for %s" % ' '.join(args))
-            return
-        tree = ET.parse(response)
-        root = tree.getroot()
-        for tag in root.findall('.//tag'):
-          name = tag.find(".//name").text
-          if tags.has_key(name):
-            tags[name] += 1
-          else:
-            tags[name] = 1
-
-      common_tags = []
-      for tag in tags:
-        if tags[tag] == len(artists):
-          common_tags.append(tag)
-      irc.reply(' ; '.join(common_tags).encode('utf8','ignore'))
-
-def shuffle(l):
-   randomly_tagged_list = [(random(), x) for x in l]
-   randomly_tagged_list.sort()
-   return [x for (r, x) in randomly_tagged_list]
+    def commontags(self, irc, msg, args, channel, artists):
+        """<artist> <artist> [<artist>] ...
+        Get common tags among a bunch of artists
+        """
+        artists = artists.split(':')
+        tags = {}
+        for artist in artists:
+            url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % quote(artist.strip())
+            root = self._get_root(irc, url)
+            if not root:
+                return
+            for tag in root.findall('.//tag'):
+                name = tag.find(".//name").text
+                if tags.has_key(name):
+                    tags[name] += 1
+                else:
+                    tags[name] = 1
+        common_tags = []
+        for tag in tags:
+            if tags[tag] == len(artists):
+                common_tags.append(tag)
+        irc.reply(' ; '.join(common_tags).encode('utf8','ignore'))
+    commontags = wrap(commontags, ['channeldb', 'text'])
 
 Class = AudioScrobbler 
