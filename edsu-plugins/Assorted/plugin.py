@@ -1511,7 +1511,7 @@ class Assorted(callbacks.Privmsg):
       s = counter(adjective + "+as+shit")
       f = counter("fucking+" + adjective)
 
-      result = { 'adjective' : adjective }
+      result = { 'adjective' : adjective, 'a' : a, 's' : s, 'f' : f }
       if s > 0:
         result['fs'] = '%.2f' % math.log(s/a)
       else:
@@ -1522,7 +1522,7 @@ class Assorted(callbacks.Privmsg):
       else:
         result['ff'] = 'NaN'
         
-      irc.reply("'%(adjective)s as shit': %(fs)s; 'fucking %(adjective)s': %(ff)s" % result)
+      irc.reply("'%(adjective)s': %(a)d; '%(adjective)s as shit': %(s)d (%(fs)s); 'fucking %(adjective)s': %(f)d (%(ff)s)" % result)
     intensify = wrap(intensify, ['text'])
     
 Class = Assorted
