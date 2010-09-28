@@ -203,6 +203,20 @@ class AudioScrobbler(callbacks.Plugin):
         self._remove(irc, msg, args, channel, msg.nick)
     moveout = wrap(moveout, ['channeldb'])
 
+    def _favs(self, username):
+        url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
+        try:
+            response = urlopen(url)
+        except:
+            self.log.warning("Error in fetching %s" % url)
+            return
+        favs = []
+        for row in urlopen(url):
+            favs.append(row.split(',')[2].strip("\n"))
+            if len(favs) >= 20:
+                break
+        return favs
+
     def favs(self, irc, msg, args, channel, username):
         """[<username>]
         Get <username>'s (or your own) favorite artists
@@ -211,17 +225,40 @@ class AudioScrobbler(callbacks.Plugin):
         if not username:
             irc.reply("No %s in the neighborhood" % nick)
             return
-        favs = []
-        try:
-          url = "http://ws.audioscrobbler.com/1.0/user/%s/topartists.txt" % username
-          for row in urlopen(url):
-              favs.append(row.split(',')[2].strip("\n"))
-              if len(favs) >= 20:
-                  break
-          irc.reply(', '.join(favs).encode('utf8', 'ignore'))
-        except:
-          irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+        favs = self._favs(username)
+        if favs:
+            irc.reply(', '.join(favs).encode('utf8', 'ignore'))
+        else:
+            irc.reply('no such user "%s" or last.fm is on the fritz' % username)
     favs = wrap(favs, ['channeldb', optional('nick')])
+
+    def taste(self, irc, msg, args, channel, username):
+        """[<username>]
+        Get the top tags of <username>'s fav artists (or your own)
+        """
+        username = username or self.db.username(channel, msg.nick)
+        if not username:
+            irc.reply("No %s in the neighborhood" % nick)
+            return
+        try:
+            favs = self._favs(username)
+        except:
+            irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+        fav_tags = {}
+        for fav in favs:
+            tags = self._tags(fav)
+            if tags:
+                for tag in tags:
+                    tag = tag.split(':')[0]
+                    fav_tags.setdefault(tag, 0)
+                    fav_tags[tag] += 1
+            else:
+                irc.reply("No tags found for %s" % fav)
+                #self.log.info("No tags found for %s" % fav)
+        sorted_fav_tags = sorted(fav_tags, key=fav_tags.get, reverse=True)[:20]
+        tastes = ["%s: %s" % (w, fav_tags[w]) for w in sorted_fav_tags]
+        irc.reply(', '.join(tastes).encode('utf8', 'ignore'))
+    taste = wrap(taste, ['channeldb', optional('nick')])
 
     def scrobblers(self, irc, msg, args, channel):
         """
@@ -246,8 +283,9 @@ class AudioScrobbler(callbacks.Plugin):
             irc.reply("No")
             return
         url = 'http://ws.audioscrobbler.com/1.0/artist/%s/similar.xml' % quote(artist)
-        root = self._get_root(irc, url)
+        root = self._get_root(url)
         if not root:
+            irc.reply("Can't get no recommendations for \"%s\"" % artist)
             return
         names = []
         for name in root.findall('.//name'):
@@ -264,8 +302,9 @@ class AudioScrobbler(callbacks.Plugin):
             irc.reply("No %s in the neighborhood" % nick)
             return
         url = 'http://ws.audioscrobbler.com/1.0/user/%s/weeklytrackchart.xml' % username
-        root = self._get_root(irc, url)
+        root = self._get_root(url)
         if not root:
+            irc.reply("Weeklies is wrecked")
             return
         tracks = []
         for track in root.findall('.//track'):
@@ -280,9 +319,16 @@ class AudioScrobbler(callbacks.Plugin):
         """<artist>
         Get tags for an artist
         """
-        artist = quote(artist)
-        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % artist
-        root = self._get_root(irc, url)
+        tags = self._tags(artist)
+        if tags:
+            irc.reply(' ; '.join(tags).encode('utf8','ignore'))
+        else:
+            irc.reply("No tags could be gotten")
+    tags = wrap(tags, ['channeldb', 'text'])
+
+    def _tags(self, artist):
+        url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % quote(artist)
+        root = self._get_root(url)
         if not root:
             return
         tags = []
@@ -290,16 +336,16 @@ class AudioScrobbler(callbacks.Plugin):
             name = tag.find(".//name")
             count = tag.find(".//count")
             tags.append("%s: %s%%" % (name.text, count.text))
-        irc.reply(' ; '.join(tags).encode('utf8','ignore'))
-    tags = wrap(tags, ['channeldb', 'text'])
+        return tags
 
     def toptracks(self, irc, msg, args, channel):
         """
         Get the last.fm weekly track chart
         """
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklytrackchart.xml'
-        root = self._get_root(irc, url)
+        root = self._get_root(url)
         if not root:
+            irc.reply('last.fm is on the fritz or something')
             return
         tracks = []
         for track in root.findall('.//track'):
@@ -309,11 +355,11 @@ class AudioScrobbler(callbacks.Plugin):
         irc.reply(', '.join(tracks).encode('utf8','ignore'))
     toptracks = wrap(toptracks, ['channeldb'])
 
-    def _get_root(self, irc, url):
+    def _get_root(self, url):
         try:
             response = urlopen(url)
         except:
-            irc.reply("d'oh! ain't got the right response at that there url :(")
+            self.log.warning("Error in fetching %s" % url)
             return
         tree = ET.parse(response)
         return tree.getroot()
@@ -323,8 +369,9 @@ class AudioScrobbler(callbacks.Plugin):
         Get the last.fm weekly band chart. Include "random" to choose a random one.
         """
         url = 'http://ws.audioscrobbler.com/1.0/group/code4lib/weeklyartistchart.xml'
-        root = self._get_root(irc, url)
+        root = self._get_root(url)
         if not root:
+            irc.reply('last.fm is on the fritz or something')
             return
         artists = []
         for track in root.findall('.//artist'):
@@ -349,8 +396,9 @@ class AudioScrobbler(callbacks.Plugin):
         Get all bands tagged with <tag>
         """
         url = "http://ws.audioscrobbler.com/1.0/tag/%s/topartists.xml" % quote(tag.strip())
-        root = self._get_root(irc, url)
+        root = self._get_root(url)
         if not root:
+            irc.reply('no tag "%s" or last.fm is on the fritz' % tag)
             return
         tags = []
         for artist in root.findall('.//artist'):
@@ -367,8 +415,9 @@ class AudioScrobbler(callbacks.Plugin):
         tags = {}
         for artist in artists:
             url = "http://ws.audioscrobbler.com/1.0/artist/%s/toptags.xml" % quote(artist.strip())
-            root = self._get_root(irc, url)
+            root = self._get_root(url)
             if not root:
+                irc.reply('no artist "%s" or last.fm is on the fritz' % artist)
                 return
             for tag in root.findall('.//tag'):
                 name = tag.find(".//name").text
