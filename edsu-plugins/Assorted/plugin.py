@@ -1502,10 +1502,20 @@ class Assorted(callbacks.Privmsg):
         response['responseData']['cursor']['estimatedResultCount'] = 0
       return response
     
-    def intensify(self, irc, msg, args, adjective):
-      """<adjective>
+    def intensify(self, irc, msg, args, opts, adjective):
+      """[--graph|--raw] <adjective>
       
-      Calculate the frequency with which <adjective> is intensified as described in http://xkcd.com/798/"""
+      Calculate the frequency with which <adjective> is intensified as described in http://xkcd.com/798/
+      (--raw: show raw counts; --graph: display as a lame graph)"""
+      
+      graph = False
+      raw = False
+      for (opt,arg) in opts:
+          if opt == 'raw':
+            raw = True
+          if opt == 'graph':
+            graph = True
+              
       counter = lambda q: float(self._google_search('"%s"' % (q))['responseData']['cursor']['estimatedResultCount'])
       a = counter(adjective)
       s = counter(adjective + "+as+shit")
@@ -1513,16 +1523,33 @@ class Assorted(callbacks.Privmsg):
 
       result = { 'adjective' : adjective, 'a' : a, 's' : s, 'f' : f }
       if s > 0:
-        result['fs'] = '%.2f' % math.log(s/a)
+        fs = math.log(s/a)
+        result['fs'] = '%.2f' % fs
       else:
+        fs = 0
         result['fs'] = 'NaN'
 
       if f > 0:
-        result['ff'] = '%.2f' % math.log(f/a)
+        ff = math.log(f/a)
+        result['ff'] = '%.2f' % ff
       else:
+        ff = 0
         result['ff'] = 'NaN'
-        
-      irc.reply("'%(adjective)s': %(a)d; '%(adjective)s as shit': %(s)d (%(fs)s); 'fucking %(adjective)s': %(f)d (%(ff)s)" % result)
-    intensify = wrap(intensify, ['text'])
+      
+      if graph:
+        graph_str = bytearray('-' * 40)
+        spos = int(fs * 2)
+        fpos = int(ff * 2)
+        if fpos == spos:
+          graph_str[spos] = '*'
+        else:
+          graph_str[spos] = 'S'
+          graph_str[fpos] = 'F'
+        irc.reply('[-20]%s[0]' % str(graph_str))
+      elif raw:
+        irc.reply("'%(adjective)s': %(a)d; '%(adjective)s as shit': %(s)d (%(fs)s); 'fucking %(adjective)s': %(f)d (%(ff)s)" % result)
+      else:
+        irc.reply("'%(adjective)s as shit': (%(fs)s); 'fucking %(adjective)s': (%(ff)s)" % result)
+    intensify = wrap(intensify, [getopts({'graph':'','raw':''}), 'text'])
     
 Class = Assorted
