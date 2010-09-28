@@ -1,38 +1,19 @@
 
 import supybot.utils as utils
 from supybot.commands import *
-import supybot.plugins as plugins
-import supybot.ircutils as ircutils
 import supybot.utils.web as web
 import supybot.callbacks as callbacks
-from pprint import pformat
 
-import re, logging, time
+import re, logging
 from random import randint
-from urllib import urlencode
-from BeautifulSoup import BeautifulStoneSoup as BSS, BeautifulSoup as BS
-import html5lib
-from html5lib import treebuilders
 
 from lxml.html import iterlinks, fromstring
 
 logger = logging.getLogger('supybot')
-HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
-
-def getsoup(url):
-    logger.info("fetching " + url)
-    html = web.getUrl(url, headers=HEADERS)
-    parser = html5lib.HTMLParser(tree=treebuilders.getTreeBuilder("beautifulsoup"))
-    return parser.parse(html.decode('utf-8', 'ignore'), encoding='utf-8')
+HEADERS = {'User-Agent': 'Zoia/1.0 (Sing Plugin; http://code4lib.org/irc)'}
 
 def randtitle(artist):
-    songs = []
-    try:
-        songs = songlist(artist)
-    except Exception, e:
-        logger.error(utils.exnToString(e))
-        irc.reply("Arrgh! Something went horribly wrong")
-        return
+    songs = songlist(artist)
     if len(songs):
         return songs[randint(0, len(songs) - 1)]
 
@@ -64,58 +45,43 @@ def formatlyrics(song, startline=None):
     lines = lines[startline:endline]
     return ' / '.join([l for l in lines if re.search('\S', l)])
 
-def dilyrics_normalize(s):
-    s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
-    s = re.sub('\s+', '-', s)
-    return s
-    
-def dilyrics(artist, title):
-    title_norm = dilyrics_normalize(title)
-    artist_norm = dilyrics_normalize(artist)
-    artist_init = artist_norm[0]
-    url = 'http://www.dilyrics.com/%s-%s-lyrics.html' % \
-        (artist_norm.lower(), title_norm.lower())
-
-    try:
-        logger.info("Fetching %s" % url)
-        html = web.getUrl(url, headers=HEADERS)
-        doc = fromstring(html)
-        lyricsdiv = doc.xpath('//div[@id="EchoTopic"]')[0]
-        lyrics = '\n'.join([x.strip() for x in lyricsdiv.itertext()])
-        song = {
-            'artist': artist, 
-            'song': title, 
-            'lyrics': lyrics
-            }
-        return song
-    except Exception, e:
-        logger.error(utils.exnToString(e))
-        return {}
-
-def lyricsty_normalize(s):
+def normalize(s):
     s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
     s = re.sub('\s+', '_', s)
-    return s
+    return s.lower()
 
-def lyricsty(artist, title):
+class LyricsNotFound(Exception):
+    pass
+
+def lyricsmania_urls(artist, title):
+    title_norm = normalize(title)
+    artist_norm = normalize(artist)
+    url = 'http://www.lyricsmania.com/%s_lyrics_%s.html' % \
+        (title_norm, artist_norm)
+    logger.info("Fetching %s" % url)
+    html = web.getUrl(url, headers=HEADERS)
+    if html.find('not in our archive') != -1:
+        raise LyricsNotFound
+    doc = fromstring(html)
+    link = doc.xpath('//a[starts-with(@href, "/print")]')[0]
+    return (url, 'http://www.lyricsmania.com/%s' % link.attrib['href'])
+    
+def lyricsmania(artist, title):
     try:
-        title_norm = lyricsty_normalize(title)
-        artist_norm = lyricsty_normalize(artist)
-        artist_init = artist_norm[0]
-        url = 'http://www.lyricsty.com/lyrics/%s/%s/%s.html' % \
-            (artist_init.lower(), artist_norm.lower(), title_norm.lower())
-
-        soup = getsoup(url)
-        lyricsdiv = soup.find('div', {'class': 'dn'})
-        lyrics = ''.join([x.string for x in lyricsdiv.contents if x.string])
-        song = {
-            'artist': artist, 
-            'song': title, 
-            'lyrics': lyrics
+        (ref_url, print_url) = lyricsmania_urls(artist, title)
+        logger.info("Fetching %s" % print_url)
+        headers = HEADERS.copy()
+        headers['Referer'] = ref_url
+        html = web.getUrl(print_url, headers=headers)
+        doc = fromstring(html)
+        lyrics = doc.xpath('//div[@id="printprintx"]')[0]
+        return {
+            'artist': artist,
+            'song': title,
+            'lyrics': lyrics.text_content()
             }
-        return song
-    except Exception, e:
-        logger.info('Exception fetching lyrics from %s: %s' % (url, e.message))
+    except LyricsNotFound:
+        return None
 
 class Sing(callbacks.Plugin):
     """
@@ -127,7 +93,7 @@ class Sing(callbacks.Plugin):
         """
         Usage: sing artist [: title] [: * | line | pattern] --
         Example: @sing bon jovi : wanted dead or alive --
-        Searches both http://lyricsty.com and http://dilyrics.com
+        Searches http://lyricsmania.com
         """
 
         args = map(lambda x: x.strip(), re.split(':', input))
@@ -143,29 +109,39 @@ class Sing(callbacks.Plugin):
             except:
                 artist = args[0]
                 logger.info('got %s' % (artist))
-                title = randtitle(artist)
+                try:
+                    title = randtitle(artist)
+                except Exception, e:
+                    logger.error(utils.exnToString(e))
+                    irc.reply("Arrgh! Something went horribly wrong")
+                    return
         if title == '*':
-            title = randtitle(artist)
+            try:
+                title = randtitle(artist)
+            except Exception, e:
+                logger.error(utils.exnToString(e))
+                irc.reply("Arrgh! Something went horribly wrong")
+                return
         elif not title:
             irc.reply('No songs found by ' + artist)
             return
 
-        song = lyricsty(artist, title)
-        if not song:
-            song = dilyrics(artist, title)
-
-        if not song or song['lyrics'] == 'Not found':
-            irc.reply("No lyrics found for %s by %s" % (title, artist))
-        else:
-            lyrics = formatlyrics(song, line)
-            lyrics = lyrics.encode('ascii', 'ignore')
-            irc.reply(lyrics, prefixNick=False)
+        try:
+            song = lyricsmania(artist, title)
+            if not song or song['lyrics'] == 'Not found':
+                irc.reply("No lyrics found for %s by %s" % (title, artist))
+            else:
+                lyrics = formatlyrics(song, line)
+                irc.reply(lyrics.encode('utf8', 'ignore'), prefixNick=False)
+        except Exception, e:
+            logger.error(utils.exnToString(e))
+            irc.reply("Arrgh! Something went horribly wrong")
 
     sing = wrap(sing, ['text'])
 
     def songs(self, irc, msg, args, input):
         """<string>
-        fetches song list from lyricsty.com"""
+        fetches song list from lyricsmania.com"""
 
         args = map(lambda x: x.strip(), re.split(':', input))
 
@@ -186,46 +162,29 @@ class Sing(callbacks.Plugin):
             irc.reply("No songs found")
         else:
             resp = '; '.join(songs)
-            irc.reply(resp)
+            irc.reply(resp.encode('utf8', 'ignore'))
 
     songs = wrap(songs, ['text'])
 
 def songlist(artist, searchstring=None):
 
-    artist = artist.lower()
-    artist_norm = lyricsty_normalize(artist)
-    artist_init = artist_norm[0]
-    url = 'http://lyricsty.com/lyrics/%s/%s' % (artist_init, artist_norm)
+    artist = normalize(artist)
+    url = 'http://lyricsmania.com/%s_lyrics.html' % artist
+    logger.info("Fetching " + url)
+    html = web.getUrl(url, headers=HEADERS)
+    doc = fromstring(html)
     
-    href_match = re.compile('/lyrics/%s/%s' % (artist_init, artist_norm))
+    titles = []
+    for a in doc.xpath('//a'):
+        if a.attrib.has_key('href') \
+        and a.attrib['href'].endswith("_lyrics_%s.html" % artist):
+            song = a.text_content()
+            if searchstring:
+                if not re.search(searchstring, song, re.I):
+                    continue
+            titles.append(song)
 
-    doc = None
-    try:
-        logger.info("Fetching " + url)
-        html = web.getUrl(url, headers=HEADERS)
-        doc = fromstring(html)
-    except Exception, e:
-        logger.error(utils.exnToString(e))
-        return []
-
-    songtable = doc.cssselect('table.bandsongs')[0]
-    
-    songs = []
-    for tup in songtable.iterlinks():
-        elem = tup[0]
-        try:
-            href = elem.attrib['href']
-            if not re.match(href_match, href):
-                continue
-        except:
-            continue
-        song = elem.text_content()
-        if searchstring:
-            if not re.search(searchstring, song, re.I):
-                continue
-        song = re.sub(' lyrics$', '', song)
-        songs.append(song)
-    return songs
+    return [re.sub(' lyrics$', '', x) for x in titles]
 
 Class = Sing
 
