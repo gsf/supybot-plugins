@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import feedparser
+import math
 import os
 import re
 import simplejson
@@ -1493,5 +1494,35 @@ class Assorted(callbacks.Privmsg):
           words.append(word)
       irc.reply(' '.join(words))
     redact = wrap(redact, [getopts({'chance':'int'}), 'text'])
+
+    def _google_search(self,q):
+      json = urlopen("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % q).read()
+      response = simplejson.loads(json)
+      if len(response['responseData']['results']) == 0:
+        response['responseData']['cursor']['estimatedResultCount'] = 0
+      return response
+    
+    def intensify(self, irc, msg, args, adjective):
+      """<adjective>
+      
+      Calculate the frequency with which <adjective> is intensified as described in http://xkcd.com/798/"""
+      counter = lambda q: float(self._google_search('"%s"' % (q))['responseData']['cursor']['estimatedResultCount'])
+      a = counter(adjective)
+      s = counter(adjective + "+as+shit")
+      f = counter("fucking+" + adjective)
+
+      result = { 'adjective' : adjective }
+      if s > 0:
+        result['fs'] = '%.2f' % math.log(s/a)
+      else:
+        result['fs'] = 'NaN'
+
+      if f > 0:
+        result['ff'] = '%.2f' % math.log(f/a)
+      else:
+        result['ff'] = 'NaN'
+        
+      irc.reply("'%(adjective)s as shit': %(fs)s; 'fucking %(adjective)s': %(ff)s" % result)
+    intensify = wrap(intensify, ['text'])
     
 Class = Assorted
