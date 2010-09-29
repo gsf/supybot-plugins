@@ -78,7 +78,14 @@ class TranslationParty(callbacks.Plugin):
                 return self._getJsonResponse(url,retries=retries-1)
                 
     def _translate(self, from_lang, to_lang, text):
-        params = { 'langpair' : '|'.join((from_lang,to_lang)), 'q' : text.encode('utf8'), 'v' : '1.0' }
+        q = unicode(text, 'utf8')
+        q = q.encode('utf8')
+        #raise Exception, q
+        params = { 
+            'langpair': u'|'.join((from_lang,to_lang)), 
+            'q': q, 
+            'v': '1.0',
+        }
         url = 'http://ajax.googleapis.com/ajax/services/language/translate?' + urlencode(params)
         response = self._getJsonResponse(url)
         if response['responseStatus'] == 404:
@@ -87,7 +94,7 @@ class TranslationParty(callbacks.Plugin):
             response = self._getJsonResponse(url)
             
         if response['responseStatus'] == 200:
-            translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
+            translation = unicode(BeautifulStoneSoup(response['responseData']['translatedText'],convertEntities=BeautifulStoneSoup.HTML_ENTITIES)).encode('utf8')
             return translation
         else:
             raise TranslationError(response['responseStatus'], response['responseDetails'], url)
