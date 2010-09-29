@@ -171,9 +171,9 @@ class AudioScrobbler(callbacks.Plugin):
         self._add(irc, msg, args, channel, msg.nick, username)
     movein = wrap(movein, ['channeldb', optional('nick')])
 
-    def get_nick_info(self, irc, msg, args, channel, nick):
+    def info(self, irc, msg, args, channel, nick):
         """[<nick>]
-        Get when <nick> moved in. Your own nick is the default.
+        Get info about <nick> (or your own)
         """
         nick = nick or msg.nick
         record = self.db.pick(channel, nick=nick)
@@ -182,7 +182,7 @@ class AudioScrobbler(callbacks.Plugin):
                 record.name, record.at, record.by))
         else:
             irc.reply("No %s in the neighborhood" % nick)
-    get_nick_info = wrap(get_nick_info, ['channeldb', optional('nick')])
+    info = wrap(info, ['channeldb', optional('nick')])
 
     def _remove(self, irc, msg, args, channel, nick):
         """<nick>
