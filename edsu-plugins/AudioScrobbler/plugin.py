@@ -232,7 +232,7 @@ class AudioScrobbler(callbacks.Plugin):
             irc.reply('no such user "%s" or last.fm is on the fritz' % username)
     favs = wrap(favs, ['channeldb', optional('nick')])
 
-    def taste(self, irc, msg, args, channel, username):
+    def tastes(self, irc, msg, args, channel, username):
         """[<username>]
         Get the top tags of <username>'s fav artists (or your own)
         """
@@ -240,10 +240,10 @@ class AudioScrobbler(callbacks.Plugin):
         if not username:
             irc.reply("No %s in the neighborhood" % nick)
             return
-        try:
-            favs = self._favs(username)
-        except:
+        favs = self._favs(username)
+        if not favs:
             irc.reply('no such user "%s" or last.fm is on the fritz' % username)
+            return
         fav_tags = {}
         for fav in favs:
             tags = self._tags(fav)
@@ -258,7 +258,7 @@ class AudioScrobbler(callbacks.Plugin):
         sorted_fav_tags = sorted(fav_tags, key=fav_tags.get, reverse=True)[:20]
         tastes = ["%s: %s" % (w, fav_tags[w]) for w in sorted_fav_tags]
         irc.reply(', '.join(tastes).encode('utf8', 'ignore'))
-    taste = wrap(taste, ['channeldb', optional('nick')])
+    tastes = wrap(tastes, ['channeldb', optional('nick')])
 
     def scrobblers(self, irc, msg, args, channel):
         """
