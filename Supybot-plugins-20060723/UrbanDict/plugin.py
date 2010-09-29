@@ -33,63 +33,37 @@ import supybot.utils as utils
 from supybot.commands import *
 import supybot.callbacks as callbacks
 
+from lxml.html import iterlinks, fromstring
+import re
+import supybot.utils.web as web
 
 class UrbanDict(callbacks.Plugin):
     threaded = True
-    server = SOAP.SOAPProxy('http://api.urbandictionary.com/soap')
-
-    def _licenseCheck(self, irc):
-        license = self.registryValue('licenseKey')
-        if not license:
-            irc.error('You must have a free UrbanDictionary API license key '
-                      'in order to use this command.  You can get one at '
-                      '<http://www.urbandictionary.com/api.php>.  Once you '
-                      'have one, you can set it with the command '
-                      '"config supybot.plugins.UrbanDict.licenseKey <key>".',
-                      Raise=True)
-        return license
 
     def urbandict(self, irc, msg, args, words):
         """<phrase>
 
         Returns the definition and usage of <phrase> from UrbanDictionary.com.
         """
-        license = self._licenseCheck(irc)
-        definitions = self.server.lookup(license, ' '.join(words))
-        if not len(definitions):
+        terms = ' '.join(words)
+        url = 'http://www.urbandictionary.com/define.php?term=%s' \
+            % web.urlquote(terms)
+        html = web.getUrl(url)
+        doc = fromstring(html)
+        if len(doc.xpath('//div[@id="not_defined_yet"]')):
             irc.error('No definition found.', Raise=True)
-        word = definitions[0].word
-        definitions = ['%s (%s)' % (d.definition, d.example)
-                       for d in definitions]
-        reply_msg = '%s: %s' % (word, '; '.join(definitions))
-        irc.reply(utils.web.htmlToText(reply_msg.encode('utf8')))
+        definitions = []
+        for div in doc.xpath('//div[@class="definition"]'):
+            text = div.text_content()
+            if div.getnext().tag == 'div' \
+            and div.getnext().attrib.get('class', None) == 'example':
+                text += ' [example] ' + div.getnext().text_content() + ' [/example] '
+            text = re.sub(r'[\\\r\\\n]+', ' ', text)
+            definitions.append(text)
+        reply_msg = '%s: %s' % (terms, '; '.join(definitions))
+        irc.reply(reply_msg.encode('utf8'))
+
     urbandict = wrap(urbandict, [many('something')])
-
-    def _define(self, irc, getDefinition, license):
-        definition = getDefinition(license)
-        word = definition.word
-        definitions = ['%s (%s)' % (definition.definition, definition.example)]
-        irc.reply(utils.web.htmlToText('%s: %s' % (word,
-                                                   '; '.join(definitions))))
-    def daily(self, irc, msg, args):
-        """takes no arguments
-
-        Returns the definition and usage of the daily phrase from
-        UrbanDictionary.com.
-        """
-        license = self._licenseCheck(irc)
-        self._define(irc, self.server.get_daily_definition, license)
-    daily = wrap(daily)
-
-    def random(self, irc, msg, args):
-        """takes no arguments
-
-        Returns the definition and usage of a random phrase from
-        UrbanDictionary.com.
-        """
-        license = self._licenseCheck(irc)
-        self._define(irc, self.server.get_random_definition, license)
-    random = wrap(random)
 
 Class = UrbanDict
 
