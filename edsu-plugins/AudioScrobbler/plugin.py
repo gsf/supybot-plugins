@@ -265,7 +265,9 @@ class AudioScrobbler(callbacks.Plugin):
         Show everybody on the block
         """
         records = self.db.all_records(channel)
-        users = "; ".join(record.name for record in records)
+        names = [record.name for record in records]
+        names.sort()
+        users = "; ".join(names)
         if users:
             irc.reply(users)
         else:
