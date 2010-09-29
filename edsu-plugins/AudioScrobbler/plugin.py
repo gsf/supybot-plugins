@@ -141,14 +141,18 @@ class AudioScrobbler(callbacks.Plugin):
         """
         show_all = bool(show_all or not irc.isChannel(channel))
 
-        irc.reply('Everybody on the block announce:', prefixNick=False)
         records = self.db.all_records(channel)
+        partypeeps = []
         for record in records:
             if show_all or record.nick in irc.state.channels[channel].users:
                 songs = self._get_songs(record.username)
                 if len(songs) > 0:
-                    irc.reply('%s: %s' % (record.name, songs[0]), prefixNick=False)
-    blockparty = wrap(blockparty, ['channeldb', optional('boolean')])
+                    partypeeps.append("%s [%s]" % (record.name, songs[0]))
+        if partypeeps:
+            irc.reply(', '.join(partypeeps), prefixNick=False)
+        else:
+            irc.reply('The block is quiet')
+    blockparty = wrap(blockparty, ['channeldb', optional('text')])
 
     def _add(self, irc, msg, args, channel, nick, username):
         """<nick> <username>
@@ -271,7 +275,7 @@ class AudioScrobbler(callbacks.Plugin):
         if users:
             irc.reply(users)
         else:
-            irc.reply('you have one quiet block')
+            irc.reply("where'd everybody go?")
     scrobblers = wrap(scrobblers, ['channeldb'])
 
     def recommend(self, irc, msg, args, channel, artist):
