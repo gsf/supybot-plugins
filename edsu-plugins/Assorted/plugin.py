@@ -1496,7 +1496,7 @@ class Assorted(callbacks.Privmsg):
     redact = wrap(redact, [getopts({'chance':'int'}), 'text'])
 
     def _google_search(self,q):
-      json = urlopen("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % q).read()
+      json = urlopen("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % quote(q)).read()
       response = simplejson.loads(json)
       if len(response['responseData']['results']) == 0:
         response['responseData']['cursor']['estimatedResultCount'] = 0
