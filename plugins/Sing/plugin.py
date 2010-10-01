@@ -46,7 +46,7 @@ def formatlyrics(song, startline=None):
     return ' / '.join([l for l in lines if re.search('\S', l)])
 
 def normalize(s):
-    s = re.sub('[^A-Za-z0-9\s]+', '', s.strip())
+    s = re.sub('[^A-Za-z0-9\s]+', ' ', s.strip())
     s = re.sub('\s+', '_', s)
     return s.lower()
 
