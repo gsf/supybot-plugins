@@ -51,6 +51,12 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply("SKÅL!", prefixNick=True)
 
+    def lbjay(self, irc, msg, args):
+        """ string
+        Offer some constructive criticism
+        """
+        irc.reply("%s: PLEASE TRY HARDER" % ' '.join(args), prefixNick=True)
+
     def ircnickize(self, irc, msg, args):
         """ string
         Normalizes a string per irc nick rules
