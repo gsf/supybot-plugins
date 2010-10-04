@@ -55,7 +55,7 @@ class Translators(callbacks.Privmsg):
         """ string
         Offer some constructive criticism
         """
-        irc.reply("%s: PLEASE TRY HARDER" % ' '.join(args), prefixNick=True)
+        irc.reply("%s: PLEASE TRY HARDER" % ' '.join(args), prefixNick=False)
 
     def ircnickize(self, irc, msg, args):
         """ string
