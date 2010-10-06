@@ -1503,53 +1503,67 @@ class Assorted(callbacks.Privmsg):
       return response
     
     def intensify(self, irc, msg, args, opts, adjective):
-      """[--graph|--raw] <adjective>
+      """[--graph|--raw] [(--prefix|--suffix) <phrase>...] <adjective>
       
       Calculate the frequency with which <adjective> is intensified as described in http://xkcd.com/798/
-      (--raw: show raw counts; --graph: display as a lame graph)"""
+      (--raw: show raw counts; --graph: display as a lame graph; --prefix/--suffix: use custom intensifiers)"""
       
       graph = False
       raw = False
+      intensifiers = []
+  
       for (opt,arg) in opts:
+          if opt == 'prefix':
+            intensifiers.append(arg + ' %s')
+          if opt == 'suffix':
+            intensifiers.append('%s ' + arg)
           if opt == 'raw':
             raw = True
           if opt == 'graph':
             graph = True
-              
-      counter = lambda q: float(self._google_search('"%s"' % (q))['responseData']['cursor']['estimatedResultCount'])
-      a = counter(adjective)
-      s = counter(adjective + "+as+shit")
-      f = counter("fucking+" + adjective)
 
-      result = { 'adjective' : adjective, 'a' : a, 's' : s, 'f' : f }
-      if s > 0:
-        fs = math.log(s/a)
-        result['fs'] = '%.2f' % fs
-      else:
-        fs = 0
-        result['fs'] = 'NaN'
-
-      if f > 0:
-        ff = math.log(f/a)
-        result['ff'] = '%.2f' % ff
-      else:
-        ff = 0
-        result['ff'] = 'NaN'
+      if len(intensifiers) == 0:
+        intensifiers = ['fucking %s','%s as shit']
       
+      taken = []        
+      def _find_key(string, taken):
+        for char in string.replace('%s','').strip():
+          if not char.upper() in taken:
+            taken.append(char.upper())
+            return(char.upper())
+
+      counter = lambda q: float(self._google_search('"%s"' % (q))['responseData']['cursor']['estimatedResultCount'])
+      adjective_alone = counter(adjective)
+      counts = { 'RAW' : { 'count' : adjective_alone } }
+      for phrase in intensifiers:
+        c = counter((phrase % adjective).replace(' ','+'))
+        counts[phrase] = { 'count' : c, 'phrase' : phrase % adjective, 'marker' : _find_key(phrase, taken) }
+        if c > 0:
+          counts[phrase]['scale'] = math.log(c/adjective_alone)
+          counts[phrase]['string'] = '%.2f' % counts[phrase]['scale']
+        else:
+          counts[phrase]['scale'] = 0
+          counts[phrase]['string'] = 'NaN'
+
       if graph:
         graph_str = bytearray('-' * 40)
-        spos = int(fs * 2)
-        fpos = int(ff * 2)
-        if fpos == spos:
-          graph_str[spos] = '*'
-        else:
-          graph_str[spos] = 'S'
-          graph_str[fpos] = 'F'
+        for phrase in intensifiers:
+          pos = int(counts[phrase]['scale'] * 2)
+          if graph_str[pos] != 45:
+            graph_str[pos] = '*'
+          else:
+            graph_str[pos] = counts[phrase]['marker']
         irc.reply('[-20]%s[0]' % str(graph_str))
       elif raw:
-        irc.reply("'%(adjective)s': %(a)d; '%(adjective)s as shit': %(s)d (%(fs)s); 'fucking %(adjective)s': %(f)d (%(ff)s)" % result)
+        response = ["'%s': %d" % (adjective, counts['RAW']['count'])]
+        for phrase in intensifiers:
+          response.append("'%(phrase)s': %(count)d (%(string)s)" % counts[phrase])
+        irc.reply('; '.join(response))
       else:
-        irc.reply("'%(adjective)s as shit': (%(fs)s); 'fucking %(adjective)s': (%(ff)s)" % result)
-    intensify = wrap(intensify, [getopts({'graph':'','raw':''}), 'text'])
+        response = []
+        for phrase in intensifiers:
+          response.append("'%(phrase)s': %(string)s" % counts[phrase])
+        irc.reply('; '.join(response))
+    intensify = wrap(intensify, [getopts({'graph':'','raw':'','prefix':'something','suffix':'something'}), 'text'])
     
 Class = Assorted
