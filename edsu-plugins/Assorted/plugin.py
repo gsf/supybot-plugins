@@ -856,15 +856,20 @@ class Assorted(callbacks.Privmsg):
          
     orsome = wrap(orsome, [optional('regexpMatcher'), 'text'])
 
-    def decide(self, irc, msg, args, choices):
+    def decide(self, irc, msg, args, opts, choices):
+        prefix = "go with "
+        for opt,arg in opts:
+          if opt == 'raw':
+            prefix = ""
+            
         pattern = re.compile('\s+or\s+', re.I)
         clist = re.split(pattern, choices)
         if randint(0, 10) == 0:
             irc.reply("That's a tough one...")
             return
-        irc.reply("go with " + clist[randint(0, len(clist)-1)])
+        irc.reply(prefix + clist[randint(0, len(clist)-1)])
 
-    decide = wrap(decide, ['text'])
+    decide = wrap(decide, [getopts({'raw':''}),'text'])
 
     def pick(self, irc, msg, args, choices):
     	"""
