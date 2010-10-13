@@ -66,8 +66,12 @@ class Wunderground(callbacks.Plugin):
       for day in soup.forecast.txt_forecast.findAll('forecastday'):
         result.append(': '.join([self._extract_text(day.title), self._extract_text(day.fcttext)]).encode('utf-8'))
       irc.reply(' '.join(result))
-    wunder = wrap(wunder, ['something'])
 
+    wunder = wrap(wunder, ['something'])
+    weather = wunder # FOR NOW
+    
+# TODO: Add a another method to report the simple/long-term forecast
+    
 Class = Wunderground
 
 
