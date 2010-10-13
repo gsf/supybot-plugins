@@ -53,9 +53,12 @@ class Wunderground(callbacks.Plugin):
       return(BSS(' '.join(node.findAll(text=True)), convertEntities=BSS.HTML_ENTITIES).find(text=True))
 
     def _get_location_name(self, query):
-      soup = self._fetch_xml("GeoLookup", query)
-      location = [self._extract_text(soup.location.city),self._extract_text(soup.location.state)]
-      return(', '.join([l.encode('utf-8') for l in location if l != None]))
+      try:
+        soup = self._fetch_xml("GeoLookup", query)
+        location = [self._extract_text(soup.location.city),self._extract_text(soup.location.state)]
+        return(', '.join([l.encode('utf-8') for l in location if l != None]))
+      except:
+        return query
 
     def wunder(self, irc, msg, args, query):
       """<location>
@@ -63,11 +66,15 @@ class Wunderground(callbacks.Plugin):
       Get the weather forecast for <location> from Weather Underground"""
       soup = self._fetch_xml("Forecast", query)
       result = ["Forecast for %s:" % self._get_location_name(query)]
-      for day in soup.forecast.txt_forecast.findAll('forecastday'):
-        result.append(': '.join([self._extract_text(day.title), self._extract_text(day.fcttext)]).encode('utf-8'))
+      days = soup.forecast.txt_forecast.findAll('forecastday')
+      if len(days) == 0:
+        result.append('No weather data available')
+      else:
+        for day in days:
+          result.append(': '.join([self._extract_text(day.title), self._extract_text(day.fcttext)]).encode('utf-8'))
       irc.reply(' '.join(result))
-
-    wunder = wrap(wunder, ['something'])
+        
+    wunder = wrap(wunder, ['text'])
     weather = wunder # FOR NOW
     
 # TODO: Add a another method to report the simple/long-term forecast
