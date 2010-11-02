@@ -23,7 +23,7 @@ class Translators(callbacks.Privmsg):
         """
         text = ' '.join(args).strip()
         text = re.sub(r'z', 'zed', text)
-        text = re.sub(r'(\w)or', '\1our', text)
+        text = re.sub(r'(\w)or', r'\1our', text)
         text = re.sub(r'gray', 'gray', text)
         text = re.sub(r'catalog(?![ui])', 'catalogue\1', text)
         # commenting these out for now since they make output from Weather ugly
@@ -50,6 +50,12 @@ class Translators(callbacks.Privmsg):
         Translates string into Viking
         """
         irc.reply("SKÅL!", prefixNick=True)
+
+    def lbjay(self, irc, msg, args):
+        """ string
+        Offer some constructive criticism
+        """
+        irc.reply("%s: PLEASE TRY HARDER" % ' '.join(args), prefixNick=False)
 
     def ircnickize(self, irc, msg, args):
         """ string
