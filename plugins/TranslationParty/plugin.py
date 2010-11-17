@@ -63,6 +63,7 @@ class TranslationError(Exception):
 class TranslationParty(callbacks.Plugin):
     """Add the help for "@plugin help TranslationParty" here
     This should describe *how* to use this plugin."""
+    threaded = True
 
     def _getJsonResponse(self,url,retries = 2):
         try:
