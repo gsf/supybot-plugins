@@ -314,6 +314,38 @@ class Translators(callbacks.Privmsg):
         irc.reply('/'.join(_pairtree.id_to_path(id)))
         
     pairtree = wrap(pairtree,['text'])
+
+    def zalgo(self, irc, msg, args):
+        """ZALGO"""
+        zalgo_up = [u'\u030d', u'\u030e', u'\u0304', u'\u0305', u'\u033f',
+                    u'\u0311', u'\u0306', u'\u0310', u'\u0352', u'\u0308',
+                    u'\u0344', u'\u0303', u'\u0300', u'\u0312', u'\u0309',
+                    u'\u0366', u'\u036a', u'\u036e', u'\u0346']
+        zalgo_down = [u'\u0316', u'\u031c', u'\u0320', u'\u0329', u'\u032d',
+                      u'\u0331', u'\u033a', u'\u0347', u'\u034e', u'\u0356']
+        zalgo_mid = [u'\u0315', u'\u0358', u'\u0328', u'\u034f', u'\u035f',
+                     u'\u0337']
+        zalgo_all = zalgo_up + zalgo_down + zalgo_mid
     
+        source = u''.join([arg.decode('utf8') for arg in args]).upper()
+        result = []
+        for letter in source:
+            if letter in zalgo_all:
+                continue
+            result.append(letter)
+            num_up = randint(1,16) / 2 + 1
+            num_mid = randint(1,6) / 2
+            num_down = randint(1,16) / 2 + 1
+            for i in range(num_up):
+                result.append(choice(zalgo_up))
+            for i in range(num_mid):
+                result.append(choice(zalgo_mid))
+            for i in range(num_down):
+                result.append(choice(zalgo_down))
+        response = u' '.join(result)
+        irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
+
+
 Class = Translators
+
 
