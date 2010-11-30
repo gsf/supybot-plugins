@@ -84,7 +84,7 @@ class Praise(plugins.ChannelIdDatabasePlugin):
         if self.registryValue('showIds', channel):
             text += format(' (#%i)', praise.id)
         # changed action to False -- gsf 2007-07-25
-        irc.reply(text, action=False)
+        irc.reply(text, action=False, prefixNick=False)
     praise = wrap(praise, ['channeldb', optional('id'), 'text'])
 
 Class = Praise

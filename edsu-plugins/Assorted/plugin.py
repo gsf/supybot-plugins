@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import feedparser
+import math
 import os
 import re
 import simplejson
@@ -855,15 +856,20 @@ class Assorted(callbacks.Privmsg):
          
     orsome = wrap(orsome, [optional('regexpMatcher'), 'text'])
 
-    def decide(self, irc, msg, args, choices):
+    def decide(self, irc, msg, args, opts, choices):
+        prefix = "go with "
+        for opt,arg in opts:
+          if opt == 'raw':
+            prefix = ""
+            
         pattern = re.compile('\s+or\s+', re.I)
         clist = re.split(pattern, choices)
         if randint(0, 10) == 0:
             irc.reply("That's a tough one...")
             return
-        irc.reply("go with " + clist[randint(0, len(clist)-1)])
+        irc.reply(prefix + clist[randint(0, len(clist)-1)])
 
-    decide = wrap(decide, ['text'])
+    decide = wrap(decide, [getopts({'raw':''}),'text'])
 
     def pick(self, irc, msg, args, choices):
     	"""
@@ -985,7 +991,8 @@ class Assorted(callbacks.Privmsg):
                       '2011': '15'},
             'talks': {'2008': '2', 
                       '2009': '7',
-                      '2010': '13'},
+                      '2010': '13',
+                      '2011': '17'},
             'logo': {'2008': '6'}
         }
         try:
@@ -1009,6 +1016,18 @@ class Assorted(callbacks.Privmsg):
         tallies = [(vote['title'], vote['score']) for vote in votes]
         return tallies, vote_url
 
+    def talks2011(self, irc, msg, args):
+        """ 
+        Gets tally of talk votes for 2011 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("talks", "2011")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2011: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+            irc.reply("Voting link: %s" % vote_url)
+
     def talks2010(self, irc, msg, args):
         """ 
         Gets tally of talk votes for 2010 conference
@@ -1019,7 +1038,6 @@ class Assorted(callbacks.Privmsg):
             irc.reply("Poll not found for talk votes in 2010: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
-            irc.reply("Voting link: %s" % vote_url)
 
     def talks2009(self, irc, msg, args):
         """ 
@@ -1493,5 +1511,76 @@ class Assorted(callbacks.Privmsg):
           words.append(word)
       irc.reply(' '.join(words))
     redact = wrap(redact, [getopts({'chance':'int'}), 'text'])
+
+    def _google_search(self,q):
+      json = urlopen("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=%s" % quote(q)).read()
+      response = simplejson.loads(json)
+      if len(response['responseData']['results']) == 0:
+        response['responseData']['cursor']['estimatedResultCount'] = 0
+      return response
+    
+    def intensify(self, irc, msg, args, opts, adjective):
+      """[--graph|--raw] [(--prefix|--suffix) <phrase>...] <adjective>
+      
+      Calculate the frequency with which <adjective> is intensified as described in http://xkcd.com/798/
+      (--raw: show raw counts; --graph: display as a lame graph; --prefix/--suffix: use custom intensifiers)"""
+      
+      graph = False
+      raw = False
+      intensifiers = []
+  
+      for (opt,arg) in opts:
+          if opt == 'prefix':
+            intensifiers.append(arg + ' %s')
+          if opt == 'suffix':
+            intensifiers.append('%s ' + arg)
+          if opt == 'raw':
+            raw = True
+          if opt == 'graph':
+            graph = True
+
+      if len(intensifiers) == 0:
+        intensifiers = ['fucking %s','%s as shit']
+      
+      taken = []        
+      def _find_key(string, taken):
+        for char in string.replace('%s','').strip():
+          if not char.upper() in taken:
+            taken.append(char.upper())
+            return(char.upper())
+
+      counter = lambda q: float(self._google_search('"%s"' % (q))['responseData']['cursor']['estimatedResultCount'])
+      adjective_alone = counter(adjective)
+      counts = { 'RAW' : { 'count' : adjective_alone } }
+      for phrase in intensifiers:
+        c = counter((phrase % adjective).replace(' ','+'))
+        counts[phrase] = { 'count' : c, 'phrase' : phrase % adjective, 'marker' : _find_key(phrase, taken) }
+        if c > 0:
+          counts[phrase]['scale'] = math.log(c/adjective_alone)
+          counts[phrase]['string'] = '%.2f' % counts[phrase]['scale']
+        else:
+          counts[phrase]['scale'] = 0
+          counts[phrase]['string'] = 'NaN'
+
+      if graph:
+        graph_str = bytearray('-' * 40)
+        for phrase in intensifiers:
+          pos = int(counts[phrase]['scale'] * 2)
+          if graph_str[pos] != 45:
+            graph_str[pos] = '*'
+          else:
+            graph_str[pos] = counts[phrase]['marker']
+        irc.reply('[-20]%s[0]' % str(graph_str))
+      elif raw:
+        response = ["'%s': %d" % (adjective, counts['RAW']['count'])]
+        for phrase in intensifiers:
+          response.append("'%(phrase)s': %(count)d (%(string)s)" % counts[phrase])
+        irc.reply('; '.join(response))
+      else:
+        response = []
+        for phrase in intensifiers:
+          response.append("'%(phrase)s': %(string)s" % counts[phrase])
+        irc.reply('; '.join(response))
+    intensify = wrap(intensify, [getopts({'graph':'','raw':'','prefix':'something','suffix':'something'}), 'text'])
     
 Class = Assorted

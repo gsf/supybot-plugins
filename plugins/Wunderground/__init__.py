@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2004-2005, Kevin Murphy
+# Copyright (c) 2010, Michael B. Klein
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,42 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+
 ###
 
-import SOAP
+"""
+Add a description of the plugin (to be presented to the user inside the wizard)
+here.  This should describe *what* the plugin does.
+"""
 
-import supybot.utils as utils
-from supybot.commands import *
-import supybot.callbacks as callbacks
+import supybot
+import supybot.world as world
 
-from lxml.html import iterlinks, fromstring
-import re
-import supybot.utils.web as web
+# Use this for the version of this plugin.  You may wish to put a CVS keyword
+# in here if you're keeping the plugin in CVS or some similar system.
+__version__ = ""
 
-class UrbanDict(callbacks.Plugin):
-    threaded = True
+# XXX Replace this with an appropriate author or supybot.Author instance.
+__author__ = supybot.authors.unknown
 
-    def urbandict(self, irc, msg, args, words):
-        """<phrase>
+# This is a dictionary mapping supybot.Author instances to lists of
+# contributions.
+__contributors__ = {}
 
-        Returns the definition and usage of <phrase> from UrbanDictionary.com.
-        """
-        terms = ' '.join(words)
-        url = 'http://www.urbandictionary.com/define.php?term=%s' \
-            % web.urlquote(terms)
-        html = web.getUrl(url)
-        doc = fromstring(html)
-        if len(doc.xpath('//div[@id="not_defined_yet"]')):
-            irc.error('No definition found.', Raise=True)
-        definitions = []
-        for div in doc.xpath('//div[@class="definition"]'):
-            text = div.text_content()
-            if div.getnext().tag == 'div' \
-            and div.getnext().attrib.get('class', None) == 'example':
-                text += ' [example] ' + div.getnext().text_content() + ' [/example] '
-            text = re.sub(r'[\\\r\\\n]+', ' ', text)
-            definitions.append(text)
-        reply_msg = '%s: %s' % (terms, '; '.join(definitions))
-        irc.reply(reply_msg.encode('utf8'))
+# This is a url where the most recent plugin package can be downloaded.
+__url__ = '' # 'http://supybot.com/Members/yourname/Wunderground/download'
 
-    urbandict = wrap(urbandict, [many('something')])
+import config
+import plugin
+reload(plugin) # In case we're being reloaded.
+# Add more reloads here if you add third-party modules and want them to be
+# reloaded when this plugin is reloaded.  Don't forget to import them as well!
 
-Class = UrbanDict
+if world.testing:
+    import test
+
+Class = plugin.Class
+configure = config.configure
 
 
-# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
+# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

@@ -20,7 +20,7 @@ import supybot.callbacks as callbacks
 from urllib import urlencode
 from urllib2 import urlopen 
 from sgmllib import SGMLParser
-from random import randint
+from random import choice
 from os.path import join, dirname, abspath
 import simplejson
 
@@ -75,31 +75,41 @@ class Band(callbacks.Privmsg):
         """
         # this method is ugly as hell, I know
         #f = join(dirname(abspath(__file__)), 'bands.json')
-        f = conf.supybot.directories.data.dirize('bands.json')
-        jsonfile = open(f, 'r')
-        json = simplejson.load(jsonfile)
-        jsonfile.close()
+        f = conf.supybot.directories.data.dirize('Band.json')
+        try:
+            jsonfile = open(f, 'r')
+            json = simplejson.load(jsonfile)
+            jsonfile.close()
+        except IOError, e:
+            self.log.warning(str(e))
+            json = {'bands': []}
         if len(args) > 1:
             if args[0] == 'add':
                 new_band = u' '.join([arg.decode('utf8') for arg in args[1:]]).strip()
                 json['bands'].append(new_band)
                 try:
                     jsonfile = open(f, 'w')
-                    simplejson.dump(json, jsonfile, indent=4)
+                    simplejson.dump(json, jsonfile, indent=2)
                     jsonfile.close()
-                except IOError, ex:
-                    irc.reply("Error opening file '%s': %s" % (f, ex))
+                except IOError, e:
+                    self.log.warning(str(e))
+                    irc.reply("Band '%s' NOT added to list" % new_band, prefixNick=True)
                 else:
                     irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
             elif args[0] == 'remove':
                 band = u' '.join([arg.decode('utf8') for arg in args[1:]]).strip()
-                json['bands'].remove(band)
+                try:
+                    json['bands'].remove(band)
+                except ValueError:
+                    irc.reply("Band '%s' is not in the list" % band, prefixNick=True)
+                    return
                 try:
                     jsonfile = open(f, 'w')
-                    simplejson.dump(json, jsonfile, indent=4)
+                    simplejson.dump(json, jsonfile, indent=2)
                     jsonfile.close()
-                except IOError, ex:
-                    irc.reply("Error opening file '%s': %s" % (f, ex))
+                except IOError, e:
+                    self.log.warning(str(e))
+                    irc.reply("Band '%s' NOT removed from list" % band, prefixNick=True)
                 else:
                     irc.reply("Band '%s' removed from list" % band, prefixNick=True)
             elif args[0] == 'search':
@@ -111,7 +121,10 @@ class Band(callbacks.Privmsg):
                 else:
                     irc.reply("No bands found matching '%s'" % search_str.encode('utf8', 'ignore'), prefixNick=True)
         else:
-            band = json['bands'][randint(0, len(json['bands'])-1)]
+            try:
+                band = choice(json['bands'])
+            except IndexError:
+                band = 'No bands found'
             irc.reply(band, prefixNick=True)
 
 Class = Band 

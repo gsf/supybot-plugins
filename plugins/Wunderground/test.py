@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2004-2005, Kevin Murphy
+# Copyright (c) 2010, Michael B. Klein
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,13 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+
 ###
 
-import SOAP
+from supybot.test import *
 
-import supybot.utils as utils
-from supybot.commands import *
-import supybot.callbacks as callbacks
-
-from lxml.html import iterlinks, fromstring
-import re
-import supybot.utils.web as web
-
-class UrbanDict(callbacks.Plugin):
-    threaded = True
-
-    def urbandict(self, irc, msg, args, words):
-        """<phrase>
-
-        Returns the definition and usage of <phrase> from UrbanDictionary.com.
-        """
-        terms = ' '.join(words)
-        url = 'http://www.urbandictionary.com/define.php?term=%s' \
-            % web.urlquote(terms)
-        html = web.getUrl(url)
-        doc = fromstring(html)
-        if len(doc.xpath('//div[@id="not_defined_yet"]')):
-            irc.error('No definition found.', Raise=True)
-        definitions = []
-        for div in doc.xpath('//div[@class="definition"]'):
-            text = div.text_content()
-            if div.getnext().tag == 'div' \
-            and div.getnext().attrib.get('class', None) == 'example':
-                text += ' [example] ' + div.getnext().text_content() + ' [/example] '
-            text = re.sub(r'[\\\r\\\n]+', ' ', text)
-            definitions.append(text)
-        reply_msg = '%s: %s' % (terms, '; '.join(definitions))
-        irc.reply(reply_msg.encode('utf8'))
-
-    urbandict = wrap(urbandict, [many('something')])
-
-Class = UrbanDict
+class WundergroundTestCase(PluginTestCase):
+    plugins = ('Wunderground',)
 
 
-# vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
+# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

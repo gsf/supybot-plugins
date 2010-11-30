@@ -277,6 +277,20 @@ class Twitter(callbacks.Plugin):
             irc.reply('blerg! scraping FAIL')
 
     twanalyze = wrap(twanalyze, ['text'])
+    
+    def hashtag(self, irc, msg, args, tag):
+      """<tag>
+      
+      Look up <tag> on tagal.us"""
+      key = re.sub('^#','',tag)
+      response = self._fetch_json('http://api.tagal.us/tag/%s/show.json' % (key))
+      if response is None:
+        irc.reply('No entry for hashtag "%s" at tagal.us' % (tag), prefixNick=True)
+      else:
+        irc.reply(response['definition']['the_definition'].strip(), prefixNick=True)
+    
+    hashtag = wrap(hashtag, ['somethingWithoutSpaces'])
+      
       
 Class = Twitter
 
