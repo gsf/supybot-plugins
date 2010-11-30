@@ -333,22 +333,22 @@ class Translators(callbacks.Privmsg):
                      u'\u0337']
         zalgo_all = zalgo_up + zalgo_down + zalgo_mid
     
-        source = u''.join([arg.decode('utf8') for arg in args]).upper()
+        source = u' '.join([arg.decode('utf8') for arg in args]).upper()
         result = []
         for letter in source:
             if letter in zalgo_all:
                 continue
             result.append(letter)
-            num_up = randint(1,16) / 2 + 1
-            num_mid = randint(1,6) / 2
-            num_down = randint(1,16) / 2 + 1
+            num_up = randint(1,64) / 4 + 3
+            num_mid = randint(1,61) / 4 + 1
+            num_down = randint(1,64) / 4 + 3
             for i in range(num_up):
                 result.append(choice(zalgo_up))
             for i in range(num_mid):
                 result.append(choice(zalgo_mid))
             for i in range(num_down):
                 result.append(choice(zalgo_down))
-        response = u' '.join(result)
+        response = u''.join(result)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
 
 
