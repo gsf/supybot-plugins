@@ -324,14 +324,12 @@ class Translators(callbacks.Privmsg):
     def zalgo(self, irc, msg, args, opts, text):
         """[--light] text
         ZALGO"""
-        zalgo_chars = [unichr(i) for i in range(0x0300, 0x036F + 1)]
-        zalgo_chars.extend([u'\u0488', u'\u0489'])
-
-        for opt, arg in opts:
+        zalgo_threshold = 50
+        for opt,arg in opts:
             if opt == 'light':
                 zalgo_threshold = 5
-            zalgo_threshold = 50
-
+        zalgo_chars = [unichr(i) for i in range(0x0300, 0x036F + 1)]
+        zalgo_chars.extend([u'\u0488', u'\u0489'])
         source = u' '.join([arg.decode('utf8') for arg in args]).upper()
         zalgoized = []
         for letter in source:
