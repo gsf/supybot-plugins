@@ -1482,6 +1482,14 @@ class Assorted(callbacks.Privmsg):
     def beck(self, irc, msg, args):
       """Generate a Glenn Beck conspiracy theory. Stolen from http://politicalhumor.about.com/library/bl-glenn-beck-conspiracy.htm"""
       irc.reply(BeckGenerator().generate().encode('utf-8'), prefixNick=True)
+
+    def pac(self, irc, msg, args):
+        """Generate a name for your PAC and turn on the $$ pipe! (via http://is.gd/i6vKS)"""
+        opener = build_opener()
+        opener.addheaders = [('Accept', 'application/json')]
+        data = simplejson.load(opener.open('http://pacgenerator.sunlightfoundation.com/generate'))
+        pacname = data['superpac']['name']
+        irc.reply(pacname.encode('utf-8', 'ignore'))
     
     def redact(self, irc, msg, args, opts, text):
       """--chance [num]
