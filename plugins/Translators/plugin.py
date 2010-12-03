@@ -322,12 +322,13 @@ class Translators(callbacks.Privmsg):
     pairtree = wrap(pairtree,['text'])
 
     def zalgo(self, irc, msg, args, opts, text):
-        """[--intensity n] text
+        """[--intensity 1-200] text
         ZALGO"""
         zalgo_threshold = 50
         for opt, arg in opts:
             if opt == 'intensity':
-                zalgo_threshold = arg
+                if arg in range(1,201):
+                    zalgo_threshold = arg
         zalgo_chars = [unichr(i) for i in range(0x0300, 0x036F + 1)]
         zalgo_chars.extend([u'\u0488', u'\u0489'])
         random_extras = [unichr(i) for i in range(0x1D023, 0x1D045 + 1)]
