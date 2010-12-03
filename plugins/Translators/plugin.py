@@ -322,17 +322,15 @@ class Translators(callbacks.Privmsg):
     pairtree = wrap(pairtree,['text'])
 
     def zalgo(self, irc, msg, args, opts, text):
-        """[--light] text
+        """[--intensity n] text
         ZALGO"""
         zalgo_threshold = 50
-        for opt,arg in opts:
-            if opt == 'light':
-                zalgo_threshold = 5
+        for opt, arg in opts:
+            if opt == 'intensity':
+                zalgo_threshold = arg
         zalgo_chars = [unichr(i) for i in range(0x0300, 0x036F + 1)]
         zalgo_chars.extend([u'\u0488', u'\u0489'])
-        random_extras = [unichr(i) for i in range(0x0FBE, 0x0FD4 + 1)]
-        random_extras.extend([unichr(i) for i in range(0x0F00, 0x0F17 + 1)])
-        random_extras.extend([unichr(i) for i in range(0x1D023, 0x1D045 + 1)])
+        random_extras = [unichr(i) for i in range(0x1D023, 0x1D045 + 1)]
         def insert_randoms(text):
             newtext = []
             for char in text:
@@ -350,7 +348,7 @@ class Translators(callbacks.Privmsg):
         response = choice(zalgo_chars).join(zalgoized)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
 
-    zalgo = wrap(zalgo, [getopts({'light':''}), 'text'])
+    zalgo = wrap(zalgo, [getopts({'intensity':'int'}), 'text'])
 
 Class = Translators
 
