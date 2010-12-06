@@ -1316,6 +1316,14 @@ class Assorted(callbacks.Privmsg):
             if line: 
                 irc.reply(line, prefixNick=False)
 
+    def basic(self, irc, msg, args):
+        """Turn zoia into a VIC-20"""
+        out = """**** CBM BASIC V2 ****
+3583 BYTES FREE
+READY.
+█ """
+        irc.reply(out, prefixNick=False))
+
     def pony(self, irc, msg, args, who):
         """
         zOMG PONieZ!!
