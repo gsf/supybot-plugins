@@ -1322,7 +1322,7 @@ class Assorted(callbacks.Privmsg):
 3583 BYTES FREE
 READY.
 █ """
-        irc.reply(out, prefixNick=False)
+        irc.reply(out.encode('utf-8'), prefixNick=False)
 
     def pony(self, irc, msg, args, who):
         """
