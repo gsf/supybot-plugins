@@ -35,7 +35,7 @@ class Wikileaks(callbacks.Plugin):
         html = opener.open('http://sowhyiswikileaksagoodthingagain.com/')
         html_str = html.read()
         soup = BeautifulSoup(html_str)
-        results = soup.find('div', {'class': 'what'}).contents[0]
+        results = soup.find('div', {'class': 'what'}).next
         out = results.strip()
         irc.reply(out.encode('utf-8'), prefixNick=True)
 
