@@ -90,6 +90,31 @@ class LoveHate(callbacks.Plugin):
             else:
                 irc.reply('But %s already %ss %s!' % (msg.nick, previous, thing))
 
+    def _counts(self, channel):
+      result = {}
+      for record in self._select(channel, [lambda x: True]):
+        if not result.has_key(record.by):
+          result[record.by] = { 'love' : 0, 'hate' : 0 }
+        result[record.by][record.emotion] += 1
+      return result
+      
+    def _top(self, irc, msg, args, channel, emotion):
+      counts = self._counts(channel)
+      result = sorted(counts.iteritems(), key=lambda x: x[1][emotion], reverse=True)[0:5]
+      response_list = []
+      for r in result:
+        response_list.append("%s (%d)" % (r[0], r[1][emotion]))
+      response = "Top %srs: %s" % (emotion, '; '.join(response_list))
+      irc.reply(response)      
+      
+    def lovers(self, irc, msg, args, channel):
+      self._top(irc, msg, args, channel, 'love')
+    lovers = wrap(lovers, ['channeldb'])
+      
+    def haters(self, irc, msg, args, channel):
+      self._top(irc, msg, args, channel, 'hate')
+    haters = wrap(haters, ['channeldb'])
+
     def love(self, irc, msg, args, channel, thing):
         """<thing>
         Declare your love for <thing>"""
