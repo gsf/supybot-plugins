@@ -68,7 +68,7 @@ class Zalgo(callbacks.Plugin):
     def is_zalgo_char(self,c):
       return (c in (zalgo_up + zalgo_down + zalgo_mid))
 
-    def zalgo(self, irc, msg, args, opts, str):
+    def zalgo2(self, irc, msg, args, opts, str):
       """[--up] [--down] [--size (min|normal|max)] <text>
       
       To invoke the hive-mind representing chaos. Invoking the feeling of chaos. With out order. 
@@ -119,7 +119,7 @@ class Zalgo(callbacks.Plugin):
 
       irc.reply(new_str.encode('utf-8'), prefixNick=True)
 
-    zalgo = wrap(zalgo, [getopts({'up':'','down':'','size':('literal',('min','normal','max'))}), 'text'])
+    zalgo2 = wrap(zalgo2, [getopts({'up':'','down':'','size':('literal',('min','normal','max'))}), 'text'])
     
 Class = Zalgo
 
