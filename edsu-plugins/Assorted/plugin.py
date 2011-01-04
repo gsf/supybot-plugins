@@ -1192,7 +1192,7 @@ class Assorted(callbacks.Privmsg):
     talks2013 = keynotes2013 = tshirts2013 = hosts2013
 
     def once(self, irc, msg, args, s):
-        irc.reply("I %s once.... Once." % s, prefixNick=False)
+        irc.reply("%s once.... Once." % s, prefixNick=False)
 
     once = wrap(once, ['text'])
 
