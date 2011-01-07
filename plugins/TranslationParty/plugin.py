@@ -146,12 +146,12 @@ class TranslationParty(callbacks.Plugin):
     languages = wrap(languages, [optional('somethingWithoutSpaces')])
     
     def translationparty(self, irc, msg, args, opts, text):
-        """[--lang <language>[,...]] [--show <none|one|all>] [--max <int>] [--quiet] <text>
+        """[--lang <language>[,...]] [--show <none|one|all>] [--max <int>] [--verbose] <text>
         Try to find equilibrium in back-and-forth translations of <text>. (Defaults: --lang ja --show none --max 50)"""
         input_langs = ['ja']
         show = 'none'
         max_translations = 50
-        announce = True
+        announce = False
         
         if len(text) > 1000:
             irc.reply('The text to be translated cannot exceed 1000 characters. Your request contains %d characters' % (len(text)))
@@ -161,8 +161,8 @@ class TranslationParty(callbacks.Plugin):
                     input_langs = arg.split(',')
                 if opt == 'max':
                     max_translations = arg
-                if opt == 'quiet':
-                    announce = False
+                if opt == 'verbose':
+                    announce = True
                 if opt == 'show':
                     show = arg
         
@@ -188,7 +188,7 @@ class TranslationParty(callbacks.Plugin):
                 elif show == 'one':
                     irc.reply(" -> ".join((texts[0],texts[-1])).encode('utf8'))
                 else:
-                    irc.reply(texts[-1].encode('utf8'))
+                    irc.reply(('%(text)s [%(iterations)d iterations]' % { 'iterations' : len(texts), 'text' : texts[-1] }).encode('utf8'))
             except TranslationError, e:
                 irc.reply(e)
                 log.error(str(e))
@@ -198,7 +198,7 @@ class TranslationParty(callbacks.Plugin):
                 if e.url is not None:
                     log.debug("Last URL: %s" % (e.url))
             
-    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','quiet':''}), 'text'])
+    translationparty = wrap(translationparty, [getopts({'lang':'somethingWithoutSpaces','show':("literal", ("none","one","all")),'max':'int','verbose':''}), 'text'])
         
 Class = TranslationParty
 
