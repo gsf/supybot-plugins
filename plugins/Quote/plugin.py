@@ -32,6 +32,48 @@ import supybot.plugins as plugins
 import re
 
 class Quote(plugins.ChannelIdDatabasePlugin):
+    def cited(self, irc, msg, args, channel, nick):
+      """[<channel>] [<nick>]
+      
+      Finds out how many times <nick> is cited in <channel>'s quote database. If <nick> is not
+      supplied, returns the top 5 cited users and the calling user's ranking."""
+      cites = {}
+      pattern = re.compile("<(.+)>")
+      
+      for quote in self.db.select(channel, lambda x: True):
+        match = pattern.match(quote.text)
+        if match != None:
+          person = match.group(1)
+          if cites.has_key(person):
+            cites[person] += 1
+          else:
+            cites[person] = 1
+      
+      cites = sorted(cites.iteritems(), key=lambda x: x[1], reverse=True)
+
+      if nick == None:
+        top_cites = []
+        for cite in cites[0:5]:
+          top_cites.append("%s (%d)" % cite)
+        response = "Top %d quoted users in %s: %s." % (len(top_cites), channel, '; '.join(top_cites))
+      
+        user_cite = [x for x in cites if x[0] == msg.nick]
+        if len(user_cite) > 0:
+          user_cite = user_cite[0]
+          index = cites.index(user_cite)
+          response += " You (%s) are number %d with %d citations." % (user_cite[0], index+1, user_cite[1])
+      else:
+        user_cite = [x for x in cites if x[0] == nick]
+        if len(user_cite) > 0:
+          user_cite = user_cite[0]
+          index = cites.index(user_cite)
+          response = "%s is ranked %d in the %s quote database with %d citations." % (user_cite[0], index+1, channel, user_cite[1])
+        else:
+          response = "%s has no quotes in the %s quote database." % (nick, channel)
+          
+      irc.reply(response.encode('utf-8'), prefixNick=False)
+    cited = wrap(cited, ['channeldb', optional('nick')])
+    
     def random(self, irc, msg, args, channel):
         """[<channel>]
 
