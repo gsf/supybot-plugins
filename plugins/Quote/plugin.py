@@ -38,7 +38,7 @@ class Quote(plugins.ChannelIdDatabasePlugin):
       Finds out how many times <nick> is cited in <channel>'s quote database. If <nick> is not
       supplied, returns the top 5 cited users and the calling user's ranking."""
       cites = {}
-      pattern = re.compile("<(.+)>")
+      pattern = re.compile("<\s*(\S.+\S)\s*>")
       
       for quote in self.db.select(channel, lambda x: True):
         match = pattern.match(quote.text)
