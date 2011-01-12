@@ -67,7 +67,7 @@ class Quote(plugins.ChannelIdDatabasePlugin):
         if len(user_cite) > 0:
           user_cite = user_cite[0]
           index = cites.index(user_cite)
-          response = "%s is ranked %d in the %s quote database with %d citations." % (user_cite[0], index+1, channel, user_cite[1])
+          response = "%s is ranked number %d in the %s quote database with %d citations." % (user_cite[0], index+1, channel, user_cite[1])
         else:
           response = "%s has no quotes in the %s quote database." % (nick, channel)
           
