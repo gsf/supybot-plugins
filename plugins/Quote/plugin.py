@@ -30,8 +30,10 @@
 from supybot.commands import *
 import supybot.plugins as plugins
 import re
+from ranking import Ranking
 
 class Quote(plugins.ChannelIdDatabasePlugin):
+
     def cited(self, irc, msg, args, channel, nick):
       """[<channel>] [<nick>]
       
@@ -39,39 +41,39 @@ class Quote(plugins.ChannelIdDatabasePlugin):
       supplied, returns the top 5 cited users and the calling user's ranking."""
       cites = {}
       pattern = re.compile("<\s*(\S.+\S)\s*>")
+
+      r = Ranking()
       
       for quote in self.db.select(channel, lambda x: True):
         match = pattern.match(quote.text)
         if match != None:
           person = match.group(1)
-          if cites.has_key(person):
-            cites[person] += 1
-          else:
-            cites[person] = 1
+          r.increment(person)
       
-      cites = sorted(cites.iteritems(), key=lambda x: x[1], reverse=True)
-
+      response = ''
+      
       if nick == None:
         top_cites = []
-        for cite in cites[0:5]:
+        for cite in r.sorted_data()[0:5]:
           top_cites.append("%s (%d)" % cite)
-        response = "Top %d quoted users in %s: %s." % (len(top_cites), channel, '; '.join(top_cites))
-      
-        user_cite = [x for x in cites if x[0] == msg.nick]
-        if len(user_cite) > 0:
-          user_cite = user_cite[0]
-          index = cites.index(user_cite)
-          response += " You (%s) are number %d with %d citations." % (user_cite[0], index+1, user_cite[1])
+        response += "Top %d quoted users in %s: %s." % (len(top_cites), channel, '; '.join(top_cites))
+        user_cite_prefix = " You (%s) are " % msg.nick
+        nick = msg.nick
       else:
-        user_cite = [x for x in cites if x[0] == nick]
-        if len(user_cite) > 0:
-          user_cite = user_cite[0]
-          index = cites.index(user_cite)
-          response = "%s is ranked number %d in the %s quote database with %d citations." % (user_cite[0], index+1, channel, user_cite[1])
+        user_cite_prefix = "%s is " % nick
+
+      try:
+        rank = r.rank(nick)
+        if len(rank['tied_with']) > 0:
+          response += "%s in a %d-way tie for number %d out of %d in the %s quote database with %d citations." % (user_cite_prefix, len(rank['tied_with'])+1, rank['competition'], rank['ranks'], channel, rank['value'])
         else:
+          response += "%s ranked number %d out of %d in the %s quote database with %d citations." % (user_cite_prefix, rank['competition'], rank['ranks'], channel, rank['value'])
+      except KeyError:
+        if len(response) == 0:
           response = "%s has no quotes in the %s quote database." % (nick, channel)
-          
+
       irc.reply(response.encode('utf-8'), prefixNick=False)
+      
     cited = wrap(cited, ['channeldb', optional('nick')])
     
     def random(self, irc, msg, args, channel):
