@@ -57,17 +57,27 @@ class Quote(plugins.ChannelIdDatabasePlugin):
         for cite in r.sorted_data()[0:5]:
           top_cites.append("%s (%d)" % cite)
         response += "Top %d quoted users in %s: %s." % (len(top_cites), channel, '; '.join(top_cites))
-        user_cite_prefix = " You (%s) are " % msg.nick
+        user_cite_prefix = " You (%s) are" % msg.nick
         nick = msg.nick
       else:
-        user_cite_prefix = "%s is " % nick
+        user_cite_prefix = "%s is" % nick
 
       try:
-        rank = r.rank(nick)
-        if len(rank['tied_with']) > 0:
-          response += "%s in a %d-way tie for number %d out of %d in the %s quote database with %d citations." % (user_cite_prefix, len(rank['tied_with'])+1, rank['competition'], rank['ranks'], channel, rank['value'])
-        else:
-          response += "%s ranked number %d out of %d in the %s quote database with %d citations." % (user_cite_prefix, rank['competition'], rank['ranks'], channel, rank['value'])
+        d = r.rank(nick)
+
+        d['prefix'] = user_cite_prefix
+        d['tie_count'] = len(d['tied_with'])
+        d['channel'] = channel
+        d['noun'] = 'citation'
+        if d['value'] > 1:
+          d['noun'] = 'citations'
+          
+        phrase = "%(prefix)s ranked number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+        if len(d['tied_with']) > 1:
+          phrase = "%(prefix)s tied with %(tie_count)d other users for #%(competition)d out of %(entries)d with %(value)d %(noun)s."
+        elif len(d['tied_with']) == 1:
+          phrase = "%(prefix)s tied with %(tie_count)d other user for #%(competition)d out of %(entries)d with %(value)d %(noun)s."
+        response += phrase % d
       except KeyError:
         if len(response) == 0:
           response = "%s has no quotes in the %s quote database." % (nick, channel)
