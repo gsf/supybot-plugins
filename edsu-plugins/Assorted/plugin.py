@@ -1607,5 +1607,16 @@ class Assorted(callbacks.Privmsg):
           response.append("'%(phrase)s': %(string)s" % counts[phrase])
         irc.reply('; '.join(response))
     intensify = wrap(intensify, [getopts({'graph':'','raw':'','prefix':'something','suffix':'something'}), 'text'])
-    
+
+    def complain(self, irc, msg, args, topic):
+      pgraphs = 1
+      gender = 'c'
+      
+      opener = build_opener()
+      html = opener.open("http://www.pakin.org/complaint?" + urlencode({ 'firstname' : topic, 'pgraphs' : pgraphs, 'gender' : gender }))
+      html_str = html.read()
+      soup = BeautifulSoup(html_str, convertEntities=BeautifulSoup.HTML_ENTITIES)
+      irc.reply(' '.join(map(lambda x: ' '.join(x.findAll(text=True)), soup.findAll('p', limit=pgraphs))).encode('utf-8'), prefixNick=False)
+    complain = wrap(complain, ['text'])
+      
 Class = Assorted
