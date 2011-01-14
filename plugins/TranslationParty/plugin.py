@@ -188,7 +188,9 @@ class TranslationParty(callbacks.Plugin):
                 elif show == 'one':
                     irc.reply(" -> ".join((texts[0],texts[-1])).encode('utf8'))
                 else:
-                    irc.reply(('%(text)s [%(iterations)d iterations]' % { 'iterations' : len(texts), 'text' : texts[-1] }).encode('utf8'))
+                    # STILL TOO VERBOSE
+                    #irc.reply(('%(text)s [%(iterations)d iterations]' % { 'iterations' : len(texts), 'text' : texts[-1] }).encode('utf8'))
+                    irc.reply(('%(text)s' % texts[-1]).encode('utf8'))
             except TranslationError, e:
                 irc.reply(e)
                 log.error(str(e))
