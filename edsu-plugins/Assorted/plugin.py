@@ -1192,10 +1192,10 @@ class Assorted(callbacks.Privmsg):
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
             irc.reply("Have you voted? %s" % vote_url)
 
-    def hosts2013(self, irc, msg, args):
-      irc.reply("I'm sorry. That request involves dates after December 21, 2012, and is therefore not worth any of my precious remaining time.")
+    #def hosts2013(self, irc, msg, args):
+    #  irc.reply("I'm sorry. That request involves dates after December 21, 2012, and is therefore not worth any of my precious remaining time.")
       
-    talks2013 = keynotes2013 = tshirts2013 = hosts2013
+    #talks2013 = keynotes2013 = tshirts2013 = hosts2013
 
     def once(self, irc, msg, args, s):
         irc.reply("%s once.... Once." % s, prefixNick=False)
