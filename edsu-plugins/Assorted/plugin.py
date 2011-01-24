@@ -116,7 +116,7 @@ class Assorted(callbacks.Privmsg):
       msg = ["%s [%i]" % (result[0], result[1]) for result in results]
       irc.reply('; '.join(msg))
 
-    def hosts2012(self,irc,msg,args):
+    def hosts2013(self,irc,msg,args):
       """ 
       Shows votes for the next code4libcon. Courtesy of 
       http://www.floydpinkerton.net/fun/citynames.html
@@ -1151,6 +1151,12 @@ class Assorted(callbacks.Privmsg):
             irc.reply("Poll not found for hosts in 2011: %s" % pnfe)
         else:
             irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+
+    def hosts2012(self, irc, msg, args):
+        """
+        Gets tally of host votes for 2012 conference
+        """
+        irc.reply("Seattle [*]")
 
     def keynotes2009(self, irc, msg, args):
         """ 
