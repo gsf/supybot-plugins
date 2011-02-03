@@ -39,12 +39,15 @@ import supybot.utils.web as web
 import time
 import urllib2
 from urllib import urlencode, quote
+import httplib
 from BeautifulSoup import BeautifulStoneSoup as BSS
+from random import randint
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org/irc)')
+SNARFERS = ['binged.it','bit.ly','fb.me','goo.gl','is.gd','ow.ly','su.pr','tinyurl.com','tr.im','youtu.be']
 
 class TwitterSnarfer(callbacks.PluginRegexp):
-  regexps = ['tweetSnarfer']
+  regexps = ['tweetSnarfer','shortUrlSnarfer']
 
   def _fetch_json(self, url):
       doc = web.getUrl(url, headers=HEADERS)
@@ -69,6 +72,20 @@ class TwitterSnarfer(callbacks.PluginRegexp):
     resp = "<%s> %s" % (tweet['user']['screen_name'], recode(tweet['text']))
     irc.reply(resp.replace('\n',' ').strip(' '), prefixNick=False)
 
+  def shortUrlSnarfer(self, irc, msg, match):
+    r'https?://(binged.it|bit.ly|fb.me|goo.gl|is.gd|ow.ly|su.pr|tinyurl.com|tr.im|youtu.be)(/[^\s,;.]+)'
+    snarks = ["I believe you're referring to <%s>","Don't you mean <%s>?","C'mon, <%s> is where it's really at."]
+    domain = match.group(1)
+    path = match.group(2)
+    conn = httplib.HTTPConnection(domain)
+    conn.request("HEAD", path)
+    res = conn.getresponse()
+    print res.status
+    if res.status == 301 or res.status == 302:
+      resolved = res.getheader('location')
+      snark = snarks[randint(0,len(snarks)-1)]
+      irc.reply(snark % resolved, prefixNick=True)
+    
 Class = TwitterSnarfer
 
 
