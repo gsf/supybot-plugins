@@ -34,23 +34,33 @@ from ranking import Ranking
 
 class Quote(plugins.ChannelIdDatabasePlugin):
 
-    def cited(self, irc, msg, args, channel, nick):
-      """[<channel>] [<nick>]
+    def cited(self, irc, msg, args, channel, opts, nick):
+      """[<channel>] [--matching <regexp>] [<nick>]
       
       Finds out how many times <nick> is cited in <channel>'s quote database. If <nick> is not
-      supplied, returns the top 5 cited users and the calling user's ranking."""
+      supplied, returns the top 5 cited users and the calling user's ranking. If --matching is
+      supplied, only quotes matching <regexp> are considered."""
+      quote_filter = None
+      selector = lambda x: True
+      for (opt,arg) in opts:
+        if opt == 'matching':
+          quote_filter = '/%s/' % arg.pattern
+          selector = lambda x, arg=arg: arg.search(x.text)
+                    
       cites = {}
       pattern = re.compile("<\s*(\S.+\S)\s*>")
 
       r = Ranking()
       
-      for quote in self.db.select(channel, lambda x: True):
+      for quote in self.db.select(channel, selector):
         match = pattern.match(quote.text)
         if match != None:
           person = match.group(1)
           r.increment(person)
       
       response = ''
+      if quote_filter:
+        response += 'For quotes matching %s: ' % quote_filter
       
       if nick == None:
         top_cites = []
@@ -84,7 +94,7 @@ class Quote(plugins.ChannelIdDatabasePlugin):
 
       irc.reply(response.encode('utf-8'), prefixNick=False)
       
-    cited = wrap(cited, ['channeldb', optional('nick')])
+    cited = wrap(cited, ['channeldb', getopts({'matching': 'regexpMatcher'}), optional('nick')])
     
     def random(self, irc, msg, args, channel):
         """[<channel>]
