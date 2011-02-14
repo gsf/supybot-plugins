@@ -38,7 +38,8 @@ import re
 class PDPC(callbacks.Plugin):
     
     def pdpc(self, irc, msg, args, channel):
-      """Display in-channel supporters of the Peer-Directed Projects Center 
+      """
+      Display in-channel supporters of the Peer-Directed Projects Center 
       <http://freenode.net/pdpc.shtml> based on cloaked nicks."""
       tag = re.compile('@pdpc$')
       contributors = []
