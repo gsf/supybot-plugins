@@ -36,10 +36,10 @@ import supybot.callbacks as callbacks
 import re
 
 class PDPC(callbacks.Plugin):
-    """Add the help for "@plugin help PDPC" here
-    This should describe *how* to use this plugin."""
     
     def pdpc(self, irc, msg, args, channel):
+      """Display in-channel supporters of the Peer-Directed Projects Center 
+      <http://freenode.net/pdpc.shtml> based on cloaked nicks."""
       tag = re.compile('@pdpc$')
       contributors = []
       for u in irc.state.channels[channel].users:
