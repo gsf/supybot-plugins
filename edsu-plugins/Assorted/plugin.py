@@ -608,6 +608,7 @@ class Assorted(callbacks.Privmsg):
         irc.reply(" >>", prefixNick=False)
 
     def icp(self, irc, msg, args):
+        """Say it like Violent J"""
         irc.reply('FUCKING ' + ' '.join(x.upper() for x in args) + ', HOW DO THEY WORK?!')
 
     def mf(self, irc, msg, args):
