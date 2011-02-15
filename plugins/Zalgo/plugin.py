@@ -87,13 +87,12 @@ class Zalgo(callbacks.Plugin):
           if opt == 'down':
             opt_down = True
               
-      new_str = u''
-      str = str.decode('utf8')
+      new_str = []
       for c in str:
         if self.is_zalgo_char(c):
           continue
 
-        new_str += c
+        new_str.append(c)
         
         if opt_size == 'normal':
           num_up = randint(0,16) / 2 + 1
@@ -110,15 +109,15 @@ class Zalgo(callbacks.Plugin):
 
         if opt_up:
           for i in range(num_up):
-            new_str += self.rand_zalgo(zalgo_up)
+            new_str.append(self.rand_zalgo(zalgo_up))
         if opt_mid:
           for i in range(num_mid):
-            new_str += self.rand_zalgo(zalgo_mid)
+            new_str.append(self.rand_zalgo(zalgo_mid))
         if opt_down:
           for i in range(num_down):
-            new_str += self.rand_zalgo(zalgo_down)
+            new_str.append(self.rand_zalgo(zalgo_down))
 
-      irc.reply(new_str.encode('utf-8'), prefixNick=True)
+      irc.reply(u''.join(new_str).encode('utf-8'), prefixNick=True)
 
     zalgo2 = wrap(zalgo2, [getopts({'up':'','down':'','size':('literal',('min','normal','max'))}), 'text'])
     
