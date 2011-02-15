@@ -88,6 +88,7 @@ class Zalgo(callbacks.Plugin):
             opt_down = True
               
       new_str = u''
+      str = str.decode('utf8')
       for c in str:
         if self.is_zalgo_char(c):
           continue
