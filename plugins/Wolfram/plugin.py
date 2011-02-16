@@ -8,12 +8,11 @@ app_id = '62VUEW-H6XTUTU32R'
 
 class Wolfram(callbacks.Privmsg):
 
-    def alpha(self, irc, msg, args):
+    def alpha(self, irc, msg, args, question):
         """Ask Mr. Wolfram a question, get an "answer"
         """
-        a = ' '.join(args)
         u = "http://api.wolframalpha.com/v2/query?"
-        q = urllib.urlencode(dict(input=a, appid=app_id))
+        q = urllib.urlencode(dict(input=question, appid=app_id))
         xml = urllib.urlopen(u + q).read()
         tree = ElementTree.fromstring(xml)
 
@@ -30,6 +29,8 @@ class Wolfram(callbacks.Privmsg):
             irc.reply(answer.encode("utf-8"))
         else:
             irc.reply("huh, I dunno, sorry!")
+
+    alpha = wrap(alpha, ['text'])
 
 
 Class = Wolfram
