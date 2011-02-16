@@ -9,7 +9,9 @@ app_id = '62VUEW-H6XTUTU32R'
 class Wolfram(callbacks.Privmsg):
 
     def alpha(self, irc, msg, args, question):
-        """Ask Mr. Wolfram a question, get an "answer"...maybe?
+        """Ask Mr. Wolfram a question, get an "answer"...maybe? It uses the
+        Wolfram Alpha API.
+        <http://products.wolframalpha.com/docs/WolframAlpha-API-Reference.pdf>
         """
         u = "http://api.wolframalpha.com/v2/query?"
         q = urllib.urlencode({'input': question, 'appid': app_id})
