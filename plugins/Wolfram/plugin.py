@@ -19,7 +19,7 @@ class Wolfram(callbacks.Privmsg):
         found = False
         for pod in tree.findall('.//pod'):
             title = pod.attrib['title']
-            for plaintext in pod.findall('.//plaintext')
+            for plaintext in pod.findall('.//plaintext'):
                 if plaintext.text:
                     found = True
                     irc.reply(("%s: %s" % (title, plaintext.text)).encode('utf-8'))
