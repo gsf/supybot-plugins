@@ -25,6 +25,7 @@ class Wolfram(callbacks.Privmsg):
             answer = pod.find('.//plaintext')
             if answer:
                 answer = answer.text
+            break
 
         if answer:
             irc.reply(answer.encode("utf-8"))
