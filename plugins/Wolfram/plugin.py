@@ -16,10 +16,10 @@ class Wolfram(callbacks.Privmsg):
         xml = urllib.urlopen(u + q).read()
         tree = ElementTree.fromstring(xml)
 
-        irc.reply(question)
         answer = None
         for pod in tree.findall('.//pod'):
             title = pod.attrib['title']
+            irc.reply(title)
             if title != 'Result':
                 continue
             answer = pod.find('.//plaintext')
