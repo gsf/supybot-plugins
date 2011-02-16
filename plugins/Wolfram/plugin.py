@@ -14,12 +14,12 @@ class Wolfram(callbacks.Privmsg):
         u = "http://api.wolframalpha.com/v2/query?"
         q = urllib.urlencode(dict(input=question, appid=app_id))
         xml = urllib.urlopen(u + q).read()
-        irc.reply(xml)
         tree = ElementTree.fromstring(xml)
 
         answer = None
         for pod in tree.findall('.//pod'):
             title = pod.attrib['title']
+            irc.reply(title)
             if title != 'Result':
                 continue
             answer = pod.find('.//plaintext')
