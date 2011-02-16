@@ -22,9 +22,9 @@ class Wolfram(callbacks.Privmsg):
             irc.reply(title)
             if title != 'Result':
                 continue
-            answer = pod.find('.//plaintext')
-            if answer:
-                irc.reply(answer.text.encode("utf-8"))
+            plaintext = pod.find('.//plaintext')
+            if plaintext.text:
+                answer = plaintext.text
             break
 
         if answer:
