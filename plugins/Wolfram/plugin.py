@@ -16,21 +16,15 @@ class Wolfram(callbacks.Privmsg):
         xml = urllib.urlopen(u + q).read()
         tree = ElementTree.fromstring(xml)
 
-        answer = None
+        found = False
         for pod in tree.findall('.//pod'):
             title = pod.attrib['title']
-            irc.reply(title)
-            if title != 'Result':
-                continue
-            plaintext = pod.find('.//plaintext')
-            if plaintext.text:
-                answer = plaintext.text
-            break
-
-        if answer:
-            irc.reply(answer.encode("utf-8"))
-        else:
-            irc.reply("huh, I dunno, sorry!")
+            for plaintext in pod.findall('.//plaintext')
+                if plaintext.text:
+                    found = True
+                    irc.reply(("%s: %s" % (title, plaintext.text)).encode('utf-8'))
+        if not found:
+            irc.reply("huh, I dunno, I'm still a baby AI. Wait till the singularity I guess?")
 
     alpha = wrap(alpha, ['text'])
 
