@@ -9,10 +9,10 @@ app_id = '62VUEW-H6XTUTU32R'
 class Wolfram(callbacks.Privmsg):
 
     def alpha(self, irc, msg, args, question):
-        """Ask Mr. Wolfram a question, get an "answer"
+        """Ask Mr. Wolfram a question, get an "answer"...maybe?
         """
         u = "http://api.wolframalpha.com/v2/query?"
-        q = urllib.urlencode(dict(input=question, appid=app_id))
+        q = urllib.urlencode({'input': question, 'appid': app_id})
         xml = urllib.urlopen(u + q).read()
         tree = ElementTree.fromstring(xml)
 
