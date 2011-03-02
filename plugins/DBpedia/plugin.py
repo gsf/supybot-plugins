@@ -9,6 +9,8 @@ from lxml import etree
 from StringIO import StringIO
 import supybot.utils.web as web
 from urllib import urlencode
+import urllib2
+import simplejson
 
 import rdflib
 
@@ -69,18 +71,41 @@ class DBpedia(callbacks.Plugin):
 
     uris = wrap(uris, ['text'])
 
-    def whatis(self, irc, msg, args, term):
-        """does a search in dbpedia and extracts the description for the first
-        hit
+###########################################################
+# rewriting this to use uberblic termporarily - when somebody
+# wants to get lookup.dbpedia.org working again we can redo it
+###########################################################
+#    def whatis(self, irc, msg, args, term):
+#        """does a search in dbpedia and extracts the description for the first
+#        hit
+#        """
+#        results = self._search(term)
+#        if len(results) >= 1:
+#            uri = results[0][2]
+#            parts = self._describe(uri)
+#            desc = '; '.join(parts)
+#            irc.reply(('<%s> %s' % (uri, desc)).encode('utf-8'))
+#        else:
+#            irc.reply('better luck next time')
+#
+#    whatis = wrap(whatis, ['text'])
+
+    def whatis(self, irc, msg, args, query):
+        """[<query>]
+
+        uses the uberblic.org search api to return
+        descriptions for a query term or terms
         """
-        results = self._search(term)
-        if len(results) >= 1:
-            uri = results[0][2]
-            parts = self._describe(uri)
-            desc = '; '.join(parts)
-            irc.reply(('<%s> %s' % (uri, desc)).encode('utf-8'))
+        url = 'http://platform.uberblic.org/api/search?query=%s' % urllib2.quote(query)
+        u = urllib2.urlopen(url)
+        json = simplejson.load(u)
+
+        result_count = len(json['results'])
+        if result_count:
+            desc = json['results'][0]['description']
+            irc.reply(desc.encode('utf-8'))
         else:
-            irc.reply('better luck next time')
+            irc.reply('No results. Better luck next time')
 
     whatis = wrap(whatis, ['text'])
 
