@@ -58,7 +58,7 @@ class TwitterSnarfer(callbacks.PluginRegexp):
       return json
 
   def tweetSnarfer(self, irc, msg, match):
-    r'https?://(?:www\.)?twitter\.com.*/status/([0-9]+)'
+    r'https?://(?:www\.)?twitter\.com.*/status(?:es)?/([0-9]+)'
     print match.group(1)
     tweet_id = match.group(1)
   
