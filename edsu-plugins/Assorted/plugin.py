@@ -23,6 +23,7 @@ from supybot.commands import *
 import supybot.callbacks as callbacks
 
 from beck import BeckGenerator
+import sheendata
 
 class PollNotFoundException(Exception):
     pass
