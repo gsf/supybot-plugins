@@ -50,8 +50,8 @@ class Forecast(callbacks.Privmsg):
           else:
             response = '%s: %s' % (responses[0], ' ; '.join(responses[1:]))
           irc.reply(response, prefixNick=False)
-      except:
-          raise
+      except Exception as error:
+          irc.reply(detail)
           irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
 
     warnings = wrap(warnings, ['text'])
