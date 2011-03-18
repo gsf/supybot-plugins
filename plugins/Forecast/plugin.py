@@ -37,23 +37,23 @@ class Forecast(callbacks.Privmsg):
 
     forecast = wrap(forecast, [getopts({'boston':''}),'text'])
 
-    def warnings(self, irc, msg, args, location):
-      no_re = re.compile('^There are no')
-      try:
-          soup = self._fetch('http://forecast.weather.gov/zipcity.php?inputstring=%s' % location)
-          href = soup.body('a',href=re.compile('=([A-Z]{3}[0-9]{3})'))[0]['href']
-          zone_id = urlparse.parse_qs(urlparse.urlparse(href).query)['warnzone'][0]
-          soup = self._fetch('http://alerts.weather.gov/cap/wwaatmget.php?x=%s' % zone_id)
-          responses = [x.text.strip() for x in soup.findAll('title')]
-          if no_re.match(responses[1]):
-            response = responses[1] + responses[0][40:]
-          else:
-            response = '%s: %s' % (responses[0], ' ; '.join(responses[1:]))
-          irc.reply(response, prefixNick=False)
-      except Exception as error:
-          irc.reply(error)
-          irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
-
-    warnings = wrap(warnings, ['text'])
+#    def warnings(self, irc, msg, args, location):
+#      no_re = re.compile('^There are no')
+#      try:
+#          soup = self._fetch('http://forecast.weather.gov/zipcity.php?inputstring=%s' % location)
+#          href = soup.body('a',href=re.compile('=([A-Z]{3}[0-9]{3})'))[0]['href']
+#          zone_id = urlparse.parse_qs(urlparse.urlparse(href).query)['warnzone'][0]
+#          soup = self._fetch('http://alerts.weather.gov/cap/wwaatmget.php?x=%s' % zone_id)
+#          responses = [x.text.strip() for x in soup.findAll('title')]
+#          if no_re.match(responses[1]):
+#            response = responses[1] + responses[0][40:]
+#          else:
+#            response = '%s: %s' % (responses[0], ' ; '.join(responses[1:]))
+#          irc.reply(response, prefixNick=False)
+#      except Exception as error:
+#          irc.reply(error)
+#          irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
+#
+#    warnings = wrap(warnings, ['text'])
       
 Class = Forecast
