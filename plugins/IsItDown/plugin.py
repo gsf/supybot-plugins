@@ -6,7 +6,7 @@ import supybot.callbacks as callbacks
 import re
 
 from BeautifulSoup import BeautifulSoup
-from urllib2 import build_opener, HTTPError
+from urllib2 import build_opener, HTTPError, quote
 
 class IsItDown(callbacks.Privmsg):
     def isitdown(self, irc, msg, args, url):
@@ -33,6 +33,26 @@ class IsItDown(callbacks.Privmsg):
         except:
             irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
     isitdown = wrap(isitdown, ['text'])
+
+    def isitrestful(self, irc, msg, args, url):
+        """
+        <url>: Returns the response from http://isitrestful.com/
+        """
+        site = 'http://isitrestful.com/?url=%s'
+        ua = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.11) Gecko/20071204 Ubuntu/7.10 (gutsy) Firefox/2.0.0.11'
+        opener = build_opener()
+        opener.addheaders = [('User-Agent', ua)]
+        try:
+            html = opener.open(site % quote(url))
+            html_str = html.read()
+            soup = BeautifulSoup(html_str)
+            response = soup.h2.contents[0].strip()
+            irc.reply(response, prefixNick=True)
+        except HTTPError, oops:
+            irc.reply("Hmm. isitrestful.com returned the following error: [%s]" % (str(oops)), prefixNick=True)
+        except:
+            irc.reply("Man, I have no idea; things blew up real good.", prefixNick=True)
+    isitrestful = wrap(isitrestful, ['text'])
 
 Class = IsItDown
 
