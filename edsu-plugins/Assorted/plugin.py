@@ -915,6 +915,7 @@ class Assorted(callbacks.Privmsg):
     decide = wrap(decide, [getopts({'raw':''}),'text'])
 
     def should(self, irc, msg, args, name, choices):
+      choices = re.sub('[^A-Za-z0-9]+$','',choices)
       adverbs = ['','','','totally', 'absolutely', 'probably']
       pattern = re.compile('\s+or(?:\s+should \S+?)?\s+', re.I)
       clist = re.split(pattern, choices)
@@ -930,7 +931,7 @@ class Assorted(callbacks.Privmsg):
       if len(adverb) > 0:
         adverb = adverb + ' '
       action = random.choice(clist)
-      response = "%s should %s%s" % (name, adverb, action)
+      response = "%s should %s%s." % (name, adverb, action)
       irc.reply(response)
       
     should = wrap(should, ['somethingWithoutSpaces','text'])
