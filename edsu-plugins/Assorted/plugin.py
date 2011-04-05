@@ -913,6 +913,26 @@ class Assorted(callbacks.Privmsg):
 
     decide = wrap(decide, [getopts({'raw':''}),'text'])
 
+    def should(self, irc, msg, args, name, choices):
+      adverbs = ['','','','totally', 'absolutely', 'probably']
+      pattern = re.compile('\s+or( should \S+)?\s+', re.I)
+      clist = re.split(pattern, choices)
+      if name == 'I':
+        name = 'You'
+      elif name == 'you':
+        name = 'I'
+        
+      if randint(0, 10) == 0:
+          irc.reply("That's a tough one...")
+          return
+      adverb = adverbs[randint(0,len(adverbs)-1)]
+      if len(adverb) > 0:
+        adverb = adverb + ' '
+      response = "%s should %s%s" % (name, adverb, clist[randint(0, len(clist)-1)])
+      irc.reply(response)
+      
+    should = wrap(should, ['somethingWithoutSpaces','text'])
+      
     def pick(self, irc, msg, args, choices):
     	"""
     	@decide without the niceties 
