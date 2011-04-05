@@ -47,7 +47,7 @@ HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Twitter Plugin; http://code4lib.org
 SNARFERS = ['binged.it','bit.ly','fb.me','goo.gl','is.gd','ow.ly','su.pr','tinyurl.com','tr.im','youtu.be']
 
 class TwitterSnarfer(callbacks.PluginRegexp):
-  regexps = ['tweetSnarfer','shortUrlSnarfer']
+  regexps = ['tweetSnarfer']#,'shortUrlSnarfer']
 
   def _fetch_json(self, url):
       doc = web.getUrl(url, headers=HEADERS)
