@@ -918,7 +918,6 @@ class Assorted(callbacks.Privmsg):
       adverbs = ['','','','totally', 'absolutely', 'probably']
       pattern = re.compile('\s+or(?:\s+should \S+?)?\s+', re.I)
       clist = re.split(pattern, choices)
-      print clist
       if name == 'I':
         name = 'You'
       elif name == 'you':
