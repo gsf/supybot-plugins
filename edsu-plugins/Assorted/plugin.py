@@ -3,6 +3,7 @@
 import feedparser
 import math
 import os
+import random
 import re
 import simplejson
 import time
@@ -915,8 +916,9 @@ class Assorted(callbacks.Privmsg):
 
     def should(self, irc, msg, args, name, choices):
       adverbs = ['','','','totally', 'absolutely', 'probably']
-      pattern = re.compile('\s+or( should \S+)?\s+', re.I)
+      pattern = re.compile('\s+or(?:\s+should \S+?)?\s+', re.I)
       clist = re.split(pattern, choices)
+      print clist
       if name == 'I':
         name = 'You'
       elif name == 'you':
@@ -925,10 +927,11 @@ class Assorted(callbacks.Privmsg):
       if randint(0, 10) == 0:
           irc.reply("That's a tough one...")
           return
-      adverb = adverbs[randint(0,len(adverbs)-1)]
+      adverb = random.choice(adverbs)
       if len(adverb) > 0:
         adverb = adverb + ' '
-      response = "%s should %s%s" % (name, adverb, clist[randint(0, len(clist)-1)])
+      action = random.choice(clist)
+      response = "%s should %s%s" % (name, adverb, action)
       irc.reply(response)
       
     should = wrap(should, ['somethingWithoutSpaces','text'])
