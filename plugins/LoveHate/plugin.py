@@ -37,9 +37,12 @@ import supybot.callbacks as callbacks
 import supybot.dbi as dbi
 
 from random import choice
+import re
 import time
 
 PRIVATE_COMMANDS = ['get','remove']
+SARCASTIC = { 'love' : '"hate"', 'loves' : '"hates"', 'hate' : '"love"', 'hates' : '"loves"' }
+OPPOSITES = { 'love' : 'hate', 'hate' : 'love' }
 
 class LoveHate(callbacks.Plugin):
     class DB(plugins.DbiChannelDB):
@@ -154,8 +157,12 @@ class LoveHate(callbacks.Plugin):
             pass
         return results
     
-    def _whocares(self, irc, msg, args, channel, emotion, thing):
-        results = self._find_stuff_out(channel, lambda r: r.text.lower() == thing.lower(), emotion, lambda r: r.by)
+    def _whocares(self, irc, msg, args, channel, emotion, opts, thing):
+        if ('sarcasm' in dict(opts)) and (emotion != None):
+          emo_key = OPPOSITES[emotion]
+        else:
+          emo_key = emotion
+        results = self._find_stuff_out(channel, lambda r: r.text.lower() == thing.lower(), emo_key, lambda r: r.by)
         replied = False
         for key in ('love','hate'):
             if len(results[key]) > 0:
@@ -165,6 +172,8 @@ class LoveHate(callbacks.Plugin):
                 else:
                     users = ' and '.join(results[key])
                     verb = key + 's'
+                if 'sarcasm' in dict(opts):
+                  verb = SARCASTIC[verb]
                 irc.reply(' '.join((users, verb, thing)), prefixNick=False)
                 replied = True
                 
@@ -175,32 +184,38 @@ class LoveHate(callbacks.Plugin):
                 irc.reply("I can't find anyone who %ss %s." % (emotion, thing))
                 
                 
-    def whocares(self, irc, msg, args, channel, thing):
+    def whocares(self, irc, msg, args, channel, opts, thing):
         """[<channel>] <thing>
         Find out who cares about <thing>"""
-        self._whocares(irc, msg, args, channel, None, thing)
-    whocares = wrap(whocares, ['channeldb','text'])
+        self._whocares(irc, msg, args, channel, None, opts, thing)
+    whocares = wrap(whocares, ['channeldb',getopts({'sarcasm':''}),'text'])
 
-    def wholoves(self, irc, msg, args, channel, thing):
+    def wholoves(self, irc, msg, args, channel, opts, thing):
         """[<channel>] <thing>
         Find out who loves <thing>"""
-        self._whocares(irc, msg, args, channel, 'love', thing)
-    wholoves = wrap(wholoves, ['channeldb','text'])
+        self._whocares(irc, msg, args, channel, 'love', opts, thing)
+    wholoves = wrap(wholoves, ['channeldb',getopts({'sarcasm':''}),'text'])
 
-    def whohates(self, irc, msg, args, channel, thing):
+    def whohates(self, irc, msg, args, channel, opts, thing):
         """[<channel>] <thing>
         Find out who hates <thing>"""
-        self._whocares(irc, msg, args, channel, 'hate', thing)
-    whohates = wrap(whohates, ['channeldb','text'])
+        self._whocares(irc, msg, args, channel, 'hate', opts, thing)
+    whohates = wrap(whohates, ['channeldb',getopts({'sarcasm':''}),'text'])
     
-    def _caresabout(self, irc, msg, args, channel, user, emotion):
+    def _caresabout(self, irc, msg, args, channel, user, opts, emotion):
         if user is None:
             user = msg.nick
-        results = self._find_stuff_out(channel, lambda r: r.by == user, emotion, lambda r: r.text)
+        if ('sarcasm' in dict(opts)) and (emotion != None):
+          emo_key = OPPOSITES[emotion]
+        else:
+          emo_key = emotion
+        results = self._find_stuff_out(channel, lambda r: r.by == user, emo_key, lambda r: r.text)
         replied = False
         for key in ('love','hate'):
             if len(results[key]) > 0:
                 verb = key + 's'
+                if 'sarcasm' in dict(opts):
+                  verb = SARCASTIC[verb]
                 if len(results[key]) > 1:
                     things = '; '.join(results[key][0:-1]) + '; and ' + results[key][-1]
                 else:
@@ -214,23 +229,23 @@ class LoveHate(callbacks.Plugin):
             else:
                 irc.reply("%s doesn't seem to %s anything." % (user, emotion))
             
-    def caresabout(self, irc, msg, args, channel, user):
+    def caresabout(self, irc, msg, args, channel, opts, user):
         """[<channel>] [<user>]
         Find out what <user> cares about"""
-        self._caresabout(irc, msg, args, channel, user, None)
-    caresabout = wrap(caresabout, ['channeldb',optional('nick')])
+        self._caresabout(irc, msg, args, channel, user, opts, None)
+    caresabout = wrap(caresabout, ['channeldb',getopts({'sarcasm':''}),optional('nick')])
 
-    def loves(self, irc, msg, args, channel, user):
+    def loves(self, irc, msg, args, channel, opts, user):
         """[<channel>] [<user>]
         Find out what <user> loves"""
-        self._caresabout(irc, msg, args, channel, user, 'love')
-    loves = wrap(loves, ['channeldb',optional('nick')])
+        self._caresabout(irc, msg, args, channel, user, opts, 'love')
+    loves = wrap(loves, ['channeldb',getopts({'sarcasm':''}),optional('nick')])
 
-    def hates(self, irc, msg, args, channel, user):
+    def hates(self, irc, msg, args, channel, opts, user):
         """[<channel>] [<user>]
         Find out what <user> hates"""
-        self._caresabout(irc, msg, args, channel, user, 'hate')
-    hates = wrap(hates, ['channeldb',optional('nick')])
+        self._caresabout(irc, msg, args, channel, user, opts, 'hate')
+    hates = wrap(hates, ['channeldb',getopts({'sarcasm':''}),optional('nick')])
 
     def random(self, irc, msg, args, channel, emotion):
         """[love|hate]
