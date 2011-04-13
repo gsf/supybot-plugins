@@ -134,7 +134,7 @@ class Assorted(callbacks.Privmsg):
         "Big Sandy, Wyoming", "Gay Mills, Wisconsin", "Porkey, Pennsylvanania",
         "Blueballs, Pennsylvania", "Gun Barrel City, Texas", "Quiggleville, Pennsylvania",
         "Boring, Maryland", "Hell, Michigan", "Rambo Riviera, Arkansas",
-        "Boring, Oregon", "Hicksville, Ohio", "River Styx, Ohio",
+        "Bivalve, California", "Boring, Oregon", "Hicksville, Ohio", "River Styx, Ohio",
         "Buddha, Indiana", "Hooker, Arkansas", "Roachtown, Illinois",
         "Chestnut, Illinois", "Hooker, Oklahoma", "Romance, Arkansas",
         "Chicken, Alaska", "Hornytown, North Carolina", "Rough and Ready, California",
