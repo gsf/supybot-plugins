@@ -1696,5 +1696,22 @@ class Assorted(callbacks.Privmsg):
       soup = BeautifulSoup(html_str, convertEntities=BeautifulSoup.HTML_ENTITIES)
       irc.reply(' '.join(map(lambda x: ' '.join(x.findAll(text=True)), soup.findAll('p', limit=pgraphs))).encode('utf-8'), prefixNick=False)
     complain = wrap(complain, ['text'])
-      
+
+    def haverfood(self, irc, msg, args):
+        """get the name of a food according to Parks and Recreation's Tom Haverford from http://tomhaverfoods.com/"""
+        text = None
+        while text == None:
+            try:
+                soup = self._url2soup('http://tomhaverfoods.com')
+            except HTTPError, e:
+                irc.reply('http error %s for %s' % (e.code, url), prefixNick=True); return
+            except StopParsing, e:
+                irc.reply('parsing error %s for %s' % (e.code, url), prefixNick=True); return
+            food = soup.find('a')
+            text = food.find('p').string + food.find('h2').string
+            text = text.replace("\n"," ").strip()
+    
+        irc.reply(text, prefixNick=True)
+
+
 Class = Assorted
