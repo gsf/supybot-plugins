@@ -160,7 +160,6 @@ class Quote(plugins.ChannelIdDatabasePlugin):
             phrase = "%(prefix)s tied with %(tie_count)d other user for number %(competition)d out of %(entries)d with %(value)d %(noun)s."
           response += phrase % d
       except KeyError:
-        raise
         if len(response) == 0:
           response = "%s has no quotes in the %s quote database." % (nick, channel)
 
