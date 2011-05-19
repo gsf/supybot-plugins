@@ -31,6 +31,7 @@ class Ranking(object):
     standard = len([c for c in sd if c[1] > value]) + 1
     dense = unique_values.index(value) + 1
     result = { 
+      'nick' : key,
       'ordinal' : [sd.index(c) for c in sd if c[0] == key][0]+1, 
       'competition' : standard, 
       'dense' : dense, 
@@ -39,4 +40,7 @@ class Ranking(object):
       'ranks' : len(unique_values),
       'tied_with' : [k for k in self.keys_at(value) if k != key]
     }
+    result['noun'] = 'citation'
+    if result['value'] > 1:
+      result['noun'] = 'citations'
     return result
