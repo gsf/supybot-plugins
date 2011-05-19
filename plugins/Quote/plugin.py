@@ -30,9 +30,11 @@
 from supybot.commands import *
 import supybot.plugins as plugins
 import re
+import sys
 from ranking import Ranking
 
-ranking = reload(ranking)
+if 'ranking' in sys.modules:
+  ranking = reload(ranking)
 
 class Quote(plugins.ChannelIdDatabasePlugin):
 
