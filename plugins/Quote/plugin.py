@@ -32,6 +32,8 @@ import supybot.plugins as plugins
 import re
 from ranking import Ranking
 
+ranking = reload(ranking)
+
 class Quote(plugins.ChannelIdDatabasePlugin):
 
     def cited(self, irc, msg, args, channel, opts, nick):
