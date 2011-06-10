@@ -252,7 +252,7 @@ class Twitter(callbacks.Plugin):
       response = self._twitter_api('statuses/destroy/%d.json' % tweet_id)
       irc.reply('OK!')
       
-    untweet = wrap(untweet, ['tweet_id'])
+    untweet = wrap(untweet, ['text'])
       
     def mentions(self, irc, msg, args):
       responses = self._get_mentions();
