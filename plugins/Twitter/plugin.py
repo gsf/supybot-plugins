@@ -248,8 +248,8 @@ class Twitter(callbacks.Plugin):
 
     tweet = wrap(tweet, ['user','text'])
 
-    def untweet(self, irc, msg, args, user, tweet_id):
-      response = self._twitter_api('statuses/destroy/%s.json' % tweet_id)
+    def untweet(self, irc, msg, args, tweet_id):
+      response = self._twitter_api('statuses/destroy/%s.json' % tweet_id, post=True)
       irc.reply('OK!')
       
     untweet = wrap(untweet, ['text'])
