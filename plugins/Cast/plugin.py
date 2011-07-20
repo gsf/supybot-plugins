@@ -82,29 +82,29 @@ class Cast(callbacks.Plugin):
       """<play> <cast> -- Add <play> to the database, with parts specified by <cast> (separated by semicolons)"""
       previous = self._find(channel, play)
       if previous is not None:
-        irc.replyFailure('"%s" already exists' % (play))
+        irc.reply('"%s" already exists.' % (play))
       else:
         id = self.db.add(channel, play, cast)
-        irc.replySuccess('"%s" added' % (play))
+        irc.replySuccess('"%s" added.' % (play))
     add = wrap(add, ['channeldb','something','something'])
 
     def remove(self, irc, msg, args, channel, play):
-      """<play> -- Remove <play> to the database"""
+      """<play> -- Remove <play> from the database"""
       if id == None:
-        irc.replyFailure('No id specified')
+        irc.reply('No id specified')
       try:
         record = self._find(channel, play)
         if record is not None:
           self.db.remove(channel, record.id)
           irc.replySuccess()
         else:
-          irc.replyFailure('"%s" not found' % play)
+          irc.reply('"%s" not found' % play)
       except:
-          irc.replyFailure()
+          irc.replyError()
     remove = wrap(remove, [('checkCapability','admin'), 'channeldb', 'something'])
 
     def list(self, irc, msg, args, channel):
-      """<play> -- Remove <play> from the database"""
+      """List plays that I can cast"""
       records = self._select(channel, [lambda x: True])
       titles = ['"%s"' % record.play for record in records]
       titles.sort()

@@ -278,12 +278,12 @@ class LoveHate(callbacks.Plugin):
     
     def remove(self, irc, msg, args, channel, id):
         if id == None:
-            irc.replyFailure('No id specified')
+            irc.reply('No id specified')
         try:
             self.db.remove(channel, id)
             irc.replySuccess()
         except:
-            irc.replyFailure()
+            irc.replyError()
     remove = wrap(remove, [('checkCapability','admin'), 'channeldb', 'id'])
         
     def listCommands(self, pluginCommands=[]):
