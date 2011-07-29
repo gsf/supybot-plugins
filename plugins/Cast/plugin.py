@@ -114,7 +114,8 @@ class Cast(callbacks.Plugin):
     def cast(self, irc, msg, args, channel, play):
       """[<play>] -- Cast <play> from the current channel participants."""
       random.seed()
-      nicks = random.shuffle(list(irc.state.channels[channel].users))
+      nicks = list(irc.state.channels[channel].users)
+      random.shuffle(nicks)
       
       if play is None:
         record = self.db.random(channel)
