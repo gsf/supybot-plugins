@@ -36,7 +36,7 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.dbi as dbi
 
-from random import randint
+import random
 import re
 import time
 
@@ -113,8 +113,8 @@ class Cast(callbacks.Plugin):
     
     def cast(self, irc, msg, args, channel, play):
       """[<play>] -- Cast <play> from the current channel participants."""
-      nicks = list(irc.state.channels[channel].users)
-      nicks.sort(lambda a,b: randint(-1,1))
+      random.seed()
+      nicks = random.shuffle(list(irc.state.channels[channel].users))
       
       if play is None:
         record = self.db.random(channel)
