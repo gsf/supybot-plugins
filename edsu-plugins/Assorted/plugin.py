@@ -8,7 +8,7 @@ import re
 import simplejson
 import time
 from os.path import join, abspath, dirname
-from BeautifulSoup import BeautifulSoup, StopParsing
+from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, StopParsing
 from cgi import parse_qs
 from datetime import date, datetime
 from elementtidy import TidyHTMLTreeBuilder
@@ -1726,5 +1726,33 @@ class Assorted(callbacks.Privmsg):
     
         irc.reply(text, prefixNick=True)
 
-
+    def quakes(self, irc, msg, args, opts, loc):
+      """[--min <magnitude>] [<location>]
+      List recent earthquakes (optionally near <location>, with magnitude >= <magnitude> [default: 3.5]) from the USGS Atom feed"""
+      url = "http://quakes.heroku.com/catalogs/7day-M2.5.json"
+      minq = 3.5
+      for (opt, arg) in opts:
+        if opt == 'min':
+          minq = arg
+      
+      if (loc != None):
+        pref = 'Closest quakes (>=%.2f) to %s in the past 7 days: ' % (minq,loc)
+        url = url + ("?sort=distance&from=%s" % (loc))
+      else:
+        pref = 'Quakes (>=%.2f) in the past 7 days: ' % (minq)
+        
+      json = urlopen(url).read()
+      feed = simplejson.loads(json)
+      responses = []
+      for q in feed:
+        if q['magnitude'] >= minq:
+          if loc != None:
+            s = "%.2f, %.1fmi away (%s, %s ago)" % (q['magnitude'], q['distance']['mi'], q['location'], q['age']['string'])
+          else:
+            s = "%.2f, %s (%s ago)" % (q['magnitude'], q['location'], q['age']['string'])
+          responses.append(s)
+        
+      irc.reply(pref + '; '.join(responses))
+    quakes=wrap(quakes,[getopts({'min':'float'}), optional('text')])
+    
 Class = Assorted
