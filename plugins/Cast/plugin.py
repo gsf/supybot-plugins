@@ -39,6 +39,12 @@ import supybot.dbi as dbi
 import random
 import re
 import time
+import simplejson
+import supybot.utils.web as web
+import urllib
+
+HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Github Plugin; http://code4lib.org/irc)')
+TMDBK = '2aa9fc67c6ce2fe64313d34806e4f59e'
 
 class Cast(callbacks.Plugin):
     class DB(plugins.DbiChannelDB):
@@ -78,6 +84,15 @@ class Cast(callbacks.Plugin):
       except StopIteration:
         return None
     
+    def _tmdb(self, cmd, args):
+      url = "http://api.themoviedb.org/2.1/%s/en/json/%s/%s" % (cmd,TMDBK,urllib.quote(str(args)))
+      doc = web.getUrl(url, headers=HEADERS)
+      try:
+        json = simplejson.loads(doc)
+      except ValueError:
+        return None
+      return json
+    
     def add(self, irc, msg, args, channel, play, cast):
       """<play> <cast> -- Add <play> to the database, with parts specified by <cast> (separated by semicolons)"""
       previous = self._find(channel, play)
@@ -111,25 +126,55 @@ class Cast(callbacks.Plugin):
       irc.reply(', '.join(titles))
     list = wrap(list, ['channeldb'])
     
-    def cast(self, irc, msg, args, channel, play):
-      """[<play>] -- Cast <play> from the current channel participants."""
+    def cast(self, irc, msg, args, channel, opts, play):
+      """[--tmdb] [<play>] -- Cast <play> from the current channel participants. If --tmdb is specified, cast list will be
+      retrieved from themoviedb.org instead of the local database."""
       random.seed()
       nicks = list(irc.state.channels[channel].users)
       random.shuffle(nicks)
       
+      tmdb = False
+      for (opt,arg) in opts:
+        if opt == 'tmdb':
+          tmdb = True
+      
+      parts = None
       if play is None:
-        record = self.db.random(channel)
-        play = record.play
+        if tmdb:
+          irc.reply('If you want to use TMDB, I need a movie name.')
+        else:
+          record = self.db.random(channel)
       else:
-        record = self._find(channel, play)
-        
+        if tmdb:
+          record = None
+          data = self._tmdb('Movie.search',play)
+          if data != None and data[0] != 'Nothing found.':
+            best = data[0]
+            for r in data:
+              if r['name'].lower().strip() == play.lower().strip():
+                best = r
+                break
+            movie = self._tmdb('Movie.getInfo',best['id'])[0]
+            title = movie['name']
+            parts = []
+            for entry in movie['cast']:
+              if entry['job'] == 'Actor':
+                parts.append(entry['character'])
+                if len(parts) == 20:
+                  break
+        else:
+          record = self._find(channel, play)
+
       if record is not None:
+        title = record.play
         parts = re.split(r'\s*;\s*',record.cast)
+      
+      if parts is not None:
         if len(parts) > len(nicks):
-          irc.reply('Not enough people in %s to cast "%s"' % (channel, play))
+          irc.reply('Not enough people in %s to cast "%s"' % (channel, title))
         else:
           parts.reverse()
-          response = '%s presents "%s", starring ' % (channel, play)
+          response = '%s presents "%s", starring ' % (channel, title)
           while len(parts) > 1:
             response += "%s as %s, " % (nicks.pop(), parts.pop())
             if len(parts) == 1:
@@ -138,7 +183,7 @@ class Cast(callbacks.Plugin):
           irc.reply(response.encode('utf8'), prefixNick=False)
       else:
         irc.reply('I don\'t know "%s"!' % play)
-    cast = wrap(cast, ['channeldb', optional('something')])
+    cast = wrap(cast, ['channeldb', getopts({'tmdb':''}), optional('text')])
     
 Class = Cast
 
