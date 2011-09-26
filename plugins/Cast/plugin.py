@@ -159,7 +159,10 @@ class Cast(callbacks.Plugin):
             parts = []
             for entry in movie['cast']:
               if entry['job'] == 'Actor':
-                parts.append(entry['character'])
+                if re.match(r'^(((him|her|it)self)|themselves)$', entry['character'], re.I):
+                  parts.append(entry['name'])
+                else:
+                  parts.append(entry['character'])
                 if len(parts) == 20:
                   break
         else:
