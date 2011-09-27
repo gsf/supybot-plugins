@@ -134,9 +134,12 @@ class Cast(callbacks.Plugin):
       random.shuffle(nicks)
       
       tmdb = False
+      maxlen = 20
       for (opt,arg) in opts:
         if opt == 'tmdb':
           tmdb = True
+        if opt == 'max':
+          maxlen = int(arg)
       
       parts = None
       if play is None:
@@ -163,7 +166,7 @@ class Cast(callbacks.Plugin):
                   parts.append(entry['name'])
                 else:
                   parts.append(entry['character'])
-                if len(parts) == 20:
+                if len(parts) == maxlen:
                   break
         else:
           record = self._find(channel, play)
@@ -186,7 +189,7 @@ class Cast(callbacks.Plugin):
           irc.reply(response.encode('utf8'), prefixNick=False)
       else:
         irc.reply('I don\'t know "%s"!' % play)
-    cast = wrap(cast, ['channeldb', getopts({'tmdb':''}), optional('text')])
+    cast = wrap(cast, ['channeldb', getopts({'tmdb':'','max':'int'}), optional('text')])
     
 Class = Cast
 
