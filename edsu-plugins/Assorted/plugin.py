@@ -1023,14 +1023,14 @@ class Assorted(callbacks.Privmsg):
           "Arctic Berry", "Green Apple Bite","Strawberry Acai","Pineapple","Raspberry Burst"]]
       ]
       menu = []
-      for package, options in catalog:
-        for option in options:
-          menu.append(('%s %s' % (package, option)).strip())
+      package,options = catalog[randint(0, len(catalog)-1)]
+      for option in options:
+        menu.append(('%s %s' % (package, option)).strip())
       if len(args) > 0:
         nick = ' '.join(args)
       else:
         nick = msg.nick
-      order = menu[randint(0, len(menu))]
+      order = menu[randint(0, len(menu)-1)]
       irc.reply("grabs a %s and sends it sliding down the bar to %s" % (order, nick), action=True)
       
     def anon(self, irc, msg, args):
