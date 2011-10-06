@@ -1009,6 +1009,30 @@ class Assorted(callbacks.Privmsg):
 
     whiskey = whisky  
     
+    def swill(self, irc, msg, args):
+      """
+      pours...something else.
+      """
+      catalog = [
+        ["forty of", ["Colt 45", "Camo 40", "Black Fist", "Country Club", "Olde English 800", "Mickey's", "Black Bull", 
+          "Labatt Blue Dry 7.1", "WildCat", "Molson Dry 6.5/7.5/8.5/10.1", "Private Stock", "Big Bear", "St. Ides", 
+          "Steel Reserve 211", "B40 Bull Max", "King Cobra", "Jeremiah Weed", "Hurricane"]],
+        ["bottle of", ["Zima", "Extra Dry Champale", "Pink Champale", "Golden Champale"]],
+        ["can of Sparks", ["", "Light","Plus","Red","Stinger"]],
+        ["bottle of Smirnoff Ice", ["Watermelon","Wild Grape","Passionfruit","Mango","Triple Black","Pomegranate Fusion",
+          "Arctic Berry", "Green Apple Bite","Strawberry Acai","Pineapple","Raspberry Burst"]]
+      ]
+      menu = []
+      for package, options in catalog:
+        for option in options:
+          menu.append(('%s %s' % (package, option)).strip())
+      if len(args) > 0:
+        nick = ' '.join(args)
+      else:
+        nick = msg.nick
+      order = menu[randint(0, len(menu))]
+      irc.reply("grabs a %s and sends it sliding down the bar to %s" % (order, nick), action=True)
+      
     def anon(self, irc, msg, args):
         """
         Spits out random nonsense from 'anon,' that loveable idiot of a troll
