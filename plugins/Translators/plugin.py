@@ -351,6 +351,9 @@ class Translators(callbacks.Privmsg):
 
     zalgo = wrap(zalgo, [getopts({'intensity':'int'}), 'text'])
 
+    def platforms(self, irc, msg, args):
+      irc.reply("HOW MANY %s CAN I PUT YOU DOWN FOR?" % (' '.join(args).upper()))
+      
 Class = Translators
 
 
