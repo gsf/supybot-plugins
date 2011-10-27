@@ -309,7 +309,7 @@ class Translators(callbacks.Privmsg):
         words = args
         if len(words) == 1:
             words = (' '.join(words)).split()
-		r1 = u'( ಠ_ಠ) ' + choice(intro) + u' '+ words[0]
+        r1 = u'( ಠ_ಠ) ' + choice(intro) + u' '+ words[0]
 		irc.reply(response.encode('utf-8', 'ignore'))
 		irc.reply(u'( ಠ_ಠ)>--■-■'.encode('utf-8','ignore'))
 		r2 = u'(-■_■) ' + ' '.join(words[1:])
