@@ -309,11 +309,11 @@ class Translators(callbacks.Privmsg):
         words = args
         if len(words) == 1:
             words = (' '.join(words)).split()
-        r1 = u'( ಠ_ಠ) ' + choice(intro) + u' ' + words[0]
-        irc.reply(response.encode('utf-8', 'ignore'))
+        r1 = u'( ಠ_ಠ) ' + choice(intros) + u' ' + words[0]
+        irc.reply(r1.encode('utf-8', 'ignore'))
         irc.reply(u'( ಠ_ಠ)>--■-■'.encode('utf-8','ignore'))
         r2 = u'(-■_■) ' + ' '.join(words[1:])
-        irc.reply(r2.response(encode('utf-8', 'ignore')))
+        irc.reply(r2.encode('utf-8', 'ignore'))
         irc.reply('YEAAAAAAAAAAAAAAAAAAAAAAH')
 
     def pairtree(self, irc, msg, args, id):
