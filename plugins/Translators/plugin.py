@@ -305,7 +305,8 @@ class Translators(callbacks.Privmsg):
             'sounds like',
             'it appears that',
             'on the other hand,',
-            'i guess you could say',]
+            'i guess you could say',
+            'you might want to consider that',]
         words = args
         if len(words) == 1:
             words = (' '.join(words)).split()
