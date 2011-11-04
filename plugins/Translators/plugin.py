@@ -112,10 +112,11 @@ class Translators(callbacks.Privmsg):
         """
         Rob says what you want him to say. Kinda.
         """
-        if len(args) < 2:
+        text = ' '.join(args).split(' ')
+        if len(text) < 2:
           irc.reply('... Wait, what?')
         else:
-          phrase = args[0:randint(1,len(args)-1)]
+          phrase = text[0:randint(1,len(text)-1)]
           irc.reply(' '.join(phrase) + '... Wait, what?')
 
     def obamit(self, irc, msg, args):
