@@ -108,7 +108,13 @@ class Translators(callbacks.Privmsg):
         """
         irc.reply("nosrsly, " + ' '.join(args), prefixNick=True)
 
-    
+    def rob(self, irc, msg, args):
+        """
+        Rob says what you want him to say. Kinda.
+        """
+        phrase = args[0:randint(len(args)-1)]
+        irc.reply(' '.join(phrase) + '... Wait, what?')
+
     def obamit(self, irc, msg, args):
         """
         Garners attention for your statements in a folksy way
