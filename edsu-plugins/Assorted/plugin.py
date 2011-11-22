@@ -1781,7 +1781,7 @@ class Assorted(callbacks.Privmsg):
 
     def occupy(self, irc, msg, args, this, that):
       """1% of <this> controls 99% of <that>"""
-      irc.reply(("1%% of the %s control 99%% of the %s" % (this, that)).encode('utf8'))
+      irc.reply(("1%% of the %s control 99%% of the %s" % (this, that)).encode('utf8'), prefixNick=False)
     occupy=wrap(occupy,['something','something'])
     
 Class = Assorted
