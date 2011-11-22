@@ -1108,7 +1108,7 @@ class Assorted(callbacks.Privmsg):
         tallies = [(vote['title'], vote['score']) for vote in votes]
         return tallies, vote_url
 
-    def talks2011(self, irc, msg, args):
+    def talks2012(self, irc, msg, args):
         """ 
         Gets tally of talk votes for 2012 conference
         """
