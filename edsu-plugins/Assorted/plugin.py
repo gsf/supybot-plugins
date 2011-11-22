@@ -1110,6 +1110,18 @@ class Assorted(callbacks.Privmsg):
 
     def talks2011(self, irc, msg, args):
         """ 
+        Gets tally of talk votes for 2012 conference
+        """
+        try:
+            tallies, vote_url = self._diebold_tallies("talks", "2012")
+        except PollNotFoundException, pnfe:
+            irc.reply("Poll not found for talk votes in 2012: %s" % pnfe)
+        else:
+            irc.reply(('; '.join("%s [%s]" % t for t in tallies)).encode('utf-8'))
+            irc.reply("Voting link: %s" % vote_url)
+
+    def talks2011(self, irc, msg, args):
+        """ 
         Gets tally of talk votes for 2011 conference
         """
         try:
