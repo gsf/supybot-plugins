@@ -1067,7 +1067,7 @@ class Assorted(callbacks.Privmsg):
 
     def _diebold_tallies(self, tally='', year=''):
         """ Gets a tally from the diebold-o-tron """
-        base_url = 'http://vote.code4lib.org/election/results/'
+        base_url = 'http://vote.code4lib.org/election/'
         tallies = {
             'keynotes': {'2009': '4',
                          '2010': '11',
@@ -1091,8 +1091,8 @@ class Assorted(callbacks.Privmsg):
             poll_number = tallies[tally][year]
         except KeyError:
             raise PollNotFoundException("tally or year not found")
-        poll_url = base_url + poll_number
-        vote_url = poll_url.replace('results', 'index')
+        poll_url = base_url + 'results/' + poll_number
+        vote_url = base_url + poll_number 
         from socket import setdefaulttimeout
         setdefaulttimeout(60)
         try:
