@@ -370,7 +370,7 @@ class Translators(callbacks.Privmsg):
     platforms = platform
     
     def gosling(self, irc, msg, args):
-    irc.reply("Hey girl. %s" % (' '.join(args)), prefixNick=False)
+      irc.reply("Hey girl. %s" % (' '.join(args)), prefixNick=False)
 
 Class = Translators
 
