@@ -321,11 +321,11 @@ class Translators(callbacks.Privmsg):
         if len(words) == 1:
             words = (' '.join(words)).split()
         r1 = u'( ಠ_ಠ) ' + choice(intros) + u' ' + words[0]
-        irc.reply(r1.encode('utf-8', 'ignore'))
-        irc.reply(u'( ಠ_ಠ)>--■-■'.encode('utf-8','ignore'))
+        irc.reply(r1.encode('utf-8', 'ignore'), prefixNick=False)
+        irc.reply(u'( ಠ_ಠ)>--■-■'.encode('utf-8','ignore'), prefixNick=False)
         r2 = u'(-■_■) ' + ' '.join(words[1:])
-        irc.reply(r2.encode('utf-8', 'ignore'))
-        irc.reply('YEAAAAAAAAAAAAAAAAAAAAAAH')
+        irc.reply(r2.encode('utf-8', 'ignore'), prefixNick=False)
+        irc.reply('YEAAAAAAAAAAAAAAAAAAAAAAH', prefixNick=False)
 
     def pairtree(self, irc, msg, args, id):
         """<id>
@@ -368,6 +368,9 @@ class Translators(callbacks.Privmsg):
     def platform(self, irc, msg, args):
       irc.reply("HOW MANY %s CAN I PUT YOU DOWN FOR?" % (' '.join(args).upper()), prefixNick=False)
     platforms = platform
+    
+    def gosling(self, irc, msg, args):
+        irc.reply("Hey girl. %s") % (' '.join(args), prefixNick=False)
 
 Class = Translators
 
