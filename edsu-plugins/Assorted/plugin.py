@@ -1442,10 +1442,15 @@ class Assorted(callbacks.Privmsg):
         url = 'http://www.computerhistory.org/tdih'
         soup = self._url2soup(url)
         try:
-            txt = unicode(soup.find('div', id='tdihbody').findAll('p')[1].string)
+            # kinda fragile, but whatevs
+            h3 = soup.find('h3')
+            date = h3.string
+            title = h3.nextSibling.nextSibling.string
+            text = h3.nextSibling.nextSibling.nextSibling.nextSibling.string
+            msg = "[%s] %s - %s" % (date, title, text)
         except RuntimeError, e:
-            txt = "d'oh something is b0rk3n: %s" % e
-        irc.reply(txt.encode('utf-8'))
+            msg = "d'oh something is b0rk3n: %s" % e
+        irc.reply(msg.encode('utf-8'))
 
     def snow(self, irc, msg, args):
         flake = """
