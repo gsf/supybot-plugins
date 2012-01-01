@@ -40,11 +40,15 @@ import supybot.utils.web as web
 class UrbanDict(callbacks.Plugin):
     threaded = True
 
-    def urbandict(self, irc, msg, args, words):
+    def urbandict(self, irc, msg, args, opts, words):
         """<phrase>
 
         Returns the definition and usage of <phrase> from UrbanDictionary.com.
         """
+        use_definition = None
+        for (opt,arg) in opts:
+          if opt == 'def':
+            use_definition = int(arg)
         terms = ' '.join(words)
         url = 'http://www.urbandictionary.com/define.php?term=%s' \
             % web.urlquote(terms)
@@ -60,10 +64,12 @@ class UrbanDict(callbacks.Plugin):
                 text += ' [example] ' + div.getnext().text_content() + ' [/example] '
             text = re.sub(r'[\\\r\\\n]+', ' ', text)
             definitions.append(text)
+        if use_definition != None:
+          definitions = [definitions[use_definition-1]]
         reply_msg = '%s: %s' % (terms, '; '.join(definitions))
         irc.reply(reply_msg.encode('utf8'))
 
-    urbandict = wrap(urbandict, [many('something')])
+    urbandict = wrap(urbandict, [getopts({'def':'something'}), many('something')])
 
 Class = UrbanDict
 

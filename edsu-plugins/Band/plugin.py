@@ -93,9 +93,9 @@ class Band(callbacks.Privmsg):
                     jsonfile.close()
                 except IOError, e:
                     self.log.warning(str(e))
-                    irc.reply("Band '%s' NOT added to list" % new_band, prefixNick=True)
+                    irc.reply(u"Band '%s' NOT added to list" % new_band, prefixNick=True)
                 else:
-                    irc.reply("Band '%s' added to list" % new_band, prefixNick=True)
+                    irc.reply(u"Band '%s' added to list" % new_band, prefixNick=True)
             elif args[0] == 'remove':
                 band = u' '.join([arg.decode('utf8') for arg in args[1:]]).strip()
                 try:

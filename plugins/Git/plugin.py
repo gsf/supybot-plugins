@@ -100,8 +100,8 @@ class Git(callbacks.Plugin):
       'branch':'somethingWithoutSpaces','path':'somethingWithoutSpaces',
       'show':'int','author':'somethingWithoutSpaces'}),optional('text')])
 
-    def repo(self, irc, msg, args, opts):
-      irc.reply('https://github.com/gsf/supybot-plugins', prefixNick=True)
+    def repo(self, irc, msg, args):
+      irc.reply('The official #code4lib bot plugin repo is at <https://github.com/gsf/supybot-plugins>', prefixNick=True)
       
 Class = Git
 

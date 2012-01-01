@@ -30,7 +30,54 @@
 from supybot.commands import *
 import supybot.plugins as plugins
 import re
-from ranking import Ranking
+import sys
+
+class Ranking(object):
+  
+  def __init__(self, *args):
+    self.data = {}
+      
+  def sorted_data(self):
+    result = sorted(self.data.iteritems())
+    return sorted(result, key=lambda c:c[1], reverse=True)
+    
+  def increment(self, key):
+    if self.data.has_key(key):
+      self.data[key] += 1
+    else:
+      self.data[key] = 1
+  
+  def set(self, key, value):
+    self.data[key] = value
+    
+  def items_at(self, value):
+    return [c for c in self.sorted_data() if c[1] == value]
+
+  def keys_at(self, value):
+    return map(lambda c: c[0], self.items_at(value))
+    
+  def rank(self,key):
+    value = self.data[key]
+
+    sd = self.sorted_data()
+    unique_values = sorted(set(map(lambda c: c[1], sd)), reverse=True)
+    
+    standard = len([c for c in sd if c[1] > value]) + 1
+    dense = unique_values.index(value) + 1
+    result = { 
+      'nick' : key,
+      'ordinal' : [sd.index(c) for c in sd if c[0] == key][0]+1, 
+      'competition' : standard, 
+      'dense' : dense, 
+      'value' : value,
+      'entries' : len(sd), 
+      'ranks' : len(unique_values),
+      'tied_with' : [k for k in self.keys_at(value) if k != key]
+    }
+    result['noun'] = 'citation'
+    if result['value'] > 1:
+      result['noun'] = 'citations'
+    return result
 
 class Quote(plugins.ChannelIdDatabasePlugin):
 
@@ -58,6 +105,7 @@ class Quote(plugins.ChannelIdDatabasePlugin):
           person = match.group(1)
           r.increment(person)
       
+      rank_requested = False
       response = ''
       if quote_filter:
         response += 'For quotes matching %s: ' % quote_filter
@@ -69,25 +117,48 @@ class Quote(plugins.ChannelIdDatabasePlugin):
         response += "Top %d quoted users in %s: %s." % (len(top_cites), channel, '; '.join(top_cites))
         user_cite_prefix = " You (%s) are" % msg.nick
         nick = msg.nick
+      elif re.match("^[0-9]+$",nick):
+        rank_requested = True
+        user_cite_prefix = ""
       else:
         user_cite_prefix = "%s is" % nick
 
       try:
-        d = r.rank(nick)
+        if rank_requested:
+          try:
+            response = ""
+            requested_rank = int(nick)
+            new_nick = r.sorted_data()[requested_rank-1][0]
+            d = r.rank(new_nick)
+            d['channel'] = channel
+            if d['competition'] != requested_rank:
+              response = "Due to a tie, %d is not a valid rank. " % requested_rank
+            d['tied_with'].append(new_nick)
+            if len(d['tied_with']) == 1:
+              phrase = "%(nick)s is ranked number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+            else:
+              d['user_list'] = " and " + d['tied_with'].pop()
+              if len(d['tied_with']) == 1:
+                d['user_list'] = d['tied_with'][0] + d['user_list']
+              else:
+                d['user_list'] = ', '.join(d['tied_with']) + ", " + d['user_list']
+              phrase = "%(user_list)s are tied for number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+            response += phrase %d
+          except IndexError:
+            response = "There are no users ranked at #%s in the %s quote database." % (nick, channel)
+        else:
+          d = r.rank(nick)
 
-        d['prefix'] = user_cite_prefix
-        d['tie_count'] = len(d['tied_with'])
-        d['channel'] = channel
-        d['noun'] = 'citation'
-        if d['value'] > 1:
-          d['noun'] = 'citations'
+          d['prefix'] = user_cite_prefix
+          d['tie_count'] = len(d['tied_with'])
+          d['channel'] = channel
           
-        phrase = "%(prefix)s ranked number %(competition)d out of %(entries)d with %(value)d %(noun)s."
-        if len(d['tied_with']) > 1:
-          phrase = "%(prefix)s tied with %(tie_count)d other users for #%(competition)d out of %(entries)d with %(value)d %(noun)s."
-        elif len(d['tied_with']) == 1:
-          phrase = "%(prefix)s tied with %(tie_count)d other user for #%(competition)d out of %(entries)d with %(value)d %(noun)s."
-        response += phrase % d
+          phrase = "%(prefix)s ranked number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+          if len(d['tied_with']) > 1:
+            phrase = "%(prefix)s tied with %(tie_count)d other users for number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+          elif len(d['tied_with']) == 1:
+            phrase = "%(prefix)s tied with %(tie_count)d other user for number %(competition)d out of %(entries)d with %(value)d %(noun)s."
+          response += phrase % d
       except KeyError:
         if len(response) == 0:
           response = "%s has no quotes in the %s quote database." % (nick, channel)

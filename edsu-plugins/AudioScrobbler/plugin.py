@@ -18,6 +18,7 @@ import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
+API_KEY = 'da95d416c5bc3dc12bd0d0088148927b'
 
 class AudioScrobbler(callbacks.Plugin):
     threaded = True
@@ -438,4 +439,24 @@ class AudioScrobbler(callbacks.Plugin):
         irc.reply(' ; '.join(common_tags).encode('utf8','ignore'))
     commontags = wrap(commontags, ['channeldb', 'text'])
 
+    def tasteometer(self, irc, msg, args, channel, user1, user2):
+      """<user1> <user2>
+      Find out how musically compatible two last.fm users are
+      """
+      user1 = self.db.username(channel, user1) or user1
+      user2 = self.db.username(channel, user2) or user2 or self.db.username(channel, msg.nick)
+      url = "http://ws.audioscrobbler.com/2.0/?method=tasteometer.compare&type1=user&type2=user&value1=%s&value2=%s&api_key=%s" % (user2, user1, API_KEY)
+      root = self._get_root(url)
+      score = root.find('.//result/score').text
+      artists = []
+      for tag in root.findall('.//result/artists/artist/name'):
+        artists.append(tag.text)
+      response = '%s and %s are %.2f%% musically compatible. ' % (user2, user1, float(score)*100)
+      if len(artists) == 0:
+        response += 'No artists in common.'
+      else:
+        response += 'Artists in common (%d): %s' % (len(artists), '; '.join(artists))
+      irc.reply(response.encode('utf-8'), prefixNick=False)
+    tasteometer = wrap(tasteometer, ['channeldb','somethingWithoutSpaces','somethingWithoutSpaces'])
+      
 Class = AudioScrobbler 

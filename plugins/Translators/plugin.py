@@ -15,7 +15,7 @@ import _pairtree
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Sing Plugin; http://code4lib.org/irc)')
 STOPWORDS = open(join(dirname(abspath(__file__)), 'stopwords.txt')).read().split()
-        
+
 class Translators(callbacks.Privmsg):
     def canuck(self, irc, msg, args):
         """ string
@@ -38,25 +38,25 @@ class Translators(callbacks.Privmsg):
             celsius = (ftemp - 32) * 5 / 9
             text = re.sub(match[0], "%-3.1fC" % celsius, text)
         irc.reply(text + ", eh?", prefixNick=True)
-
+    
     def aussie(self, irc, msg, args):
         """ string
         Translates string into Australian English Vernacular
         """
         irc.reply("SHRIMP ON THE BARBIE, MATES!", prefixNick=True)
-
+    
     def viking(self, irc, msg, args):
         """ string
         Translates string into Viking
         """
         irc.reply("SKÅL!", prefixNick=True)
-
+    
     def lbjay(self, irc, msg, args):
         """ string
         Offer some constructive criticism
         """
         irc.reply("%s: PLEASE TRY HARDER" % ' '.join(args), prefixNick=False)
-
+    
     def ircnickize(self, irc, msg, args):
         """ string
         Normalizes a string per irc nick rules
@@ -66,48 +66,58 @@ class Translators(callbacks.Privmsg):
             for s in arg.split():
                 nick += s
         # strip out all non-word characters to make freenode happy
-        nick = re.compile(r'\W', re.I).sub('', nick)        
+        nick = re.compile(r'\W', re.I).sub('', nick)
         # string slice used because freenode restricts >16-char nicks
         irc.reply(nick[0:15], prefixNick=False)
-
+    
     def mccainize(self, irc, msg, args):
         """
         Translates text into McCain speechifyin'
         """
         prefix = "My friends, " if randint(0,2) else "My fellow prisoners, "
         irc.reply(prefix + ' '.join(args), prefixNick=True)
-
+    
     def homelessorcode4libber(self, irc, msg, args):
         """
         Determines whether someone is homeless or a code4libber
         """
 	what = ['homeless', 'code4libber', 'WEREWOLF!']
         irc.reply('%s = %s'% (' '.join(args), what[randint(0,2)]), prefixNick=False)
-
+    
     def dick(self, irc, msg, args):
         """
         Disclaims your desire to be a dick
         """
         irc.reply("I don't mean to be a dick, but " + ' '.join(args), prefixNick=True)
-        
+    
     def edsu(self, irc, msg, args):
         """
         States edsu's attitude on selfsame plugin command
         """
         irc.reply("let me remind you people, " + ' '.join(args), prefixNick=True)
-
+    
     def rsinger(self, irc, msg, args):
         """
         Ross gives you some advice.
         """
         irc.reply("PLATFORM " * len(args), prefixNick=True)
-
+    
     def kgs(self, irc, msg, args):
         """
         bad kgs imitation
         """
         irc.reply("nosrsly, " + ' '.join(args), prefixNick=True)
 
+    def rob(self, irc, msg, args):
+        """
+        Rob says what you want him to say. Kinda.
+        """
+        text = ' '.join(args).split(' ')
+        if len(text) < 2:
+          irc.reply('... Wait, what?')
+        else:
+          phrase = text[0:randint(1,len(text)-1)]
+          irc.reply(' '.join(phrase) + '... Wait, what?')
 
     def obamit(self, irc, msg, args):
         """
@@ -115,7 +125,7 @@ class Translators(callbacks.Privmsg):
         """
         look = "Look, " if randint(0,1) else "Look, here's what I'm saying... "
         irc.reply(look + ' '.join(args))
-
+    
     def mjg(self, irc, msg, args):
         """
         Truncates and refocuses your statement
@@ -124,13 +134,13 @@ class Translators(callbacks.Privmsg):
         high = len(s)
         low = min(7, high-1)
         irc.reply("%s... OMG! Bacon!" % s[0:randint(low,high)])
-
+    
     def embed(self, irc, msg, args):
         """
         Adds "in bed" to the end of a phrase.
         """
         s = ' '.join(args).strip(".")
-
+        
         motivate = re.match(r'^(.*) - (.*)$', s)
         quote = re.match(r'^Quote #(\d+): "(.*)" \((.*)\)$', s)
         if motivate:
@@ -139,9 +149,9 @@ class Translators(callbacks.Privmsg):
             msg = 'Quote #%sa "%s ... in bed" - (%s)' % quote.groups()
         else:
             msg = "%s ... in bed." % s
-
+        
         irc.reply(msg)
-
+    
     def scalia(self, irc, msg, args):
         """<string>
         random 'scare' quote insertion"""
@@ -164,23 +174,23 @@ class Translators(callbacks.Privmsg):
             # all stopwords
             pass
         irc.reply(' '.join(words))
-
+    
     def chef(self, irc, msg, args):
         """BORK! BORK! BORK!"""
         self._chefjivevalleypig(irc, 'chef', ' '.join(args))
-
+    
     def jive(self, irc, msg, args):
         """Like, yeah..."""
         self._chefjivevalleypig(irc, 'jive', ' '.join(args))
-
+    
     def valley(self, irc, msg, args):
         """Fer sure!"""
         self._chefjivevalleypig(irc, 'valspeak', ' '.join(args))
-
+    
     def igpay(self, irc, msg, args):
         """Ustjay utwhay ouyay inkthay"""
         self._chefjivevalleypig(irc, 'piglatin', ' '.join(args))
-
+    
     def _chefjivevalleypig(self, irc, type, s):
         params = urlencode(dict(input=s,type=type))
         url = 'http://www.cs.utexas.edu/users/jbc/bork/bork.cgi?' + params
@@ -188,7 +198,7 @@ class Translators(callbacks.Privmsg):
         resp = re.sub('\n', ' ', resp)
         irc.reply(resp.encode('utf-8', 'ignore').strip())
 
-
+    
     def sabram(self, irc, msg, args):
         """ [<text>]
         Get @sabram to falsely attribute a quote to Cliff!
@@ -247,7 +257,7 @@ class Translators(callbacks.Privmsg):
             'Y' : u'ỲÝŶỸȲẎŸỶƳỴ',
             'Z' : u'ŹẐŻŽȤẒẔƵ'
         }
-
+        
         source = u' '.join([arg.decode('utf8') for arg in args]).upper()
         result = []
         for letter in source:
@@ -263,7 +273,7 @@ class Translators(callbacks.Privmsg):
         """ <text>
         Use nebulous sources to present your own screwed-up viewpoint!
         """
-        variants = [ 
+        variants = [
             'Sources claim',
             'In fact, some have said',
             'Can you deny the rumors',
@@ -271,9 +281,9 @@ class Translators(callbacks.Privmsg):
             ]
         variant = variants[randrange(len(variants))]
         irc.reply('%s that %s' % (variant, text), prefixNick=False)
-        
+    
     foxnews = wrap(foxnews, ['text'])
-
+    
     def snowman(self, irc, msg, args):
         """ <text>
         UNICODE SNOWMAN ALL UP IN YA TEXT BRAW
@@ -282,7 +292,7 @@ class Translators(callbacks.Privmsg):
         snowords = [u'☃' + u'☃'.join(list(word)) for word in words]
         response = u' '.join(snowords)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
-
+    
     def danify(self, irc, msg, args):
         """<first> <last>
         Danify your name
@@ -305,22 +315,26 @@ class Translators(callbacks.Privmsg):
             'sounds like',
             'it appears that',
             'on the other hand,',
-            'i guess you could say',]
+            'i guess you could say',
+            'you might want to consider that',]
         words = args
         if len(words) == 1:
             words = (' '.join(words)).split()
-        response = choice(intros) + " " + words[0] + " ... /O_O/ "
-        response += ' '.join(words[1:]) + " YEAAAAAAAAAAAAAAAAAAAAAAH"
-        irc.reply(response.encode('utf-8', 'ignore'))
+        r1 = u'( ಠ_ಠ) ' + choice(intros) + u' ' + words[0]
+        irc.reply(r1.encode('utf-8', 'ignore'), prefixNick=False)
+        irc.reply(u'( ಠ_ಠ)>--■-■'.encode('utf-8','ignore'), prefixNick=False)
+        r2 = u'(-■_■) ' + ' '.join(words[1:])
+        irc.reply(r2.encode('utf-8', 'ignore'), prefixNick=False)
+        irc.reply('YEAAAAAAAAAAAAAAAAAAAAAAH', prefixNick=False)
 
     def pairtree(self, irc, msg, args, id):
         """<id>
         Generate a pairtree based on the given ID.
         """
         irc.reply('/'.join(_pairtree.id_to_path(id)))
-        
+    
     pairtree = wrap(pairtree,['text'])
-
+    
     def zalgo(self, irc, msg, args, opts, text):
         """[--intensity 1-200] text
         ZALGO"""
@@ -348,8 +362,16 @@ class Translators(callbacks.Privmsg):
                 zalgoized.append(choice(zalgo_chars))
         response = choice(zalgo_chars).join(zalgoized)
         irc.reply(response.encode('utf8', 'ignore'), prefixNick=False)
-
+    
     zalgo = wrap(zalgo, [getopts({'intensity':'int'}), 'text'])
+    
+    def platform(self, irc, msg, args):
+      irc.reply("HOW MANY %s CAN I PUT YOU DOWN FOR?" % (' '.join(args).upper()), prefixNick=False)
+    platforms = platform
+    
+    def gosling(self, irc, msg, args):
+      """ <text> - talk like ryan gosling"""
+      irc.reply("Hey girl. %s" % (' '.join(args)), prefixNick=False)
 
 Class = Translators
 
