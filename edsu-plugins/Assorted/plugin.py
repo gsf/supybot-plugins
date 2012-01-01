@@ -1329,6 +1329,8 @@ class Assorted(callbacks.Privmsg):
             txt = "d'oh something is b0rk3n: %s" % e
         irc.reply(txt.encode('utf-8'))
 
+    history = tdih
+
     def snow(self, irc, msg, args):
         flake = """
            o      
