@@ -52,6 +52,18 @@ class PDPC(callbacks.Plugin):
       
     pdpc = wrap(pdpc, ['inChannel'])
     
+    def conf(self, irc, msg, args, channel):
+      """
+      Display users with a conference-cloaked nick."""
+      tag = re.compile('@conference/code4lib')
+      contributors = []
+      for u in irc.state.channels[channel].users:
+        if tag.search(irc.state.nickToHostmask(u)):
+          contributors.append(u)
+      irc.reply('Conference attendees in %s: %s' % (channel, ', '.join(contributors)), prefixNick=False)
+
+    conf = wrap(conf, ['inChannel'])
+      
 Class = PDPC
 
 
