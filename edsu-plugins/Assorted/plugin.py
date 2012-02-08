@@ -193,7 +193,7 @@ class Assorted(callbacks.Privmsg):
         html = urlopen("http://thatswutshesaid.com/").read()
         soup = BeautifulSoup(html)
         twss = soup.find("h1")
-        irc.reply(twss.text.encode('utf8'))
+        irc.reply(twss.string.encode('utf8'))
         
     def penny(self, irc, msg, args):
         html = urlopen("http://www.penny-arcade.com/archive/").read()
