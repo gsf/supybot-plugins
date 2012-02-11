@@ -45,6 +45,28 @@ import urllib
 
 HEADERS = dict(ua = 'Zoia/1.0 (Supybot/0.83; Github Plugin; http://code4lib.org/irc)')
 TMDBK = '2aa9fc67c6ce2fe64313d34806e4f59e'
+FREEBASE_TYPES = {
+  'movie': {
+    'type': '/film/film',
+    'subquery': { '/film/film/starring': [{'character~=':'.', 'character':None, 'index':None, 'sort': 'index'}] },
+    'extractor': lambda r: [c['character'] for c in r['/film/film/starring']]
+  },
+  'tv': {
+    'type': '/tv/tv_program',
+    'subquery': { 'tv/tv_program/regular_cast': [{'character~=':'.', 'character':None, 'index':None, 'sort': 'index'}] },
+    'extractor': lambda r: [c['character'] for c in r['/tv/tv_program/regular_cast']]
+  },
+  'play': {
+    'type': '/theater/play',
+    'subquery': { 'characters': [] },
+    'extractor': lambda r: r['characters']
+  },
+    'book': {
+    'type': '/book/book',
+    'subquery': { 'characters': [] },
+    'extractor': lambda r: r['characters']
+  }
+}
 
 class Cast(callbacks.Plugin):
     class DB(plugins.DbiChannelDB):
@@ -126,7 +148,7 @@ class Cast(callbacks.Plugin):
       irc.reply(', '.join(titles))
     list = wrap(list, ['channeldb'])
     
-    def cast(self, irc, msg, args, channel, opts, play):
+    def oldcast(self, irc, msg, args, channel, opts, play):
       """[--tmdb] [<play>] -- Cast <play> from the current channel participants. If --tmdb is specified, cast list will be
       retrieved from themoviedb.org instead of the local database."""
       random.seed()
@@ -189,8 +211,65 @@ class Cast(callbacks.Plugin):
           irc.reply(response.encode('utf8'), prefixNick=False)
       else:
         irc.reply('I don\'t know "%s"!' % play)
-    cast = wrap(cast, ['channeldb', getopts({'tmdb':'','max':'int'}), optional('text')])
+        
+    oldcast = wrap(oldcast, ['channeldb', getopts({'tmdb':'','max':'int'}), optional('text')])
     
+    def _freebase(self, work_type, thing):
+      props = FREEBASE_TYPES[work_type]
+      query = {
+        'escape': False,
+        'query': {
+          "id": None,
+          "type": props['type'],
+          "name": None,
+          "name~=": thing,
+          "limit": 1
+        }
+      }
+      query['query'].update(props['subquery'])
+      url = "https://api.freebase.com/api/service/mqlread?query=%s" % web.urlquote(simplejson.dumps(query))
+      print url
+      response = simplejson.loads(web.getUrl(url, headers=HEADERS))
+      result = response['result']
+      if result is None:
+        return None
+      else:
+        return({
+          'url': "http://www.freebase.com" + result['id'],
+          'title': result['name'],
+          'characters': props['extractor'](result)
+        })
+
+    def cast(self, irc, msg, args, channel, work_type, thing):
+      """<movie|tv|play|book> <title>
+      Cast <title> using information retrieved from Freebase. You must specify the type of work to be cast."""
+
+      random.seed()
+      nicks = list(irc.state.channels[channel].users)
+      random.shuffle(nicks)      
+      record = self._freebase(work_type, thing)
+      if record is None:
+        irc.reply('I can\'t find a %s called "%s" in Freebase!' % (work_type, thing))
+      else:
+        title = record['title']
+        parts = record['characters']
+
+        if len(parts) == 0:
+          irc.reply('I found an entry for "%s", but there are no characters listed. %s' % (thing, record['url']))
+        elif len(parts) > len(nicks):
+          irc.reply('Not enough people in %s to cast "%s"' % (channel, title))
+        else:
+          parts.reverse()
+          response = '%s presents "%s", starring ' % (channel, title)
+          while len(parts) > 1:
+            response += "%s as %s, " % (nicks.pop(), parts.pop())
+            if len(parts) == 1:
+              response += "and "
+          response += "%s as %s." % (nicks.pop(), parts.pop())
+          irc.reply(response.encode('utf8'), prefixNick=False)
+
+    cast = wrap(cast, ['channeldb', 'somethingWithoutSpaces', 'text'])
+
 Class = Cast
 
 
