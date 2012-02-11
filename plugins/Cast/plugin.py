@@ -34,7 +34,6 @@ import supybot.plugins as plugins
 import supybot.ircdb as ircdb
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
-import supybot.dbi as dbi
 
 import random
 import re
@@ -69,44 +68,8 @@ FREEBASE_TYPES = {
 }
 
 class Cast(callbacks.Plugin):
-    class DB(plugins.DbiChannelDB):
-        class DB(dbi.DB):
-            class Record(dbi.Record):
-                __fields__ = [
-                    'play',
-                    'cast'
-                ]
-            def add(self, play, cast, **kwargs):
-                record = self.Record(play=play, cast=cast, **kwargs)
-                return super(self.__class__, self).add(record)
-                
-    def __init__(self, irc):
-        self.__parent = super(Cast, self)
-        self.__parent.__init__(irc)
-        self.db = plugins.DB(self.name(), {'flat': self.DB})()
-        
-    def die(self):
-        self.db.close()
-        self.__parent.die()
-        
-    def _select(self, channel, predicates):
-        def p(record):
-            for predicate in predicates:
-                if not predicate(record):
-                    return False
-            return True
-        return self.db.select(channel, p)
-        
-    def _find(self, channel, play):
-      check = lambda r: (r.play.lower() == play.lower())
-      result = self._select(channel, [check])
-      try:
-        record = result.next()
-        return record
-      except StopIteration:
-        return None
-    
-    def _tmdb(self, cmd, args):
+      
+    def _query_tmdb(self, cmd, args):
       url = "http://api.themoviedb.org/2.1/%s/en/json/%s/%s" % (cmd,TMDBK,urllib.quote(str(args)))
       doc = web.getUrl(url, headers=HEADERS)
       try:
@@ -115,83 +78,38 @@ class Cast(callbacks.Plugin):
         return None
       return json
     
-    def add(self, irc, msg, args, channel, play, cast):
-      """<play> <cast> -- Add <play> to the database, with parts specified by <cast> (separated by semicolons)"""
-      previous = self._find(channel, play)
-      if previous is not None:
-        irc.reply('"%s" already exists.' % (play))
-      else:
-        id = self.db.add(channel, play, cast)
-        irc.replySuccess('"%s" added.' % (play))
-    add = wrap(add, ['channeldb','something','something'])
-
-    def remove(self, irc, msg, args, channel, play):
-      """<play> -- Remove <play> from the database"""
-      if id == None:
-        irc.reply('No id specified')
-      try:
-        record = self._find(channel, play)
-        if record is not None:
-          self.db.remove(channel, record.id)
-          irc.replySuccess()
-        else:
-          irc.reply('"%s" not found' % play)
-      except:
-          irc.replyError()
-    remove = wrap(remove, [('checkCapability','admin'), 'channeldb', 'something'])
-
-    def list(self, irc, msg, args, channel):
-      """List plays that I can cast"""
-      records = self._select(channel, [lambda x: True])
-      titles = ['"%s"' % record.play for record in records]
-      titles.sort()
-      irc.reply(', '.join(titles))
-    list = wrap(list, ['channeldb'])
-    
-    def oldcast(self, irc, msg, args, channel, opts, play):
-      """[--tmdb] [<play>] -- Cast <play> from the current channel participants. If --tmdb is specified, cast list will be
-      retrieved from themoviedb.org instead of the local database."""
+    def tmdb(self, irc, msg, args, channel, opts, play):
+      """[<movie>]
+      Cast <movie> from the current channel participants using information retrieved from themoviedb.org."""
       random.seed()
       nicks = list(irc.state.channels[channel].users)
       random.shuffle(nicks)
       
-      tmdb = False
       maxlen = 20
       for (opt,arg) in opts:
-        if opt == 'tmdb':
-          tmdb = True
         if opt == 'max':
           maxlen = int(arg)
       
       parts = None
-      if play is None:
-        if tmdb:
-          irc.reply('If you want to use TMDB, I need a movie name.')
-        else:
-          record = self.db.random(channel)
-      else:
-        if tmdb:
-          record = None
-          data = self._tmdb('Movie.search',play)
-          if data != None and data[0] != 'Nothing found.':
-            best = data[0]
-            for r in data:
-              if r['name'].lower().strip() == play.lower().strip():
-                best = r
-                break
-            movie = self._tmdb('Movie.getInfo',best['id'])[0]
-            title = movie['name']
-            parts = []
-            for entry in movie['cast']:
-              if entry['job'] == 'Actor':
-                if re.match(r'^(((him|her|it)self)|themselves)$', entry['character'], re.I):
-                  parts.append(entry['name'])
-                else:
-                  parts.append(entry['character'])
-                if len(parts) == maxlen:
-                  break
-        else:
-          record = self._find(channel, play)
+      record = None
+      data = self._query_tmdb('Movie.search',play)
+      if data != None and data[0] != 'Nothing found.':
+        best = data[0]
+        for r in data:
+          if r['name'].lower().strip() == play.lower().strip():
+            best = r
+            break
+        movie = self._query_tmdb('Movie.getInfo',best['id'])[0]
+        title = movie['name']
+        parts = []
+        for entry in movie['cast']:
+          if entry['job'] == 'Actor':
+            if re.match(r'^(((him|her|it)self)|themselves)$', entry['character'], re.I):
+              parts.append(entry['name'])
+            else:
+              parts.append(entry['character'])
+            if len(parts) == maxlen:
+              break
 
       if record is not None:
         title = record.play
@@ -211,10 +129,9 @@ class Cast(callbacks.Plugin):
           irc.reply(response.encode('utf8'), prefixNick=False)
       else:
         irc.reply('I don\'t know "%s"!' % play)
-        
-    oldcast = wrap(oldcast, ['channeldb', getopts({'tmdb':'','max':'int'}), optional('text')])
+    tmdb = wrap(tmdb, ['channeldb', getopts({'max':'int'}), 'text'])
     
-    def _freebase(self, work_type, thing):
+    def _query_freebase(self, work_type, thing):
       props = FREEBASE_TYPES[work_type]
       url = "https://api.freebase.com/api/service/search?query=%s&type=%s" % (web.urlquote(thing),props['type'])
       response = simplejson.loads(web.getUrl(url, headers=HEADERS))
@@ -251,7 +168,7 @@ class Cast(callbacks.Plugin):
       random.seed()
       nicks = list(irc.state.channels[channel].users)
       random.shuffle(nicks)      
-      record = self._freebase(work_type, thing)
+      record = self._query_freebase(work_type, thing)
       if record is None:
         irc.reply('I can\'t find a %s called "%s" in Freebase!' % (work_type, thing))
       else:
