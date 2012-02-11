@@ -216,29 +216,33 @@ class Cast(callbacks.Plugin):
     
     def _freebase(self, work_type, thing):
       props = FREEBASE_TYPES[work_type]
-      query = {
-        'escape': False,
-        'query': {
-          "id": None,
-          "type": props['type'],
-          "name": None,
-          "name~=": thing,
-          "limit": 1
-        }
-      }
-      query['query'].update(props['subquery'])
-      url = "https://api.freebase.com/api/service/mqlread?query=%s" % web.urlquote(simplejson.dumps(query))
-      print url
+      url = "https://api.freebase.com/api/service/search?query=%s&type=%s" % (web.urlquote(thing),props['type'])
       response = simplejson.loads(web.getUrl(url, headers=HEADERS))
-      result = response['result']
-      if result is None:
+      if len(response['result']) == 0:
         return None
       else:
-        return({
-          'url': "http://www.freebase.com" + result['id'],
-          'title': result['name'],
-          'characters': props['extractor'](result)
-        })
+        fbid = response['result'][0]['id']
+        query = {
+          'escape': False,
+          'query': {
+            "id": fbid,
+            "type": props['type'],
+            "name": None,
+            "limit": 1
+          }
+        }
+        query['query'].update(props['subquery'])
+        url = "https://api.freebase.com/api/service/mqlread?query=%s" % web.urlquote(simplejson.dumps(query))
+        response = simplejson.loads(web.getUrl(url, headers=HEADERS))
+        result = response['result']
+        if result is None:
+          return None
+        else:
+          return({
+            'url': "http://www.freebase.com" + result['id'],
+            'title': result['name'],
+            'characters': props['extractor'](result)
+          })
 
     def cast(self, irc, msg, args, channel, work_type, thing):
       """<movie|tv|play|book> <title>
