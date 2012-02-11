@@ -255,7 +255,7 @@ class Cast(callbacks.Plugin):
         parts = record['characters']
 
         if len(parts) == 0:
-          irc.reply('I found an entry for "%s", but there are no characters listed. %s' % (thing, record['url']))
+          irc.reply('I found a %s called "%s", but there are no characters listed. %s' % (work_type, thing, record['url']))
         elif len(parts) > len(nicks):
           irc.reply('Not enough people in %s to cast "%s"' % (channel, title))
         else:
